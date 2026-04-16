@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nemoz 가격 계산기</title>
+<link rel="icon" type="image/png" href="https://www.google.com/s2/favicons?domain=nemoz.io&sz=64">
+<meta property="og:title" content="Nemoz 가격 계산기">
+<meta property="og:description" content="출고가·판매가·정가 자동 계산 도구">
+<meta property="og:image" content="https://nemozlab.github.io/label/images/nemoz_og.png">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#EFF5F5;--card:#fff;--border:#DDE6E6;--muted:#6B8080;--accent:#00C3C8;--accent-dark:#009EA3;--accent-light:#E0F7F7;--primary:#0D1A1A;--text:#1A2E2E}
+body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+.hdr{background:#fff;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:300;border-bottom:2px solid var(--accent);box-shadow:0 2px 16px rgba(0,195,200,.08)}
+.hdr-left{display:flex;align-items:center;gap:16px}
+.hdr-logo{height:26px;width:auto;display:block}
+.hdr-sub{font-size:11px;font-weight:600;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;font-family:'Noto Sans KR',sans-serif}
+.btn{font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;letter-spacing:0;padding:8px 18px;border:none;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.btn-p{background:var(--accent);color:#fff}
+.btn-p:hover{background:var(--accent-dark)}
+.btn-g{background:transparent;color:var(--text);border:1.5px solid var(--border)}
+.btn-g:hover{border-color:var(--accent);color:var(--accent)}
+.wrap{max-width:700px;margin:0 auto;padding:32px 20px;display:flex;flex-direction:column;gap:20px}
+.card{background:var(--card);border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,195,200,.06);overflow:hidden;border:1px solid var(--border)}
+.ch{padding:14px 22px;background:#F7FAFA;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ct{font-size:13px;font-weight:700;color:var(--primary);letter-spacing:.2px;display:flex;align-items:center;gap:10px}
+.ct-num{width:22px;height:22px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:900;flex-shrink:0}
+.cb{padding:22px}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:500px){.price-grid{grid-template-columns:1fr}}
+.fi{display:flex;flex-direction:column;gap:5px}
+.fi label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;display:flex;flex-direction:column;gap:2px}
+.fi label .lsub{font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:#B2C8C8}
+.price-wrap{position:relative}
+.price-input{width:100%;padding:11px 32px 11px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:22px;font-weight:700;color:var(--text);background:#FAFEFE;transition:border-color .15s,background .15s}
+.price-input:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(0,195,200,.12)}
+.price-input.calc{background:var(--accent-light);border-color:#9DE8EA;color:var(--accent-dark)}
+.price-input.active{border-color:var(--accent);background:#fff}
+.won{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;color:#B2C8C8;pointer-events:none}
+.calc-hint{margin-top:14px;font-size:11px;color:var(--muted);line-height:1.8}
+.calc-hint b{color:var(--accent-dark)}
+.reset-row{margin-top:18px;display:flex;justify-content:flex-end}
+.formula-row{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.formula-row:last-child{border-bottom:none;padding-bottom:0}
+.fbadge{min-width:52px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:700;letter-spacing:0;flex-shrink:0}
+.fbadge.a{background:var(--accent);color:#fff}
+.fbadge.b{background:var(--accent-light);color:var(--accent-dark);border:1px solid #9DE8EA}
+.formula-eq{font-family:'Noto Sans KR',monospace;font-size:13px;font-weight:400;color:var(--primary);margin-bottom:4px;letter-spacing:0}
+.formula-eq .fn{color:var(--accent-dark);font-weight:400}
+.formula-desc{font-size:12px;color:var(--muted);line-height:1.7;font-weight:400}
+.term-row{display:flex;align-items:baseline;gap:16px;padding:11px 0;border-bottom:1px solid var(--border)}
+.term-row:last-child{border-bottom:none;padding-bottom:0}
+.term-key{font-size:13px;font-weight:700;color:var(--primary);white-space:nowrap;min-width:44px;flex-shrink:0}
+.term-val{font-size:13px;color:var(--muted);line-height:1.7}
+.term-val b{color:var(--text)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <img class="hdr-logo" src="https://nemozlab.github.io/label/images/nemoz_logo.png" alt="NEMOZ">
+    <span class="hdr-sub">Price Calculator</span>
+  </div>
+<a href="https://kr.ktown4u.com/" target="_blank" class="btn btn-g" style="margin-right:10px; text-decoration:none;">
+  참고 판매처
+</a>
+</div>
+
+<div class="wrap">
+
+  <!-- ① 가격 직접 입력 (기존 2번을 1번으로 변경) -->
+  <div class="card">
+    <div class="ch">
+      <div class="ct"><span class="ct-num">1</span> 가격 직접 입력</div>
+    </div>
+    <div class="cb">
+      <div class="price-grid">
+        <div class="fi">
+          <label>출고가<span class="lsub">공급가 · VAT 별도</span></label>
+          <div class="price-wrap">
+            <input class="price-input" id="f_cost" type="text" inputmode="numeric" placeholder="0" oninput="calcFrom('cost')" />
+            <span class="won">원</span>
+          </div>
+        </div>
+        <div class="fi">
+          <label>판매가<span class="lsub">온라인 할인가 · VAT 포함</span></label>
+          <div class="price-wrap">
+            <input class="price-input" id="f_sale" type="text" inputmode="numeric" placeholder="0" oninput="calcFrom('sale')" />
+            <span class="won">원</span>
+          </div>
+        </div>
+        <div class="fi">
+          <label>정가<span class="lsub">소비자가 · VAT 포함</span></label>
+          <div class="price-wrap">
+            <input class="price-input" id="f_retail" type="text" inputmode="numeric" placeholder="0" oninput="calcFrom('retail')" />
+            <span class="won">원</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-hint">
+        3가지 가격 중에 1가지를 입력하면, 나머지 2개 가격이 계산됩니다.<br>
+        역산 출고가는 근사값입니다. 실제 신보안내서 기준 출고가로 최종 확인하세요.
+      </div>
+      <div class="reset-row">
+        <button class="btn btn-g" onclick="resetAll()">↺ &nbsp;초기화</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 계산 방식 안내 -->
+  <div class="card">
+    <div class="ch">
+      <div class="ct"><span class="ct-num">2</span> 계산 방식 안내</div>
+    </div>
+    <div class="cb">
+      <div class="formula-row">
+        <div class="fbadge a">판매가</div>
+        <div>
+          <div class="formula-eq"><span class="fn">FLOOR</span>(출고가*1.35*1.1,100)</div>
+          <div class="formula-desc">출고가에 판매처 마진 ×1.35, 부가세 ×1.1 적용 후 100원 단위 내림 / VAT 포함</div>
+        </div>
+      </div>
+      <div class="formula-row">
+        <div class="fbadge a">정가</div>
+        <div>
+          <div class="formula-eq"><span class="fn">ROUND</span>(판매가/0.81,-2)</div>
+          <div class="formula-desc">판매가 기준 19% 할인 전 가격 / VAT 포함 / 100원 단위 반올림</div>
+        </div>
+      </div>
+      <div class="formula-row">
+        <div class="fbadge b">역산</div>
+        <div>
+          <div class="formula-eq">정가 → 판매가 : <span class="fn">ROUND</span>(정가*0.81,-2)</div>
+          <div class="formula-eq">판매가 → 출고가 : 판매가/1.35/1.1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 용어 정의 -->
+  <div class="card">
+    <div class="ch">
+      <div class="ct"><span class="ct-num">3</span> 용어 정의</div>
+    </div>
+    <div class="cb">
+      <div class="term-row">
+        <span class="term-key">출고가</span>
+        <span class="term-val">유통사에서 도매로 제공하는 가격 (카페24 네모즈샵에서는 공급가로 표기됨) / VAT 별도</span>
+      </div>
+      <div class="term-row">
+        <span class="term-key">판매가</span>
+        <span class="term-val">국내 주요 음반 판매처에서 소비자에게 실제 판매되는 할인 가격 / VAT 포함</span>
+      </div>
+      <div class="term-row">
+        <span class="term-key">정가</span>
+        <span class="term-val">할인 전 원가격. 통상 온라인 판매처 기준 19% 할인 전 금액 / VAT 포함</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const FIELDS = {cost:'f_cost', sale:'f_sale', retail:'f_retail'};
+function floor100(v){ return Math.floor(v/100)*100; }
+function round100(v){ return Math.round(v/100)*100; }
+function fmt(v){ return v > 0 ? v.toLocaleString('ko-KR') : ''; }
+
+function calcFrom(from){
+  const el = document.getElementById(FIELDS[from]);
+  const raw = el.value.replace(/,/g,'').replace(/[^0-9]/g,'');
+  const num = parseInt(raw) || 0;
+  el.value = num > 0 ? num.toLocaleString('ko-KR') : '';
+  const val = num;
+  Object.values(FIELDS).forEach(id => document.getElementById(id).classList.remove('active','calc'));
+  el.classList.add('active');
+  if(!val || val<=0){ clearOthers(from); return; }
+  if(from==='cost'){
+    const sale = floor100(val*1.35*1.1);
+    setCalc('sale', sale);
+    setCalc('retail', round100(sale/0.81));
+  } else if(from==='sale'){
+    setCalc('cost', round100(val/1.35/1.1), true);
+    setCalc('retail', round100(val/0.81));
+  } else {
+    const sale = round100(val*0.81);
+    setCalc('sale', sale);
+    setCalc('cost', round100(sale/1.35/1.1), true);
+  }
+}
+function setCalc(field, val, approx=false){
+  const el = document.getElementById(FIELDS[field]);
+  el.value = fmt(val); el.classList.add('calc');
+  el.title = approx ? '역산 근사값 — 신보안내서로 확인 필요' : '';
+}
+function clearOthers(except){
+  Object.keys(FIELDS).forEach(k => {
+    if(k!==except){ const el=document.getElementById(FIELDS[k]); el.value=''; el.classList.remove('calc','active'); el.title=''; }
+  });
+}
+function resetAll(){
+  Object.values(FIELDS).forEach(id => { 
+    const el=document.getElementById(id); 
+    el.value=''; 
+    el.classList.remove('calc','active'); 
+    el.title=''; 
+  });
+}
+</script>
+</body>
+</html>

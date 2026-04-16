@@ -5,41 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nemoz Staff Tools</title>
 
-<!-- 파비콘 -->
 <link rel="icon" type="image/png" href="https://www.google.com/s2/favicons?domain=nemoz.io&sz=64">
-
-<!-- 기본 메타 -->
 <meta name="description" content="Nemoz Staff 생산성 도구 모음">
-
-<!-- Open Graph (SNS 공유 최적화) -->
 <meta property="og:title" content="Nemoz Staff Tools">
 <meta property="og:description" content="Nemoz Staff 생산성 도구 모음">
 <meta property="og:image" content="https://nemozlab.github.io/label/images/nemoz_og.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nemozlab.github.io/">
 <meta property="og:site_name" content="Nemoz Staff Tools">
-
-<!-- Twitter Card (선택) -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Nemoz Staff Tools">
 <meta name="twitter:description" content="Nemoz Staff 생산성 도구 모음">
 <meta name="twitter:image" content="https://nemozlab.github.io/label/images/nemoz_og.png">
 
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
+<!-- Pretendard (영문+한글 통합, 모던) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<!-- Noto Sans KR (한글 본문 보조) -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
-/* 기존 스타일 그대로 유지 (변경 없음) */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#EFF5F5;
   --card:#fff;
   --accent:#00C3C8;
   --accent-dark:#009EA3;
-  --text:#0D1A1A;
-  --muted:#6B8080;
+  --text:#2C3E3E;
+  --muted:#7FA0A0;
+  --font-head:'Pretendard Variable',sans-serif;
+  --font-body:'Noto Sans KR','Pretendard Variable',sans-serif;
 }
 body{
-  font-family:'Noto Sans KR',sans-serif;
+  font-family:var(--font-body);
   background:var(--bg);
   color:var(--text);
   height:100vh;
@@ -58,18 +55,19 @@ body{
   margin-bottom:8px;
 }
 .title{
-  font-family:'Barlow Condensed',sans-serif;
+  font-family:var(--font-head);
   font-size:32px;
-  font-weight:900;
+  font-weight:700;
   letter-spacing:2px;
   margin-bottom:6px;
   color:var(--text);
 }
 .subtitle{
+  font-family:var(--font-body);
   font-size:14px;
   color:var(--muted);
   letter-spacing:3px;
-  font-weight:500;
+  font-weight:400;
   margin-bottom:48px;
 }
 .tools{
@@ -93,15 +91,19 @@ body{
   box-shadow:0 12px 32px rgba(0,195,200,.2);
 }
 .card h2{
-  font-size:24px;
+  font-family:var(--font-head);
+  font-size:22px;
   font-weight:700;
   margin-bottom:8px;
   color:var(--accent-dark);
+  letter-spacing:-.01em;
 }
 .card p{
+  font-family:var(--font-body);
   font-size:13px;
   color:var(--muted);
   line-height:1.6;
+  font-weight:400;
 }
 .btn{
   margin-top:24px;
@@ -112,6 +114,7 @@ body{
   color:#fff;
   padding:14px 32px;
   border-radius:12px;
+  font-family:var(--font-head);
   font-weight:700;
   font-size:15px;
   text-decoration:none;
@@ -120,11 +123,6 @@ body{
 .btn:hover{
   background:var(--accent-dark);
   transform:scale(1.05);
-}
-.external::after{
-  content:"↗";
-  font-size:18px;
-  margin-left:4px;
 }
 </style>
 </head>
@@ -136,15 +134,13 @@ body{
   <div class="subtitle">내부용 도구 모음</div>
 
   <div class="tools">
-    
-    <!-- 1. 라벨 생성기 (맨 위) -->
+
     <a href="https://nemozlab.github.io/label/" target="_blank" class="card">
       <h2>라벨 생성기</h2>
       <p>구글 시트 연동 박스 라벨<br>자동 생성 및 PDF 출력</p>
       <div class="btn">라벨 생성기 열기 →</div>
     </a>
 
-    <!-- 2. 가격 계산기 -->
     <a href="nemoz-price-calc.html" target="_blank" class="card">
       <h2>가격 계산기</h2>
       <p>출고가 · 판매가 · 정가<br>자동 계산 및 역산 도구</p>
@@ -153,7 +149,7 @@ body{
 
   </div>
 
-  <div style="margin-top:60px; font-size:12px; color:#9CA3AF;">
+  <div style="margin-top:60px; font-size:12px; color:#9BBDBD; font-family:var(--font-head);">
     Nemoz Lab © 2026 &nbsp; | &nbsp; Staff Only
   </div>
 </div>

@@ -39,10 +39,19 @@ body{
   font-family:var(--font-body);
   background:var(--bg);
   color:var(--text);
-  height:100vh;
+  min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
+}
+@media(max-width:600px){
+  body{align-items:flex-start}
+  .container{padding:48px 20px 40px}
+  .logo{height:32px}
+  .title{font-size:24px;letter-spacing:1px}
+  .subtitle{font-size:13px;letter-spacing:2px;margin-bottom:36px}
+  .tools{grid-template-columns:1fr;gap:16px}
+  .card{padding:24px 20px}
 }
 .container{
   max-width:720px;

@@ -12,9 +12,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;700;900&family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#EFF5F5;--card:#fff;--border:#DDE6E6;--muted:#6B8080;--accent:#00C3C8;--accent-dark:#009EA3;--accent-light:#E0F7F7;--primary:#0D1A1A;--text:#1A2E2E}
+:root{
+  --bg:#ffffff; /* 화이트로 변경 */
+  --card:#fff;
+  --border:#E8EDED; /* 더 밝은 보더 */
+  --muted:#4A5F5F; /* 더 진한 회색으로 변경 (가독성) */
+  --accent:#00C3C8;
+  --accent-dark:#009EA3;
+  --accent-light:#F5FAFA;
+  --primary:#1F2929; /* 더 짙은 색상 */
+  --text:#1F2929 /* 더 짙은 색상 */
+}
 body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
-.hdr{background:#fff;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:300;border-bottom:2px solid var(--accent);box-shadow:0 2px 16px rgba(0,195,200,.08)}
+.hdr{background:#fff;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:300;border-bottom:1px solid var(--border);box-shadow:0 2px 16px rgba(0,0,0,.03)}
 .hdr-left{display:flex;align-items:center;gap:16px}
 .hdr-logo{display:inline-flex;align-items:center;gap:10px}
 .hdr-logo img{height:20px;width:auto;display:block}
@@ -25,17 +35,17 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
 .btn-g{background:transparent;color:var(--text);border:1.5px solid var(--border)}
 .btn-g:hover{border-color:var(--accent);color:var(--accent)}
 .wrap{max-width:700px;margin:0 auto;padding:32px 20px;display:flex;flex-direction:column;gap:20px}
-.card{background:var(--card);border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,195,200,.06);overflow:hidden;border:1px solid var(--border)}
-.ch{padding:14px 22px;background:#F7FAFA;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.card{background:var(--card);border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.02),0 4px 16px rgba(0,0,0,.04);overflow:hidden;border:1px solid var(--border)}
+.ch{padding:14px 22px;background:#FBFDFD;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .ct{font-size:13px;font-weight:700;color:var(--primary);letter-spacing:.2px}
 .cb{padding:22px}
 .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:500px){.price-grid{grid-template-columns:1fr}}
 .fi{display:flex;flex-direction:column;gap:5px}
-.fi label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;display:flex;flex-direction:column;gap:2px}
-.fi label .lsub{font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:#B2C8C8}
+.fi label{font-size:10px;font-weight:700;color:var(--primary);letter-spacing:.8px;text-transform:uppercase;display:flex;flex-direction:column;gap:2px}
+.fi label .lsub{font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--muted)}
 .price-wrap{position:relative}
-.price-input{width:100%;padding:11px 32px 11px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:22px;font-weight:700;color:var(--text);background:#FAFEFE;transition:border-color .15s,background .15s}
+.price-input{width:100%;padding:11px 32px 11px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:22px;font-weight:700;color:var(--text);background:#FBFDFD;transition:border-color .15s,background .15s}
 .price-input:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(0,195,200,.12)}
 .price-input.calc{background:var(--accent-light);border-color:#9DE8EA;color:var(--accent-dark)}
 .price-input.active{border-color:var(--accent);background:#fff}
@@ -61,14 +71,13 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
 <body>
 
 <div class="hdr">
-  <div class="hdr-logo">
+  <a href="https://nemozlab.github.io/" class="hdr-logo" style="text-decoration: none;">
     <img src="https://nemozlab.github.io/label/images/nemoz_logo.png" alt="NEMOZ"><span class="hdr-sub">Price Calculator</span>
-  </div>
+  </a>
 </div>
 
 <div class="wrap">
 
-  <!-- ① 가격 직접 입력 (기존 2번을 1번으로 변경) -->
   <div class="card">
     <div class="ch">
       <div class="ct">① 가격 직접 입력</div>
@@ -106,7 +115,6 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
     </div>
   </div>
 
-  <!-- ② 계산 방식 안내 -->
   <div class="card">
     <div class="ch">
       <span class="ct">② 계산 방식 안내</span>
@@ -136,7 +144,6 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
     </div>
   </div>
 
-  <!-- ③ 용어 정의 -->
   <div class="card">
     <div class="ch">
       <span class="ct">③ 용어 정의</span>

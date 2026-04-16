@@ -9,16 +9,17 @@
 <meta property="og:description" content="출고가·판매가·정가 자동 계산 도구">
 <meta property="og:image" content="https://nemozlab.github.io/label/images/nemoz_og.png">
 <meta property="og:type" content="website">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;700;900&family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#EFF5F5;--card:#fff;--border:#DDE6E6;--muted:#6B8080;--accent:#00C3C8;--accent-dark:#009EA3;--accent-light:#E0F7F7;--primary:#0D1A1A;--text:#1A2E2E}
 body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
 .hdr{background:#fff;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:300;border-bottom:2px solid var(--accent);box-shadow:0 2px 16px rgba(0,195,200,.08)}
 .hdr-left{display:flex;align-items:center;gap:16px}
-.hdr-logo{height:26px;width:auto;display:block}
+.hdr-logo{display:inline-flex;align-items:center;gap:10px}
+.hdr-logo img{height:20px;width:auto;display:block}
 .hdr-sub{font-size:11px;font-weight:600;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;font-family:'Noto Sans KR',sans-serif}
-.btn{font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;letter-spacing:0;padding:8px 18px;border:none;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.btn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.8px;padding:8px 18px;border:none;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
 .btn-p{background:var(--accent);color:#fff}
 .btn-p:hover{background:var(--accent-dark)}
 .btn-g{background:transparent;color:var(--text);border:1.5px solid var(--border)}
@@ -26,8 +27,7 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
 .wrap{max-width:700px;margin:0 auto;padding:32px 20px;display:flex;flex-direction:column;gap:20px}
 .card{background:var(--card);border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.04),0 4px 16px rgba(0,195,200,.06);overflow:hidden;border:1px solid var(--border)}
 .ch{padding:14px 22px;background:#F7FAFA;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.ct{font-size:13px;font-weight:700;color:var(--primary);letter-spacing:.2px;display:flex;align-items:center;gap:10px}
-.ct-num{width:22px;height:22px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:900;flex-shrink:0}
+.ct{font-size:13px;font-weight:700;color:var(--primary);letter-spacing:.2px}
 .cb{padding:22px}
 .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:500px){.price-grid{grid-template-columns:1fr}}
@@ -61,9 +61,8 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
 <body>
 
 <div class="hdr">
-  <div class="hdr-left">
-    <img class="hdr-logo" src="https://nemozlab.github.io/label/images/nemoz_logo.png" alt="NEMOZ">
-    <span class="hdr-sub">Price Calculator</span>
+  <div class="hdr-logo">
+    <img src="https://nemozlab.github.io/label/images/nemoz_logo.png" alt="NEMOZ"><span class="hdr-sub">Price Calculator</span>
   </div>
 </div>
 
@@ -72,7 +71,7 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
   <!-- ① 가격 직접 입력 (기존 2번을 1번으로 변경) -->
   <div class="card">
     <div class="ch">
-      <div class="ct"><span class="ct-num">1</span> 가격 직접 입력</div>
+      <div class="ct">① 가격 직접 입력</div>
       <button class="btn btn-g" onclick="resetAll()">↺ &nbsp;초기화</button>
     </div>
     <div class="cb">
@@ -110,7 +109,7 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
   <!-- ② 계산 방식 안내 -->
   <div class="card">
     <div class="ch">
-      <div class="ct"><span class="ct-num">2</span> 계산 방식 안내</div>
+      <span class="ct">② 계산 방식 안내</span>
     </div>
     <div class="cb">
       <div class="formula-row">
@@ -140,7 +139,7 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
   <!-- ③ 용어 정의 -->
   <div class="card">
     <div class="ch">
-      <div class="ct"><span class="ct-num">3</span> 용어 정의</div>
+      <span class="ct">③ 용어 정의</span>
     </div>
     <div class="cb">
       <div class="term-row">

@@ -44,6 +44,7 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
 .fi{display:flex;flex-direction:column;gap:5px}
 .fi label{font-size:10px;font-weight:700;color:var(--primary);letter-spacing:.8px;text-transform:uppercase;display:flex;flex-direction:column;gap:2px}
 .fi label .lsub{font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--muted)}
+.approx-badge{display:none;font-size:9px;font-weight:700;color:#C0392B;letter-spacing:0;text-transform:none;margin-left:5px}
 .price-wrap{position:relative}
 .price-input{width:100%;padding:11px 32px 11px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Noto Sans KR',sans-serif;font-size:22px;font-weight:700;color:var(--text);background:#FBFDFD;transition:border-color .15s,background .15s}
 .price-input:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(0,195,200,.12)}
@@ -86,7 +87,7 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
     <div class="cb">
       <div class="price-grid">
         <div class="fi">
-          <label>출고가<span class="lsub">공급가 · VAT 별도</span></label>
+          <label><span style="display:inline-flex;align-items:center;gap:4px">출고가<span class="approx-badge" id="cost-approx">근사값</span></span><span class="lsub">공급가 · VAT 별도</span></label>
           <div class="price-wrap">
             <input class="price-input" id="f_cost" type="text" inputmode="numeric" placeholder="0" oninput="calcFrom('cost')" />
             <span class="won">원</span>
@@ -100,7 +101,7 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
           </div>
         </div>
         <div class="fi">
-          <label>정가<span class="lsub">소비자가 · VAT 포함</span></label>
+          <label><span style="display:inline-flex;align-items:center;gap:4px">정가<span class="approx-badge" id="retail-approx">근사값</span></span><span class="lsub">소비자가 · VAT 포함</span></label>
           <div class="price-wrap">
             <input class="price-input" id="f_retail" type="text" inputmode="numeric" placeholder="0" oninput="calcFrom('retail')" />
             <span class="won">원</span>
@@ -110,7 +111,7 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
       <div class="calc-hint">
         <b style="color:var(--accent)">출고가를 모를 경우, 타 판매처의 판매가를 확인하세요.</b> <a href="https://kr.ktown4u.com/" target="_blank" style="font-size:11px;color:var(--muted);text-decoration:underline;font-weight:400">참고 판매처</a><br>
         3가지 가격 중에 1가지를 입력하면, 나머지 2개 가격이 계산됩니다.<br>
-        역산 출고가는 근사값입니다. 실제 신보안내서 기준 출고가로 최종 확인하세요.
+        <span style="color:#C0392B">역산 출고가는 근사값입니다. 실제 신보안내서 기준 출고가로 최종 확인하세요.</span>
       </div>
     </div>
   </div>
@@ -131,7 +132,7 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
         <div class="fbadge a">정가</div>
         <div>
           <div class="formula-eq"><span class="fn">CEILING</span>(판매가/0.81,100)</div>
-          <div class="formula-desc">판매가 기준 19% 할인 전 가격 / VAT 포함 / 100원 단위 반올림<br><span style="color:#E07A5F">유통사·판매처에 따라 할인율이 상이하므로 정가는 근사값입니다.</span></div>
+          <div class="formula-desc">판매가 기준 19% 할인 전 가격 / VAT 포함 / 100원 단위 올림<br><span style="color:#E07A5F">유통사·판매처에 따라 할인율이 상이하므로 정가는 근사값입니다.</span></div>
         </div>
       </div>
       <div class="formula-row">
@@ -178,9 +179,12 @@ function calcFrom(from){
   const raw = el.value.replace(/,/g,'').replace(/[^0-9]/g,'');
   const num = parseInt(raw) || 0;
   el.value = num > 0 ? num.toLocaleString('ko-KR') : '';
-  const val = num;
+  // 모든 필드/뱃지 초기화
   Object.values(FIELDS).forEach(id => document.getElementById(id).classList.remove('active','calc'));
+  document.getElementById('cost-approx').style.display='none';
+  document.getElementById('retail-approx').style.display='none';
   el.classList.add('active');
+  const val = num;
   if(!val || val<=0){ clearOthers(from); return; }
   if(from==='cost'){
     const sale = round100(val*1.35*1.1);
@@ -199,19 +203,30 @@ function setCalc(field, val, approx=false){
   const el = document.getElementById(FIELDS[field]);
   el.value = fmt(val); el.classList.add('calc');
   el.title = approx ? '역산 근사값 — 신보안내서로 확인 필요' : '';
+  if(field==='cost'){
+    document.getElementById('cost-approx').style.display = approx ? 'inline-flex' : 'none';
+  }
+  if(field==='retail'){
+    document.getElementById('retail-approx').style.display = 'inline-flex';
+  }
 }
 function clearOthers(except){
   Object.keys(FIELDS).forEach(k => {
-    if(k!==except){ const el=document.getElementById(FIELDS[k]); el.value=''; el.classList.remove('calc','active'); el.title=''; }
+    if(k!==except){ 
+      const el=document.getElementById(FIELDS[k]); 
+      el.value=''; el.classList.remove('calc','active'); el.title=''; 
+    }
   });
+  document.getElementById('cost-approx').style.display='none';
+  document.getElementById('retail-approx').style.display='none';
 }
 function resetAll(){
   Object.values(FIELDS).forEach(id => { 
     const el=document.getElementById(id); 
-    el.value=''; 
-    el.classList.remove('calc','active'); 
-    el.title=''; 
+    el.value=''; el.classList.remove('calc','active'); el.title=''; 
   });
+  document.getElementById('cost-approx').style.display='none';
+  document.getElementById('retail-approx').style.display='none';
 }
 </script>
 </body>

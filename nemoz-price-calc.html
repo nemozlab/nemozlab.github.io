@@ -123,15 +123,15 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
       <div class="formula-row">
         <div class="fbadge a">판매가</div>
         <div>
-          <div class="formula-eq"><span class="fn">FLOOR</span>(출고가*1.35*1.1,100)</div>
-          <div class="formula-desc">출고가에 판매처 마진 ×1.35, 부가세 ×1.1 적용 후 100원 단위 내림 / VAT 포함</div>
+          <div class="formula-eq"><span class="fn">ROUND</span>(출고가*1.35*1.1,-2)</div>
+          <div class="formula-desc">출고가에 판매처 마진 ×1.35, 부가세 ×1.1 적용 후 100원 단위 반올림 / VAT 포함</div>
         </div>
       </div>
       <div class="formula-row">
         <div class="fbadge a">정가</div>
         <div>
-          <div class="formula-eq"><span class="fn">ROUND</span>(판매가/0.81,-2)</div>
-          <div class="formula-desc">판매가 기준 19% 할인 전 가격 / VAT 포함 / 100원 단위 반올림</div>
+          <div class="formula-eq"><span class="fn">CEILING</span>(판매가/0.81,100)</div>
+          <div class="formula-desc">판매가 기준 19% 할인 전 가격 / VAT 포함 / 100원 단위 반올림<br><span style="color:#E07A5F">유통사·판매처에 따라 할인율이 상이하므로 정가는 근사값입니다.</span></div>
         </div>
       </div>
       <div class="formula-row">
@@ -169,6 +169,7 @@ body{font-family:'Noto Sans KR','Noto Sans JP',sans-serif;background:var(--bg);c
 <script>
 const FIELDS = {cost:'f_cost', sale:'f_sale', retail:'f_retail'};
 function floor100(v){ return Math.floor(v/100)*100; }
+function ceil100(v){ return Math.ceil(v/100)*100; }
 function round100(v){ return Math.round(v/100)*100; }
 function fmt(v){ return v > 0 ? v.toLocaleString('ko-KR') : ''; }
 
@@ -182,12 +183,12 @@ function calcFrom(from){
   el.classList.add('active');
   if(!val || val<=0){ clearOthers(from); return; }
   if(from==='cost'){
-    const sale = floor100(val*1.35*1.1);
+    const sale = round100(val*1.35*1.1);
     setCalc('sale', sale);
-    setCalc('retail', round100(sale/0.81));
+    setCalc('retail', ceil100(sale/0.81));
   } else if(from==='sale'){
     setCalc('cost', round100(val/1.35/1.1), true);
-    setCalc('retail', round100(val/0.81));
+    setCalc('retail', ceil100(val/0.81));
   } else {
     const sale = round100(val*0.81);
     setCalc('sale', sale);

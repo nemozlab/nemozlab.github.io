@@ -83,7 +83,7 @@ h1{font-size:1.15rem;margin:0;text-wrap:balance}
 svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tip{position:absolute;left:12px;top:12px;max-width:50%;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:7px 11px;font-size:.88rem;min-width:0;flex:1 1 auto;max-width:max-content;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tip:empty{display:none}
-.dim{margin-top:10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font-size:.74rem;line-height:1.5;color:var(--muted)}
+.dim{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);font-size:.74rem;line-height:1.5;color:var(--muted)}
 .dim table{border-collapse:collapse}
 .dim th{font-weight:600;text-align:right;padding:0 0 2px 14px}
 .dim th:first-child,.dim td:first-child{text-align:left;padding-left:0}
@@ -261,7 +261,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 }
 .mold-panel{display:flex;flex-direction:column;gap:10px}
 .mh[aria-current="true"] .n{outline:2px solid var(--fg);outline-offset:1px}
-.panel.collapsed :is(.product-panel,.mold-guide,.dim){display:none}
+.panel.collapsed :is(.product-panel,.mold-guide){display:none}
 @media (min-width:821px){
   .grid[data-view="p"] .panel.collapsed{width:0}
 }
@@ -302,6 +302,16 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
             <span class="skl" data-k="skl">스킨 색 · 데이지는 끼움 부품(공통)</span>
             <div class="sw9" id="sw9"></div>
           </div>
+        <div class="dim">
+          <table>
+            <thead><tr><th scope="col" data-k="tt">두께 (mm)</th><th scope="col" data-k="dTotal">총두께</th><th scope="col" data-k="dBody">본체</th><th scope="col" data-k="dSkin">스킨</th></tr></thead>
+            <tbody>
+              <tr><th scope="row" data-k="dU">상단</th><td>1.9</td><td>1.05</td><td>0.85</td></tr>
+              <tr><th scope="row" data-k="dS">측면</th><td>1.7</td><td>0.85</td><td>0.85</td></tr>
+            </tbody>
+          </table>
+          <div class="dn" data-k="dN">* 본체 및 스킨 두께는 미정</div>
+        </div>
       </section>
       <div class="mold-panel">
       <div class="ctl mold-guide">
@@ -313,16 +323,6 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
           <button class="mh" id="c1" type="button" aria-pressed="true"><span class="n">1</span><h3><span data-k="m1">전면 + 후면 커버</span></h3><span class="sw"></span></button>
           <div class="sub"><div class="seg v1" role="group"><button type="button" id="mo" aria-pressed="false" data-k="mo">원안</button><button type="button" id="ms" aria-pressed="true" data-k="ms">수정안</button></div></div>
           <div class="sub chips" id="p1"></div>
-          <div class="dim">
-            <table>
-              <thead><tr><th scope="col" data-k="tt">두께 (mm)</th><th scope="col" data-k="dTotal">총두께</th><th scope="col" data-k="dBody">본체</th><th scope="col" data-k="dSkin">스킨</th></tr></thead>
-              <tbody>
-                <tr><th scope="row" data-k="dU">상단</th><td>1.9</td><td>1.05</td><td>0.85</td></tr>
-                <tr><th scope="row" data-k="dS">측면</th><td>1.7</td><td>0.85</td><td>0.85</td></tr>
-              </tbody>
-            </table>
-            <div class="dn" data-k="dN">* 본체 및 스킨 두께는 미정</div>
-          </div>
         </section>
         <section class="mold pastel" style="--c:var(--m2)">
           <button class="mh" id="c2" type="button" aria-pressed="true"><span class="n">2</span><h3><span data-k="m2">스피커 후면 + 버튼</span></h3><span class="sw"></span></button>

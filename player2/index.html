@@ -167,7 +167,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
           <button class="mh" id="c1" type="button" aria-pressed="true"><span class="n">1</span><h3><span data-k="m1">전면 + 후면 커버</span></h3><span class="sw"></span></button>
           <div class="sub"><div class="seg v1" role="group"><button type="button" id="mo" aria-pressed="false" data-k="mo">원안</button><button type="button" id="ms" aria-pressed="true" data-k="ms">수정안</button></div></div>
           <div class="sub chips" id="p1"></div>
-          <div class="dim" id="dim" data-mode="split"><table><thead><tr><th data-k="tt">두께 (mm)</th><th data-k="mo">원안</th><th data-k="ms">수정안</th></tr></thead><tbody><tr><td data-k="dT">전체 두께</td><td>23.9</td><td>23.9</td></tr><tr><td data-k="dU">상단</td><td>1.9</td><td>1.05 + 0.85</td></tr><tr><td data-k="dS">측면</td><td>1.7</td><td>0.85 + 0.85</td></tr></tbody></table><div class="dn" data-k="dN">수정안 = 본체 + 블록 스킨 0.85</div></div>
+          <div class="dim" id="dim" data-mode="split"><table><thead><tr><th data-k="tt">두께 (mm)</th><th data-k="mo">원안</th><th data-k="ms">수정안</th></tr></thead><tbody><tr><td data-k="dT">전체 두께</td><td>23.9</td><td>23.9</td></tr><tr><td data-k="dU">상단</td><td>1.9</td><td><span data-k="tbd">미정</span> + 0.85</td></tr><tr><td data-k="dS">측면</td><td>1.7</td><td><span data-k="tbd">미정</span> + 0.85</td></tr></tbody></table><div class="dn" data-k="dN">수정안 = 본체(두께 미정) + 블록 스킨 0.85</div></div>
         </section>
         <section class="mold" style="--c:var(--m2)">
           <button class="mh" id="c2" type="button" aria-pressed="true"><span class="n">2</span><h3><span data-k="m2">스피커 후면 + 버튼</span></h3><span class="sw"></span></button>
@@ -214,7 +214,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     m1:['전면 + 후면 커버','前盖 + 后盖'],m2:['스피커 후면 + 버튼','喇叭后盖 + 按键'],m3:['투명 도어','透明门'],m4:['LED 투명 캡','LED 透明帽'],
     pr1:['¥11,000 · 220만원','¥11,000 · 220万韩元'],pr2:['¥8,000 · 160만원','¥8,000 · 160万韩元'],pr3:['¥9,350 · 187만원','¥9,350 · 187万韩元'],pr4:['¥5,000 · 100만원','¥5,000 · 100万韩元'],
     mo:['원안','原方案'],ms:['수정안','修改方案'],
-    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dT:['전체 두께','整体厚度'],dS:['측면','侧面'],dU:['상단','顶部'],dN:['수정안 = 본체 + 블록 스킨 0.85','修改方案 = 主体 + Block Skin 0.85'],fs:['전체 화면','全屏'],
+    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dT:['전체 두께','整体厚度'],dS:['측면','侧面'],dU:['상단','顶部'],dN:['수정안 = 본체(두께 미정) + 블록 스킨 0.85','修改方案 = 主体(厚度待定) + Block Skin 0.85'],tbd:['미정','待定'],fs:['전체 화면','全屏'],
     err:['3D 데이터를 불러오지 못했습니다','无法加载 3D 数据']
   };
   var lang=0;try{var sv=localStorage.getItem('nemo-lang');lang=sv==='zh'?1:sv==='ko'?0:(/^zh/i.test(navigator.language||'')?1:0)}catch(e){lang=/^zh/i.test(navigator.language||'')?1:0}

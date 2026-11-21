@@ -170,6 +170,21 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 .grid[data-view="m"] .skin-guide{display:none}
 @media (max-width:820px){
   .grid:has(.panel:not(.shut)) .skin-guide{visibility:hidden}
+  .grid[data-view="m"] .panel{
+    inset-inline:0;
+    bottom:0;
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    background:var(--panel);
+    border-radius:16px 16px 0 0;
+    overscroll-behavior-y:contain;
+    transition:transform .28s ease,visibility 0s;
+  }
+  .grid[data-view="m"] .panel.shut{
+    transition:transform .28s ease,visibility 0s .28s;
+  }
+  .grid[data-view="m"] .mold-panel{gap:0}
+  .grid[data-view="m"] :is(.mold-guide,.list){border:0;border-radius:0}
+  .grid[data-view="m"] .list{border-top:1px solid var(--line)}
 }
 .mold-panel{display:flex;flex-direction:column;gap:10px}
 .mold-guide #all-molds{align-self:flex-start}

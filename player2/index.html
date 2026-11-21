@@ -168,8 +168,20 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 .skin-guide:hover{border-color:var(--muted)}
 .skin-guide:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
 .grid[data-view="m"] .skin-guide{display:none}
+.panel-dismiss{display:none}
 @media (max-width:820px){
   .grid:has(.panel:not(.shut)) .skin-guide{visibility:hidden}
+  .grid[data-view="p"]:has(.panel:not(.shut)) .panel-dismiss{
+    display:block;
+    position:absolute;
+    inset:0;
+    width:100%;
+    z-index:1;
+    border:0;
+    padding:0;
+    background:transparent;
+  }
+  .panel-dismiss:focus-visible{outline:2px solid var(--fg);outline-offset:-3px}
   body:has(.grid[data-view="m"] .panel:not(.shut)){overflow:hidden}
   .grid[data-view="m"] .panel{
     inset-inline:0;
@@ -247,7 +259,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
           <button class="btn ib txt mo-only" id="lt" type="button"><span>中文</span></button><button class="btn ib mo-only" id="fs" type="button" data-kt="fs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button><button class="fold" id="fold" type="button" data-kt="fold" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span class="fl" data-k="skinPanel">스킨</span></button>
         </div>
       </div>
-      <div class="cvwrap"><canvas id="cv"></canvas><button class="skin-guide" id="sk" type="button"><span data-k="sk1">상단 스킨을 누르면 분리돼요</span></button><div class="tip" id="tip"></div><div class="legend"><p class="foot prices"><b data-k="mc">금형비</b><span class="pp" style="--c:var(--m1)"><i class="dot"></i>① <span data-k="pr1">¥11,000 · 220만원</span></span><span class="pp" style="--c:var(--m2)"><i class="dot"></i>② <span data-k="pr2">¥8,000 · 160만원</span></span><span class="pp" style="--c:var(--m3)"><i class="dot"></i>③ <span data-k="pr3">¥9,350 · 187만원</span></span><span class="pp" style="--c:var(--m4)"><i class="dot lt"></i>④ <span data-k="pr4">¥5,000 · 100만원</span></span></p></div></div>
+      <div class="cvwrap"><canvas id="cv"></canvas><button class="panel-dismiss" type="button" data-kt="closeSkin" aria-label="스킨 옵션 닫기"></button><button class="skin-guide" id="sk" type="button"><span data-k="sk1">상단 스킨을 누르면 분리돼요</span></button><div class="tip" id="tip"></div><div class="legend"><p class="foot prices"><b data-k="mc">금형비</b><span class="pp" style="--c:var(--m1)"><i class="dot"></i>① <span data-k="pr1">¥11,000 · 220만원</span></span><span class="pp" style="--c:var(--m2)"><i class="dot"></i>② <span data-k="pr2">¥8,000 · 160만원</span></span><span class="pp" style="--c:var(--m3)"><i class="dot"></i>③ <span data-k="pr3">¥9,350 · 187만원</span></span><span class="pp" style="--c:var(--m4)"><i class="dot lt"></i>④ <span data-k="pr4">¥5,000 · 100만원</span></span></p></div></div>
     </div>
     </div>
     <div class="panel" id="panel">
@@ -319,7 +331,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     asm:['합쳐진 모양','组装状态'],sep:['분리된 모양','分解状态'],
     ex:['분해','分解'],exT:['분해 정도','分解程度'],
     reset:['각도 초기화','重置角度'],resetall:['초기화','全部重置'],spin:['자동 회전','自动旋转'],
-    fold:['접기 / 펼치기','折叠 / 展开'],
+    fold:['접기 / 펼치기','折叠 / 展开'],closeSkin:['스킨 옵션 닫기','关闭换肤选项'],
     m1:['커버 세트','外盖套组'],m2:['스피커 후면 + 버튼','喇叭后盖 + 按键'],m3:['투명 도어','透明门'],m4:['LED 투명 캡','LED 透明帽'],
     pr1:['¥11,000 · 220만원','¥11,000 · 220万韩元'],pr2:['¥8,000 · 160만원','¥8,000 · 160万韩元'],pr3:['¥9,350 · 187만원','¥9,350 · 187万韩元'],pr4:['¥5,000 · 100만원','¥5,000 · 100万韩元'],
     mo:['원안','原方案'],ms:['수정안','修改方案'],
@@ -422,7 +434,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   // 부품을 잡고 드래그하면 그 부품만 회전, 빈 곳을 드래그하면 전체 시점 회전
   var dragId=null,last=null,stage=cv.parentNode;
   stage.addEventListener('pointerdown',function(e){
-    if(e.target.closest&&e.target.closest('.dock,#sk'))return;
+    if(e.target.closest&&e.target.closest('.dock,#sk,.panel-dismiss'))return;
     downAt=[e.clientX,e.clientY];last=[e.clientX,e.clientY];
     dragId=canManipulateParts()?pick(e):null;
     controls.enabled=!dragId;
@@ -803,13 +815,21 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   function fitMoldPanel(){
     panel.style.setProperty('--dock-bottom',dock.getBoundingClientRect().bottom+'px');
   }
+  function setMobilePanelOpen(open){
+    panel.classList.toggle('shut',!open);
+    fold.setAttribute('aria-expanded',String(open));
+  }
   new ResizeObserver(fitMoldPanel).observe(dock);
   fold.addEventListener('click',function(){
-    if(isM()){fitMoldPanel();var sh=panel.classList.toggle('shut');fold.setAttribute('aria-expanded',String(!sh));return}
+    if(isM()){fitMoldPanel();setMobilePanelOpen(panel.classList.contains('shut'));return}
     var c=panel.classList.toggle('collapsed');fold.classList.toggle('on',c);fold.setAttribute('aria-expanded',String(!c));
   });
+  document.querySelector('.panel-dismiss').addEventListener('click',function(){
+    setMobilePanelOpen(false);
+    fold.focus({preventScroll:true});
+  });
   function isM(){return window.matchMedia&&matchMedia('(max-width:820px)').matches}
-  if(isM()){panel.classList.add('shut');fold.setAttribute('aria-expanded','false')}
+  if(isM())setMobilePanelOpen(false);
   var spin=document.getElementById('spin');
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduce){controls.autoRotate=false;spin.setAttribute('aria-pressed','false')}

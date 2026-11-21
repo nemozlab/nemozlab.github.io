@@ -437,30 +437,31 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     var SKC=[[0x16161a,'블랙 / 黑'],[0xff8a1f,'오렌지 / 橙'],[0xffd426,'옐로우 / 黄'],[0xa6e04a,'라이트그린 / 浅绿'],[0x1fae5a,'그린 / 绿'],[0x3cc0f0,'스카이블루 / 天蓝'],[0x1f4fd6,'코발트블루 / 钴蓝'],[0xff5fa8,'핑크 / 粉'],[0x8a4ff0,'바이올렛 / 紫']];
   var skinIdx=-1,daisyG=null,daisyMat=null,daisyCen=null,daisyRim=null;
   function petalShape(R,k){
-    var sh=new THREE.Shape();
-    sh.moveTo(R*0.1*k,0);
-    sh.bezierCurveTo(R*0.2*k,-R*0.22*k,R*0.62*k,-R*0.31*k,R*0.9*k,-R*0.23*k);
-    sh.bezierCurveTo(R*1.04*k,-R*0.17*k,R*1.04*k,R*0.17*k,R*0.9*k,R*0.23*k);
-    sh.bezierCurveTo(R*0.62*k,R*0.31*k,R*0.2*k,R*0.22*k,R*0.1*k,0);
+    var sh=new THREE.Shape(),q=R*k;
+    sh.moveTo(q*0.14,0);
+    sh.bezierCurveTo(q*0.25,-q*0.1,q*0.45,-q*0.235,q*0.62,-q*0.235);
+    sh.bezierCurveTo(q*0.85,-q*0.235,q*1.0,-q*0.14,q*1.0,0);
+    sh.bezierCurveTo(q*1.0,q*0.14,q*0.85,q*0.235,q*0.62,q*0.235);
+    sh.bezierCurveTo(q*0.45,q*0.235,q*0.25,q*0.1,q*0.14,0);
     return sh;
   }
   function mkDaisy(R,depth){
-    var g=new THREE.Group(),N=8;
-    var pg=new THREE.ExtrudeGeometry(petalShape(R,1),{depth:depth,bevelEnabled:true,bevelThickness:0.4,bevelSize:0.3,bevelSegments:5,curveSegments:28});
-    var rg=new THREE.ExtrudeGeometry(petalShape(R,1.1),{depth:depth*0.4,bevelEnabled:true,bevelThickness:0.2,bevelSize:0.15,bevelSegments:3,curveSegments:28});
+    var g=new THREE.Group(),N=9;
+    var pg=new THREE.ExtrudeGeometry(petalShape(R*0.95,1),{depth:depth*0.4,bevelEnabled:true,bevelThickness:depth*0.55,bevelSize:R*0.05,bevelOffset:-R*0.03,bevelSegments:10,curveSegments:32});
+    var rg=new THREE.ExtrudeGeometry(petalShape(R*0.99,1.0),{depth:depth*0.7,bevelEnabled:true,bevelThickness:0.5,bevelSize:0.35,bevelSegments:4,curveSegments:32});
     for(var k=0;k<N;k++){
       var a=k*2*Math.PI/N;
-      var r=new THREE.Mesh(rg,daisyRim);r.rotation.z=a;r.position.z=-0.2;g.add(r);
-      var m=new THREE.Mesh(pg,daisyMat);m.rotation.z=a;m.position.z=0.1+(k%2)*0.12;g.add(m);
+      var r=new THREE.Mesh(rg,daisyRim);r.rotation.z=a;r.position.z=-0.3;g.add(r);
+      var m=new THREE.Mesh(pg,daisyMat);m.rotation.z=a;m.position.z=0.5;g.add(m);
     }
-    var cg=new THREE.SphereGeometry(R*0.3,36,18,0,Math.PI*2,0,Math.PI/2);cg.rotateX(Math.PI/2);cg.scale(1,1,0.8);
-    var c=new THREE.Mesh(cg,daisyCen);c.position.z=depth+0.3;g.add(c);
+    var cg=new THREE.SphereGeometry(R*0.3,40,24);
+    var c=new THREE.Mesh(cg,daisyCen);c.position.z=depth*0.9+R*0.09;g.add(c);
     return g;
   }
   function buildDaisies(){
-    daisyMat=new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:0.32,metalness:0,clearcoat:0.5,clearcoatRoughness:0.25});
-    daisyRim=new THREE.MeshPhysicalMaterial({color:0xd9dde6,roughness:0.2,metalness:0.1,clearcoat:0.8,clearcoatRoughness:0.15});
-    daisyCen=new THREE.MeshPhysicalMaterial({color:0xffc21a,roughness:0.35,metalness:0,clearcoat:0.5,clearcoatRoughness:0.25});
+    daisyMat=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0x15171c,roughness:0.28,metalness:0});
+    daisyRim=new THREE.MeshStandardMaterial({color:0xdfe4ee,emissive:0x1a1c22,roughness:0.15,metalness:0.1,transparent:true,opacity:0.8});
+    daisyCen=new THREE.MeshStandardMaterial({color:0xffd000,emissive:0x4a3a00,roughness:0.25,metalness:0});
     daisyG=new THREE.Group();
     var zf=-7.25+0.2;
     var d=mkDaisy(11,2.0);d.rotation.y=Math.PI;d.position.set(15,-21,zf);daisyG.add(d);

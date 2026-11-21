@@ -23,7 +23,7 @@
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--font);margin:0;
   padding-block:20px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.wrap{max-width:1120px;margin:0 auto}
+.wrap{max-width:none;margin:0 auto}
 h1{font-size:1.35rem;margin:0;text-wrap:balance}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}
 .top .seg{margin-left:0}
@@ -42,7 +42,7 @@ h1{font-size:1.35rem;margin:0;text-wrap:balance}
 .fold:hover{color:var(--fg)}
 .fold:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
 .panel{display:flex;flex-direction:column;gap:8px}
-.stage{position:relative;background:var(--stage);border:1px solid var(--line);border-radius:14px;overflow:hidden;height:min(70vh,600px);min-height:340px;display:flex;flex-direction:column}
+.stage{position:relative;background:var(--stage);border:1px solid var(--line);border-radius:14px;overflow:hidden;height:calc(100vh - 150px);min-height:420px;display:flex;flex-direction:column}
 #cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #cv:active{cursor:grabbing}
 .hint{position:absolute;right:12px;bottom:12px;max-width:46%;text-align:right;line-height:1.35;font-size:.78rem;color:var(--muted);pointer-events:none}
@@ -196,7 +196,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   var scene=new THREE.Scene();
   var camera=new THREE.PerspectiveCamera(35,1,1,2000);
   camera.up.set(0,0,1);
-  camera.position.set(190,-230,150);
+  camera.position.set(160,-195,128);
   var controls=new THREE.OrbitControls(camera,cv);
   controls.target.set(14,0,18);
   controls.enableDamping=true;controls.autoRotate=true;controls.autoRotateSpeed=1.2;

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>네모 플레이어 스킨파츠</title>
+<title>네모 플레이어 스킨</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#1b2233">
 <meta name="mobile-web-app-capable" content="yes">
@@ -84,7 +84,9 @@ svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:
 .sk{background:#111114!important;color:#e8c14a!important;border-color:#111114!important;font-weight:700}
 #skg[hidden]{display:none!important}
 .seg.old{display:none!important}
-.ex[hidden]{display:none!important}
+.ex.dis{opacity:.38}
+.dock button:disabled{opacity:.38;pointer-events:none}
+.sw9.dis{opacity:.45;pointer-events:none}
 .skl{display:block;font-size:.74rem;color:var(--muted);margin-bottom:6px}
 .sw9{display:flex;flex-wrap:wrap;gap:7px}
 .swb{width:24px;height:24px;border-radius:50%;border:2px solid var(--panel);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
@@ -154,13 +156,13 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><h1 data-k="title">네모 플레이어 스킨파츠</h1><div class="seg" role="group" aria-label="언어 / 语言"><button type="button" id="lko" lang="ko" aria-pressed="true">한국어</button><button type="button" id="lzh" lang="zh" aria-pressed="false">中文</button></div></div>
+  <div class="top"><h1 data-k="title">네모 플레이어 스킨</h1><div class="seg" role="group" aria-label="언어 / 语言"><button type="button" id="lko" lang="ko" aria-pressed="true">한국어</button><button type="button" id="lzh" lang="zh" aria-pressed="false">中文</button></div></div>
   <div class="grid">
     <div class="view">
     <div class="stage">
       <div class="dock">
-        <div class="tg" id="skg"><button class="btn ib txt sk" id="sk" type="button"><span data-k="sk1">스킨파츠 빼기</span></button><button class="btn ib txt sk" id="sw" type="button"><span data-k="sw">스킨파츠 교체</span></button><div class="seg" id="dsg"><button type="button" data-d="0" data-k="dz0">기본형</button><button type="button" data-d="1" data-k="dz1" aria-pressed="true">데이지</button></div></div>
         <div class="seg" role="group"><button type="button" id="vp" aria-pressed="true"><span data-k="vp">완제품</span></button><button type="button" id="vm" aria-pressed="false"><span data-k="vm">금형별 분해</span></button></div>
+        <div class="tg" id="skg"><button class="btn ib txt sk" id="sk" type="button"><span data-k="sk1">스킨 빼기</span></button><button class="btn ib txt sk" id="sw" type="button" style="display:none!important"><span data-k="sw">스킨 교체</span></button><div class="seg" id="dsg"><button type="button" data-d="0" data-k="dz0">기본형</button><button type="button" data-d="1" data-k="dz1" aria-pressed="true">데이지</button></div></div>
         <div class="seg old" role="group"><button type="button" id="asm" aria-pressed="false" data-kt="asm"><span data-k="asm">합쳐진 모양</span></button><button type="button" id="sep" aria-pressed="true" data-kt="sep"><span data-k="sep">분리된 모양</span></button></div>
         <div class="seg old" role="group"><button type="button" id="cm" aria-pressed="true"><span data-k="cm">금형 색</span></button><button type="button" id="cr" aria-pressed="false"><span data-k="cr">완제품 색</span></button></div>
         <div class="ex"><label for="ex" data-k="ex">분해</label><input type="range" id="ex" min="0" max="100" value="100" data-kt="exT"><span id="exv" hidden>100</span></div>
@@ -180,8 +182,8 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
           <button class="mh" id="c1" type="button" aria-pressed="true"><span class="n">1</span><h3><span data-k="m1">전면 + 후면 커버</span></h3><span class="sw"></span></button>
           <div class="sub"><div class="seg v1" role="group"><button type="button" id="mo" aria-pressed="false" data-k="mo">원안</button><button type="button" id="ms" aria-pressed="true" data-k="ms">수정안</button></div></div>
           <div class="sub chips" id="p1"></div>
-          <div class="sub" id="artw"><span class="skl" data-k="skl">스킨파츠 색 · 데이지는 끼움 부품(공통)</span><div class="sw9" id="sw9"></div></div>
-          <div class="dim" id="dim" data-mode="split"><table><thead><tr><th data-k="tt">두께 (mm)</th><th data-k="mo">원안</th><th data-k="ms">수정안</th></tr></thead><tbody><tr><td data-k="dT">전체 두께</td><td>23.9</td><td>23.9</td></tr><tr><td data-k="dU">상단</td><td>1.9</td><td><span data-k="tbd">미정</span> + 0.85</td></tr><tr><td data-k="dS">측면</td><td>1.7</td><td><span data-k="tbd">미정</span> + 0.85</td></tr></tbody></table><div class="dn" data-k="dN">수정안 = 본체(두께 미정) + 스킨파츠 0.85</div></div>
+          <div class="sub" id="artw"><span class="skl" data-k="skl">스킨 색 · 데이지는 끼움 부품(공통)</span><div class="sw9" id="sw9"></div></div>
+          <div class="dim" id="dim" data-mode="split"><table><thead><tr><th data-k="tt">두께 (mm)</th><th data-k="mo">원안</th><th data-k="ms">수정안</th></tr></thead><tbody><tr><td data-k="dT">전체 두께</td><td>23.9</td><td>23.9</td></tr><tr><td data-k="dU">상단</td><td>1.9</td><td><span data-k="tbd">미정</span> + 0.85</td></tr><tr><td data-k="dS">측면</td><td>1.7</td><td><span data-k="tbd">미정</span> + 0.85</td></tr></tbody></table><div class="dn" data-k="dN">수정안 = 본체(두께 미정) + 스킨 0.85</div></div>
         </section>
         <section class="mold" style="--c:var(--m2)">
           <button class="mh" id="c2" type="button" aria-pressed="true"><span class="n">2</span><h3><span data-k="m2">스피커 후면 + 버튼</span></h3><span class="sw"></span></button>
@@ -209,7 +211,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     '0o':{n:'전면 커버 (원안)',z:'前盖(原方案)',m:1,off:[0,0,0]},
     '0':{n:'전면 커버',z:'前盖',m:1,off:[0,0,0]},
     '1':{n:'후면 커버',z:'后盖',m:1,off:[0,0,62]},
-    '16':{n:'스킨파츠',z:'Skin Parts(换肤件)',m:5,off:[26,0,0]},
+    '16':{n:'스킨',z:'Skin Parts(换肤件)',m:5,off:[26,0,0]},
     '13':{n:'스피커 후면 커버',z:'喇叭后盖',m:2,off:[-4,0,32]},
     '3':{n:'3버튼 연결 부품',z:'3按键连接件',m:2,to:[76,-18,10]},
     '4':{n:'LED 투명 소형 캡',z:'LED 透明小帽',m:4,to:[76,10,10]},
@@ -219,10 +221,10 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   var COL={1:0x1f6fd6,2:0xe8730f,3:0x9aa3b2,4:0xf4f6fa,5:0x14a8c4};
   var art=false,skinU=null,real=false,skOut=0,skBusy=false,SK=36;
   var PCOL={1:0xcdcdd0,2:0xcdcdd0,3:0xb4bac6,4:0xf4f6fa,5:0xcdcdd0};
-  var MNAME={1:'금형 ①',2:'금형 ②',3:'금형 ③',4:'금형 ④',5:'스킨파츠'};
+  var MNAME={1:'금형 ①',2:'금형 ②',3:'금형 ③',4:'금형 ④',5:'스킨'};
   var MZ={1:'模具 ①',2:'模具 ②',3:'模具 ③',4:'模具 ④',5:'Skin Parts'};
   var I18N={
-    title:['네모 플레이어 스킨파츠','Nemo Player Skin Parts'],
+    title:['네모 플레이어 스킨','Nemo Player Skin Parts'],
     asm:['합쳐진 모양','组装状态'],sep:['분리된 모양','分解状态'],
     ex:['분해','分解'],exT:['분해 정도','分解程度'],
     reset:['각도 초기화','重置角度'],resetall:['초기화','全部重置'],spin:['자동 회전','自动旋转'],
@@ -230,7 +232,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     m1:['전면 + 후면 커버','前盖 + 后盖'],m2:['스피커 후면 + 버튼','喇叭后盖 + 按键'],m3:['투명 도어','透明门'],m4:['LED 투명 캡','LED 透明帽'],
     pr1:['¥11,000 · 220만원','¥11,000 · 220万韩元'],pr2:['¥8,000 · 160만원','¥8,000 · 160万韩元'],pr3:['¥9,350 · 187만원','¥9,350 · 187万韩元'],pr4:['¥5,000 · 100만원','¥5,000 · 100万韩元'],
     mo:['원안','原方案'],ms:['수정안','修改方案'],
-    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dT:['전체 두께','整体厚度'],dS:['측면','侧面'],dU:['상단','顶部'],dN:['수정안 = 본체(두께 미정) + 스킨파츠 0.85','修改方案 = 主体(厚度待定) + Skin Parts 0.85'],tbd:['미정','待定'],skl:['스킨파츠 색 · 데이지는 끼움 부품(공통)','换肤件颜色 · 雏菊为通用插接件'],dz0:['기본형','基础款'],dz1:['데이지','雏菊款'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['스킨파츠 빼기','拔出换肤件'],sk0:['스킨파츠 끼우기','装回换肤件'],sw:['스킨파츠 교체','更换换肤件'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
+    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dT:['전체 두께','整体厚度'],dS:['측면','侧面'],dU:['상단','顶部'],dN:['수정안 = 본체(두께 미정) + 스킨 0.85','修改方案 = 主体(厚度待定) + Skin Parts 0.85'],tbd:['미정','待定'],skl:['스킨 색 · 데이지는 끼움 부품(공통)','换肤件颜色 · 雏菊为通用插接件'],dz0:['기본형','基础款'],dz1:['데이지','雏菊款'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['스킨 빼기','拔出换肤件'],sk0:['스킨 끼우기','装回换肤件'],sw:['스킨 교체','更换换肤件'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
     err:['3D 데이터를 불러오지 못했습니다','无法加载 3D 数据']
   };
   var lang=0;try{var sv=localStorage.getItem('nemo-lang');lang=sv==='zh'?1:sv==='ko'?0:(/^zh/i.test(navigator.language||'')?1:0)}catch(e){lang=/^zh/i.test(navigator.language||'')?1:0}
@@ -247,9 +249,9 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   controls.enableDamping=true;controls.autoRotate=true;controls.autoRotateSpeed=1.2;
   controls.update();
   var base=camera.position.clone(),T0=controls.target.clone(),portrait=false,view='p';
-  var T1=new THREE.Vector3(0,12,11),bp=new THREE.Vector3(62,-132,55);controls.autoRotate=false;
+  var T1=new THREE.Vector3(0,12,11),TM=new THREE.Vector3(0,12,11),bp=new THREE.Vector3(62,-132,55);controls.autoRotate=false;
   var shiftX=0;
-  function homeCam(){shiftX=0;var B=view==='p'?bp:base,T=view==='p'?T1:T0,f=view==='p'?(portrait?1.4:0.98):(portrait?1.3:1);camera.position.copy(T.clone().add(B.clone().sub(T).multiplyScalar(f)))}
+  function homeCam(){shiftX=0;var B=bp,T=view==='p'?T1:TM,f=view==='p'?(portrait?1.4:0.98):(portrait?2.1:1.55);camera.position.copy(T.clone().add(B.clone().sub(T).multiplyScalar(f)))}
   scene.add(new THREE.HemisphereLight(0xffffff,0x8899aa,0.75));
   var d1=new THREE.DirectionalLight(0xffffff,0.8);d1.position.set(120,-160,220);scene.add(d1);
   var d2=new THREE.DirectionalLight(0xffffff,0.35);d2.position.set(-150,120,-60);scene.add(d2);
@@ -372,8 +374,8 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     });
     document.getElementById('dim').setAttribute('data-mode',mode);
     document.getElementById('artw').hidden=mode!=='split';
-    document.getElementById('skg').hidden=mode!=='split'||view!=='p';
-    document.getElementById('reset').hidden=(view==='p');
+    var skOff=(mode!=='split'||view!=='p');document.getElementById('sk').disabled=skOff;[].forEach.call(document.querySelectorAll('#dsg button'),function(b){b.disabled=(mode!=='split')});document.getElementById('sw9').classList.toggle('dis',skOff);
+    document.getElementById('reset').disabled=(view==='p');
     style();
   }
   Object.keys(ids).forEach(function(m){
@@ -395,11 +397,11 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     document.getElementById('ms').setAttribute('aria-pressed',String(m==='split'));
     sync();
   }
-  function setView(v){view=v;if(v==='p')grp.quaternion.setFromRotationMatrix(RM);else grp.quaternion.identity();if(cardM)cardM.visible=(v==='p'&&dz===1);real=(v==='p');explode=(v==='p'?0:1);skOut=0;skLabel();ex.value=explode*100;exv.textContent=ex.value;
-    document.querySelector('.ex').hidden=(v==='p');
+  function setView(v){view=v;grp.quaternion.setFromRotationMatrix(RM);if(cardM)cardM.visible=(v==='p'&&dz===1);real=(v==='p');explode=(v==='p'?0:1);skOut=0;skLabel();ex.value=explode*100;exv.textContent=ex.value;
+    document.querySelector('.ex').classList.toggle('dis',v==='p');ex.disabled=(v==='p');
     document.getElementById('vp').setAttribute('aria-pressed',String(v==='p'));document.getElementById('vm').setAttribute('aria-pressed',String(v!=='p'));
     document.getElementById('cm').setAttribute('aria-pressed',String(!real));document.getElementById('cr').setAttribute('aria-pressed',String(real));
-    homeCam();controls.target.copy(v==='p'?T1:T0);controls.update();place();segSync();sync()}
+    homeCam();controls.target.copy(v==='p'?T1:TM);controls.update();place();segSync();sync()}
   document.getElementById('vp').addEventListener('click',function(){setView('p')});
   document.getElementById('vm').addEventListener('click',function(){setView('m')});
 
@@ -417,7 +419,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   function mkCard(){
     var W=720,H=480,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
     function rr(a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
-    window.__cx=x;window.__cw=W;window.__ch=H;drawArt(x,W,H,'#16161a');
+    window.__cx=x;window.__cw=W;window.__ch=H;drawArt(x,W,H,'#4aae69');
     var tex=new THREE.CanvasTexture(c);window.__ct=tex;if(tex.anisotropy!==undefined)tex.anisotropy=4;
     var r=2.5,w=60,h=40,s=new THREE.Shape();s.moveTo(-w/2+r,-h/2);s.lineTo(w/2-r,-h/2);s.absarc(w/2-r,-h/2+r,r,-Math.PI/2,0,false);s.lineTo(w/2,h/2-r);s.absarc(w/2-r,h/2-r,r,0,Math.PI/2,false);s.lineTo(-w/2+r,h/2);s.absarc(-w/2+r,h/2-r,r,Math.PI/2,Math.PI,false);s.lineTo(-w/2,-h/2+r);s.absarc(-w/2+r,-h/2+r,r,Math.PI,Math.PI*1.5,false);
     var g=new THREE.ExtrudeGeometry(s,{depth:1.2,bevelEnabled:false,curveSegments:8});
@@ -428,32 +430,42 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     return m;
   }
     var SKC=[[0x16161a,'블랙 / 黑'],[0xff8a1f,'오렌지 / 橙'],[0xffd426,'옐로우 / 黄'],[0xa6e04a,'라이트그린 / 浅绿'],[0x1fae5a,'그린 / 绿'],[0x3cc0f0,'스카이블루 / 天蓝'],[0x1f4fd6,'코발트블루 / 钴蓝'],[0xff5fa8,'핑크 / 粉'],[0x8a4ff0,'바이올렛 / 紫'],[0xf2f2ef,'화이트 / 白'],[0x4fd8c4,'네모즈 민트 / 尼莫兹薄荷']];
-  var skinIdx=-1,daisyG=null,daisyMat=null,daisyCen=null,daisyRim=null;
-  function petalShape(R){
-    var sh=new THREE.Shape();
-    sh.absellipse(R*0.57,0,R*0.43,R*0.235,0,Math.PI*2,false,0);
+  var skinIdx=-1,daisyG=null,daisyMat=null,daisyCen=null,daisyRim=null,daisyEdge=null,daisyCenEdge=null,greenMat=null;
+  function petalShape(R,k){
+    var sh=new THREE.Shape(),q=R*k;
+    // 안쪽은 좁고 바깥은 둥근 물방울형 꽃잎
+    sh.moveTo(q*0.14,0);
+    sh.bezierCurveTo(q*0.3,-q*0.1,q*0.44,-q*0.24,q*0.68,-q*0.24);
+    sh.bezierCurveTo(q*0.93,-q*0.24,q*1.0,-q*0.12,q*1.0,0);
+    sh.bezierCurveTo(q*1.0,q*0.12,q*0.93,q*0.24,q*0.68,q*0.24);
+    sh.bezierCurveTo(q*0.44,q*0.24,q*0.3,q*0.1,q*0.14,0);
     return sh;
   }
-  /* 둥근 꽃잎 9장: 줄기 쪽(아래) 56° 비우고 38° 간격, 길이·각도는 살짝 불규칙 */
+  /* 플랫·미니멀 데이지: 꽃잎 9장(40° 간격), 홀수 꽃잎이 앞으로 겹치고 얇은 외곽선 */
   function mkDaisy(R,depth){
-    var g=new THREE.Group();
-    var J=[6,-5,3,-6,2,6,-3,5,-4],L=[1,.9,1.05,.94,1.06,.92,1.04,.9,1.02];
-    for(var k=0;k<9;k++){
-      var pg=new THREE.ExtrudeGeometry(petalShape(R*0.97*L[k]),{depth:depth,bevelEnabled:true,bevelThickness:0.12,bevelSize:0.12,bevelSegments:2,curveSegments:48});
-      var m=new THREE.Mesh(pg,daisyMat);m.rotation.z=(28+38*k+J[k])*Math.PI/180;m.position.z=(k%2)*0.3;g.add(m);
+    var g=new THREE.Group(),N=9;
+    var pg=new THREE.ExtrudeGeometry(petalShape(R,0.97),{depth:depth,bevelEnabled:true,bevelThickness:0.1,bevelSize:0.1,bevelSegments:2,curveSegments:48});
+    var og=new THREE.ExtrudeGeometry(petalShape(R,1.0),{depth:depth,bevelEnabled:false,curveSegments:48});
+    for(var k=0;k<N;k++){
+      var a=k*2*Math.PI/N, z=(k%2)*0.5;
+      var o=new THREE.Mesh(og,daisyEdge);o.rotation.z=a;o.position.z=z-0.02;o.scale.set(1.02,1.02,1);g.add(o);
+      var m=new THREE.Mesh(pg,daisyMat);m.rotation.z=a;m.position.z=z+0.02;g.add(m);
     }
-    var cg=new THREE.SphereGeometry(R*0.3,48,24);cg.scale(1,1,0.32);
-    var c=new THREE.Mesh(cg,daisyCen);c.position.z=depth+0.55;g.add(c);
+    var cr=new THREE.Mesh(new THREE.CylinderGeometry(R*0.255,R*0.255,0.9,48),daisyCenEdge);cr.rotation.x=Math.PI/2;cr.position.z=depth+0.95;g.add(cr);
+    var cg=new THREE.SphereGeometry(R*0.235,48,24);cg.scale(1,1,0.4);
+    var c=new THREE.Mesh(cg,daisyCen);c.position.z=depth+1.4;g.add(c);
     return g;
   }
   function buildDaisies(){
-    daisyMat=new THREE.MeshStandardMaterial({color:0xfbfbfa,emissive:0x0f1013,roughness:0.5,metalness:0});
-    daisyCen=new THREE.MeshStandardMaterial({color:0xf2b705,emissive:0x2e2000,roughness:0.55,metalness:0});
+    daisyMat=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0x4a4c52,roughness:0.6,metalness:0});
+    daisyEdge=new THREE.MeshStandardMaterial({color:0xaeb3bf,emissive:0x1c1e22,roughness:0.6,metalness:0});
+    daisyCen=new THREE.MeshStandardMaterial({color:0xffc400,emissive:0x3d2c00,roughness:0.5,metalness:0});
+    daisyCenEdge=new THREE.MeshStandardMaterial({color:0xe39a00,emissive:0x2a1a00,roughness:0.6,metalness:0});
+    greenMat=new THREE.MeshStandardMaterial({color:0x4aae69,emissive:0x0c2414,roughness:0.55,metalness:0});
     daisyG=new THREE.Group();
-    var d=mkDaisy(12,0.6);d.rotation.y=Math.PI;d.rotation.z=-0.2;d.position.set(14,-20,-7.05);daisyG.add(d);
-    /* 꽃잎은 스킨파츠 앞띠 위쪽에만(문 열림 방지). 줄기는 앞띠 위에서 투명창 스티커로 이어짐 */
-    var sm=meshes['16'].material;
-    var st=new THREE.Mesh(new THREE.BoxGeometry(18.4,2.3,0.55),sm);st.position.set(4.9,-20,-7.42);daisyG.add(st);
+    // 줄기(끼움 부품 일부, 꽃 뒤쪽): 앞띠 위에서 꽃 중심까지
+    var st=new THREE.Mesh(new THREE.BoxGeometry(19.5,2.3,0.55),greenMat);st.position.set(4.3,-20,-7.42);daisyG.add(st);
+    var d=mkDaisy(11,0.7);d.rotation.y=Math.PI;d.position.set(14,-20,-7.15);daisyG.add(d);
     meshes['16'].add(daisyG);
   }
   function buildSwatches(){
@@ -476,7 +488,6 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   function setSkin(i){skinIdx=i;
     [].forEach.call(document.querySelectorAll('#sw9 .swb'),function(b){b.setAttribute('aria-pressed',String(parseInt(b.getAttribute('data-i'),10)===i))});
     
-    if(window.__cx){drawArt(window.__cx,window.__cw,window.__ch,'#'+('000000'+(i>=0?SKC[i][0]:0xa8afbd).toString(16)).slice(-6));window.__ct.needsUpdate=true}
     style()}
   function skLabel(){var k=skOut>0.5?'sk0':'sk1',e=document.querySelector('#sk span');e.setAttribute('data-k',k);e.textContent=T(k)}
   function skAnim(to,ms,cb){var f=skOut,t0=performance.now();skBusy=true;(function st(n){var u=Math.min(1,(n-t0)/ms),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;skOut=f+(to-f)*e;place();if(u<1)requestAnimationFrame(st);else{skOut=to;place();skBusy=false;skLabel();if(cb)cb()}})(t0)}

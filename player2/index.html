@@ -245,7 +245,8 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   controls.update();
   var base=camera.position.clone(),T0=controls.target.clone(),portrait=false,view='p';
   var bp=new THREE.Vector3(111,-125,79),T1=new THREE.Vector3(6,0,9);controls.autoRotate=false;
-  function homeCam(){var B=view==='p'?bp:base,T=view==='p'?T1:T0;camera.position.copy(T.clone().add(B.clone().sub(T).multiplyScalar(portrait?1.3:1)))}
+  var shiftX=0;
+  function homeCam(){shiftX=0;var B=view==='p'?bp:base,T=view==='p'?T1:T0,f=view==='p'?(portrait?1.3:0.85):(portrait?1.3:1);camera.position.copy(T.clone().add(B.clone().sub(T).multiplyScalar(f)))}
   scene.add(new THREE.HemisphereLight(0xffffff,0x8899aa,0.75));
   var d1=new THREE.DirectionalLight(0xffffff,0.8);d1.position.set(120,-160,220);scene.add(d1);
   var d2=new THREE.DirectionalLight(0xffffff,0.35);d2.position.set(-150,120,-60);scene.add(d2);
@@ -269,6 +270,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     });
   }
   function place(){
+    if(view==='p'){var dx=skOut*SK*0.4-shiftX;shiftX+=dx;camera.position.x+=dx;controls.target.x+=dx}
     Object.keys(meshes).forEach(function(id){
       var d=DEF[id],c=meshes[id].userData.c,o=d.off||[d.to[0]-c.x,d.to[1]-c.y,d.to[2]-c.z];meshes[id].position.set(c.x+o[0]*explode+(id==='16'?skOut*SK:0),c.y+o[1]*explode,c.z+o[2]*explode);
     });
@@ -328,7 +330,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   stage.addEventListener('pointerdown',function(e){
     if(e.target.closest&&e.target.closest('.dock'))return;
     downAt=[e.clientX,e.clientY];last=[e.clientX,e.clientY];
-    dragId=pick(e);
+    dragId=view==='p'?null:pick(e);
     controls.enabled=!dragId;
     controls.autoRotate=false;spin.setAttribute('aria-pressed','false');
     if(dragId){selected=dragId;style();hint.innerHTML='<b>'+label(dragId)+'</b>';cv.setPointerCapture&&cv.setPointerCapture(e.pointerId)}
@@ -380,6 +382,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     document.getElementById('dim').setAttribute('data-mode',mode);
     document.getElementById('artw').hidden=mode!=='split';
     document.getElementById('skg').hidden=mode!=='split'||view!=='p';
+    document.getElementById('reset').hidden=(view==='p');
     style();
   }
   Object.keys(ids).forEach(function(m){

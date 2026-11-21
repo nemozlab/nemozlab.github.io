@@ -462,8 +462,8 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     SKC.forEach(function(c,i){var d=document.createElement('button');d.type='button';d.className='swb';d.style.background='#'+('000000'+c[0].toString(16)).slice(-6);d.setAttribute('data-i',String(i));d.title=c[1];box.appendChild(d)});
     box.addEventListener('click',function(ev){var t=ev.target.closest('.swb');if(t)setSkin(parseInt(t.getAttribute('data-i'),10))});
   }
-  var dz=1,BASIC3=[9,10,0];
-  function allowed(){if(dz===0)return BASIC3;var a=[];for(var k=0;k<9;k++)a.push(k);return a}
+  var dz=1,BASIC3=[9,10,0],DAISY3=[0,10,2];
+  function allowed(){return dz===0?BASIC3:DAISY3}
   function nextSkin(){var a=allowed(),k=a.indexOf(skinIdx);return a[(k+1)%a.length]}
   function applyAllowed(){var a=allowed();[].forEach.call(document.querySelectorAll('#sw9 .swb'),function(b){var i=parseInt(b.getAttribute('data-i'),10);var ix=a.indexOf(i);b.hidden=ix<0;b.style.order=ix<0?99:ix})}
   function setDesign(d){dz=d;

@@ -458,8 +458,10 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
       
       var me=new THREE.Mesh(g,mat);me.userData.id=id;me.userData.c=cc;meshes[id]=me;grp.add(me);
     });
-    buildDaisies();buildSwatches();applyAllowed();setSkin(allowed()[0]);
-    setView('p');
+    var sharedView=new URLSearchParams(location.search).get('view');
+    buildDaisies();buildSwatches();
+    setDesign(sharedView==='basic'?0:1);
+    setView(sharedView==='exploded'?'m':'p');
   }).catch(function(){hint.textContent=T('err')});
 
   function canManipulateParts(){return view==='m'&&explode>0}
@@ -613,8 +615,13 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     otherMenu.removeAttribute('aria-current');
     document.getElementById('cm').setAttribute('aria-pressed',String(!real));document.getElementById('cr').setAttribute('aria-pressed',String(real));
     homeCam();controls.target.copy(v==='p'?T1:TM);controls.update();place();segSync();sync()}
-  document.getElementById('vp').addEventListener('click',function(){setView('p')});
-  document.getElementById('vm').addEventListener('click',function(){setView('m')});
+  function updateShareAddress(){
+    var url=new URL(location.href);
+    url.searchParams.set('view',view==='m'?'exploded':dz===0?'basic':'daisy');
+    history.replaceState(history.state,'',url);
+  }
+  document.getElementById('vp').addEventListener('click',function(){setView('p');updateShareAddress()});
+  document.getElementById('vm').addEventListener('click',function(){setView('m');updateShareAddress()});
 
   var SKC=[[0x16161a,'블랙 / 黑'],[0xff8a1f,'오렌지 / 橙'],[0x00b7b3,'지디 민트 / GD 薄荷色'],[0xa6e04a,'라이트그린 / 浅绿'],[0x32752b,'초록 / 绿色'],[0x3cc0f0,'스카이블루 / 天蓝'],[0x1f4fd6,'코발트블루 / 钴蓝'],[0xff5fa8,'핑크 / 粉'],[0x8a4ff0,'바이올렛 / 紫'],[0xf2f2ef,'화이트 / 白'],[0x4fd8c4,'네모즈 민트 / 尼莫兹薄荷']];
   var skinIdx=-1;
@@ -834,7 +841,12 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     syncDaisy();
     applyAllowed();if(allowed().indexOf(skinIdx)<0)setSkin(allowed()[0]);else setSkin(skinIdx);
   }
-  document.getElementById('dsg').addEventListener('click',function(ev){var t=ev.target.closest('button');if(t)setDesign(parseInt(t.getAttribute('data-d'),10))});
+  document.getElementById('dsg').addEventListener('click',function(ev){
+    var t=ev.target.closest('button');
+    if(!t)return;
+    setDesign(parseInt(t.getAttribute('data-d'),10));
+    updateShareAddress();
+  });
   function setSkin(i){skinIdx=i;
     [].forEach.call(document.querySelectorAll('#sw9 .swb'),function(b){b.setAttribute('aria-pressed',String(parseInt(b.getAttribute('data-i'),10)===i))});
     

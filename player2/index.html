@@ -167,12 +167,13 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 .skin-guide:hover{border-color:var(--muted)}
 .skin-guide:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
 .grid[data-view="m"] .skin-guide{display:none}
-.panel-dismiss,.sheet-footer{display:none}
+.panel-dismiss,.sheet-close{display:none}
 .mold-guide{
   display:grid;
   grid-template-columns:minmax(0,1fr) auto;
   align-items:center;
   gap:4px 8px;
+  padding-inline:10px;
 }
 .mold-guide #all-molds{
   grid-column:2;
@@ -180,14 +181,14 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   display:inline-flex;
   align-items:center;
   gap:6px;
-  padding:4px 6px;
+  padding:4px 0;
   background:transparent;
-  border-color:transparent;
+  border:0;
   box-shadow:none;
   white-space:nowrap;
 }
 .mold-guide #all-molds .sw{display:block}
-.mold-guide #all-molds[aria-checked="true"] .sw{background:#3b8476}
+.mold-guide #all-molds[aria-checked="true"] .sw{background:#171717}
 .mold-guide #all-molds[aria-checked="false"] .sw{background:#757e90}
 .mold-guide #all-molds[aria-checked="false"] .sw::after{left:2px}
 @media (max-width:820px){
@@ -216,22 +217,18 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     transition:transform .28s ease,visibility 0s .28s;
   }
   .grid .product-panel{border:0;border-radius:0}
-  .sheet-footer{
-    position:sticky;
-    bottom:0;
-    z-index:1;
+  .skin-heading-row{
     display:flex;
-    flex:none;
-    justify-content:center;
-    margin-top:auto;
-    border-top:1px solid var(--line);
-    background:var(--panel);
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
   }
   .sheet-close{
     display:grid;
     place-items:center;
-    width:100%;
-    min-height:34px;
+    flex:none;
+    width:44px;
+    height:44px;
     border:0;
     padding:0;
     background:transparent;
@@ -243,17 +240,24 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   body:has(.grid[data-view="m"] .panel:not(.shut)){overflow:hidden}
   .grid[data-view="m"] .panel{
     inset-inline:0;
-    top:var(--dock-bottom,88px);
     bottom:0;
-    max-height:none;
+    max-height:calc(100vh - var(--dock-bottom,88px) - 56px);
+    max-height:min(72dvh,calc(100dvh - var(--dock-bottom,88px) - 56px));
     padding-bottom:env(safe-area-inset-bottom,0px);
-    background:var(--panel);
-    border-radius:0;
+    border-radius:14px 14px 0 0;
   }
   .grid[data-view="m"] .mold-panel{gap:0}
   .grid[data-view="m"] :is(.mold-guide,.list){border:0;border-radius:0}
   .grid[data-view="m"] .list{border-top:1px solid var(--line)}
-  .mold-guide{padding:8px 12px}
+  .mold-guide{
+    position:sticky;
+    top:0;
+    z-index:1;
+    row-gap:0;
+    padding:0 10px 6px;
+  }
+  .mold-guide h2,.mold-guide #all-molds{grid-row:2}
+  .mold-guide .sheet-close{grid-area:1 / 2;justify-self:end}
   .mold-panel .sub{margin-bottom:8px}
 }
 @media (max-width:820px) and (prefers-reduced-motion:reduce){
@@ -296,7 +300,10 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     </div>
     <div class="panel" id="panel">
       <section class="ctl product-panel" aria-labelledby="skin-heading">
-        <h2 id="skin-heading" data-k="skinTitle">교체형 스킨</h2>
+        <div class="skin-heading-row">
+          <h2 id="skin-heading" data-k="skinTitle">교체형 스킨</h2>
+          <button class="sheet-close" type="button" data-kt="closePanel" aria-label="팝업 닫기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        </div>
         <div class="sub" id="artw">
             <div class="seg" id="dsg" role="group" aria-label="스킨 디자인 / 换肤款式"><button type="button" data-d="0" data-k="dz0">기본형</button><button type="button" data-d="1" data-k="dz1" aria-pressed="true">데이지</button></div>
             <span class="skl" data-k="skl">스킨 색 · 데이지는 끼움 부품(공통)</span>
@@ -317,6 +324,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
       <div class="ctl mold-guide">
         <h2 data-k="moldTitle">금형 세트</h2>
         <button class="btn" type="button" id="all-molds" role="switch" aria-checked="true"><span data-k="allMolds">전체 세트</span><span class="sw" aria-hidden="true"></span></button>
+        <button class="sheet-close" type="button" data-kt="closePanel" aria-label="팝업 닫기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
       </div>
       <div class="list">
         <section class="mold pastel" style="--c:var(--m1)">
@@ -338,9 +346,6 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
         </section>
       </div>
       <div class="legend-side"><p class="foot prices"><b data-k="mc">금형비</b><span class="pp" style="--c:var(--m1)"><i class="dot"></i>① <span data-k="pr1">¥11,000 · 220만원</span></span><span class="pp" style="--c:var(--m2)"><i class="dot"></i>② <span data-k="pr2">¥8,000 · 160만원</span></span><span class="pp" style="--c:var(--m3)"><i class="dot"></i>③ <span data-k="pr3">¥9,350 · 187만원</span></span><span class="pp" style="--c:var(--m4)"><i class="dot lt"></i>④ <span data-k="pr4">¥5,000 · 100만원</span></span></p></div>
-      </div>
-      <div class="sheet-footer">
-        <button class="sheet-close" type="button" data-kt="closePanel" aria-label="팝업 닫기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
       </div>
     </div>
   </div>
@@ -885,7 +890,9 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     fold.focus({preventScroll:true});
   }
   document.querySelector('.panel-dismiss').addEventListener('click',closeMobilePanel);
-  document.querySelector('.sheet-close').addEventListener('click',closeMobilePanel);
+  panel.querySelectorAll('.sheet-close').forEach(function(button){
+    button.addEventListener('click',closeMobilePanel);
+  });
   var sheetTouch=null;
   panel.addEventListener('touchstart',function(e){
     if(!isM()||panel.classList.contains('shut')||panel.scrollTop>1||e.touches.length!==1)return;

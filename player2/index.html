@@ -406,20 +406,13 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   function drawArt(x,W,H,col){
     x.clearRect(0,0,W,H);
     x.fillStyle='rgba(255,255,255,0.10)';x.fillRect(0,0,W,H);
-    x.lineCap='round';x.lineJoin='round';
-    // 줄기: 상단 버튼 옆(좌상단)에서 시작해 카드 안쪽으로 이어짐
-    x.strokeStyle=col;x.fillStyle=col;
-    x.lineWidth=34;x.beginPath();x.moveTo(36,-10);x.bezierCurveTo(40,120,120,200,230,250);x.bezierCurveTo(330,296,430,300,520,380);x.stroke();
-    x.lineWidth=20;x.beginPath();x.moveTo(150,180);x.bezierCurveTo(230,150,300,100,360,70);x.stroke();
-    x.lineWidth=20;x.beginPath();x.moveTo(380,300);x.bezierCurveTo(440,260,500,210,560,170);x.stroke();
-    function leaf(a,b,ang,l,w){x.save();x.translate(a,b);x.rotate(ang);x.beginPath();x.moveTo(0,0);x.bezierCurveTo(l*0.25,-w,l*0.75,-w,l,0);x.bezierCurveTo(l*0.75,w,l*0.25,w,0,0);x.fill();x.restore()}
-    leaf(60,110,0.55,120,34);leaf(110,205,1.15,100,28);leaf(300,300,0.9,110,30);leaf(470,345,-0.5,110,30);
-    function daisy(a,b,R){
-      x.fillStyle='#ffffff';x.strokeStyle='rgba(120,130,150,0.55)';x.lineWidth=3;
-      for(var k=0;k<8;k++){x.save();x.translate(a,b);x.rotate(k*Math.PI/4);x.beginPath();x.ellipse(R*0.62,0,R*0.4,R*0.24,0,0,7);x.fill();x.stroke();x.restore()}
-      x.fillStyle='#ffc21a';x.beginPath();x.arc(a,b,R*0.3,0,7);x.fill();
-    }
-    daisy(380,68,44);daisy(570,160,50);daisy(560,392,64);daisy(640,300,30);
+    x.lineCap='round';x.lineJoin='round';x.strokeStyle=col;x.fillStyle=col;
+    // 줄기: 꽃 중심에서 투명창 아래로 (끝은 살짝 휨)
+    x.lineWidth=28;x.beginPath();x.moveTo(120,-40);x.lineTo(120,360);x.bezierCurveTo(120,410,128,440,150,500);x.stroke();
+    // 만세(V) 잎 두 장
+    function leaf(a,b,ang,l,w){x.save();x.translate(a,b);x.rotate(ang);x.beginPath();x.moveTo(0,0);x.bezierCurveTo(l*0.2,-w*0.5,l*0.6,-w,l,-w*0.1);x.bezierCurveTo(l*0.9,w*0.7,l*0.4,w*0.8,0,0);x.fill();x.restore()}
+    leaf(120,320,-Math.PI/2-0.75,170,48);
+    leaf(120,320,-Math.PI/2+0.75+0.0,170,-48);
   }
   function mkCard(){
     var W=720,H=480,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
@@ -436,41 +429,29 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   }
     var SKC=[[0x16161a,'블랙 / 黑'],[0xff8a1f,'오렌지 / 橙'],[0xffd426,'옐로우 / 黄'],[0xa6e04a,'라이트그린 / 浅绿'],[0x1fae5a,'그린 / 绿'],[0x3cc0f0,'스카이블루 / 天蓝'],[0x1f4fd6,'코발트블루 / 钴蓝'],[0xff5fa8,'핑크 / 粉'],[0x8a4ff0,'바이올렛 / 紫']];
   var skinIdx=-1,daisyG=null,daisyMat=null,daisyCen=null,daisyRim=null;
-  function petalShape(R,k){
-    var sh=new THREE.Shape(),q=R*k;
-    sh.moveTo(q*0.14,0);
-    sh.bezierCurveTo(q*0.25,-q*0.1,q*0.45,-q*0.235,q*0.62,-q*0.235);
-    sh.bezierCurveTo(q*0.85,-q*0.235,q*1.0,-q*0.14,q*1.0,0);
-    sh.bezierCurveTo(q*1.0,q*0.14,q*0.85,q*0.235,q*0.62,q*0.235);
-    sh.bezierCurveTo(q*0.45,q*0.235,q*0.25,q*0.1,q*0.14,0);
+  function petalShape(R){
+    var sh=new THREE.Shape(),q=R;
+    sh.moveTo(q*0.16,0);
+    sh.bezierCurveTo(q*0.3,-q*0.17,q*0.62,-q*0.24,q*1.0,0);
+    sh.bezierCurveTo(q*0.62,q*0.24,q*0.3,q*0.17,q*0.16,0);
     return sh;
   }
+  /* 플랫·미니멀: 10칸 중 줄기 쪽 1칸을 뺀 9장 */
   function mkDaisy(R,depth){
-    var g=new THREE.Group(),N=9;
-    var pg=new THREE.ExtrudeGeometry(petalShape(R*0.95,1),{depth:depth*0.4,bevelEnabled:true,bevelThickness:depth*0.55,bevelSize:R*0.05,bevelOffset:-R*0.03,bevelSegments:10,curveSegments:32});
-    var rg=new THREE.ExtrudeGeometry(petalShape(R*0.99,1.0),{depth:depth*0.7,bevelEnabled:true,bevelThickness:0.5,bevelSize:0.35,bevelSegments:4,curveSegments:32});
-    for(var k=0;k<N;k++){
-      var a=k*2*Math.PI/N;
-      var r=new THREE.Mesh(rg,daisyRim);r.rotation.z=a;r.position.z=-0.3;g.add(r);
-      var m=new THREE.Mesh(pg,daisyMat);m.rotation.z=a;m.position.z=0.5;g.add(m);
+    var g=new THREE.Group(),N=10;
+    var pg=new THREE.ExtrudeGeometry(petalShape(R*0.98),{depth:depth,bevelEnabled:true,bevelThickness:0.12,bevelSize:0.12,bevelSegments:2,curveSegments:40});
+    for(var k=1;k<N;k++){
+      var m=new THREE.Mesh(pg,daisyMat);m.rotation.z=k*2*Math.PI/N+(k%2?0.02:-0.02);m.position.z=(k%2)*0.35;g.add(m);
     }
-    var cg=new THREE.SphereGeometry(R*0.3,40,24);
-    var c=new THREE.Mesh(cg,daisyCen);c.position.z=depth*0.9+R*0.09;g.add(c);
+    var cg=new THREE.SphereGeometry(R*0.3,48,24);cg.scale(1,1,0.32);
+    var c=new THREE.Mesh(cg,daisyCen);c.position.z=depth+0.55;g.add(c);
     return g;
   }
   function buildDaisies(){
-    daisyMat=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0x15171c,roughness:0.28,metalness:0});
-    daisyRim=new THREE.MeshStandardMaterial({color:0xdfe4ee,emissive:0x1a1c22,roughness:0.15,metalness:0.1,transparent:true,opacity:0.8});
-    daisyCen=new THREE.MeshStandardMaterial({color:0xffd000,emissive:0x4a3a00,roughness:0.25,metalness:0});
+    daisyMat=new THREE.MeshStandardMaterial({color:0xfbfbfa,emissive:0x0f1013,roughness:0.5,metalness:0});
+    daisyCen=new THREE.MeshStandardMaterial({color:0xf2b705,emissive:0x2e2000,roughness:0.55,metalness:0});
     daisyG=new THREE.Group();
-    var zf=-7.25+0.2;
-    var d=mkDaisy(11,2.0);d.rotation.y=Math.PI;d.position.set(15,-21,zf);daisyG.add(d);
-    var sm=meshes['16'].material;
-    function tube(pts,r){var cv=new THREE.CatmullRomCurve3(pts.map(function(q){return new THREE.Vector3(q[0],q[1],q[2])}));var t=new THREE.Mesh(new THREE.TubeGeometry(cv,28,r,14,false),sm);daisyG.add(t)}
-    tube([[3,-27,0],[8,-27,-1],[12,-25,-4],[15,-21,-6.6]],1.5);
-    tube([[5,-27,0],[8,-31,-2],[11,-34,-4.5],[14.5,-35,-6]],1.0);
-    tube([[5,-27,0],[9,-24,-2.5],[14,-19,-5],[19,-14.5,-6]],1.0);
-    var bs=new THREE.Mesh(new THREE.SphereGeometry(2.0,20,12),sm);bs.position.set(4.4,-27,0);daisyG.add(bs);
+    var d=mkDaisy(12.5,0.6);d.rotation.y=Math.PI;d.position.set(0.2,-20,-7.05);daisyG.add(d);
     meshes['16'].add(daisyG);
   }
   function buildSwatches(){

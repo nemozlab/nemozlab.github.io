@@ -36,9 +36,8 @@ h1{font-size:1.35rem;margin:0;text-wrap:balance}
 .panel.collapsed .mh h3,.panel.collapsed .sw,.panel.collapsed .sub{display:none}
 .panel.collapsed .mold{padding:7px 0;display:flex;justify-content:center}
 .panel.collapsed .mh{width:auto;gap:0}
-.panel.collapsed .fold{align-self:center}
-.panel.collapsed .fold svg{transform:rotate(180deg)}
-.fold{align-self:flex-end;display:grid;place-items:center;width:30px;height:26px;padding:0;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--muted);cursor:pointer}
+.fold.on svg{transform:rotate(180deg)}
+.fold{margin-left:auto;flex:none;display:grid;place-items:center;width:30px;height:26px;padding:0;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--muted);cursor:pointer}
 .fold:hover{color:var(--fg)}
 .fold:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
 .panel{display:flex;flex-direction:column;gap:8px}
@@ -126,6 +125,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
         <button class="btn ib" id="resetall" type="button" data-kt="resetall"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span data-k="resetall">초기화</span></button>
         <button class="btn ib" id="spin" type="button" aria-pressed="true" data-kt="spin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg><span data-k="spin">자동 회전</span></button>
         </div>
+        <button class="fold" id="fold" type="button" data-kt="fold" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
       <div class="cvwrap"><canvas id="cv"></canvas><div class="tip" id="tip"></div></div>
     </div>
@@ -133,7 +133,6 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     <p class="foot prices"><b data-k="mc">금형비</b><span class="pp" style="--c:var(--m1)"><i class="dot"></i>① <span data-k="pr1">¥11,000 · 220만원</span></span><span class="pp" style="--c:var(--m2)"><i class="dot"></i>② <span data-k="pr2">¥8,000 · 160만원</span></span><span class="pp" style="--c:var(--m3)"><i class="dot"></i>③ <span data-k="pr3">¥9,350 · 187만원</span></span><span class="pp" style="--c:var(--m4)"><i class="dot lt"></i>④ <span data-k="pr4">¥5,000 · 100만원</span></span></p>
     </div>
     <div class="panel" id="panel">
-      <button class="fold" id="fold" type="button" data-kt="fold" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
       <div class="list">
         <section class="mold" style="--c:var(--m1)">
           <button class="mh" id="c1" type="button" aria-pressed="true"><span class="n">1</span><h3><span data-k="m1">전면 + 후면 커버</span></h3><span class="sw"></span></button>
@@ -341,7 +340,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   document.getElementById('ms').addEventListener('click',function(){setMode('split')});
   var fold=document.getElementById('fold'),panel=document.getElementById('panel');
   fold.addEventListener('click',function(){
-    var c=panel.classList.toggle('collapsed');fold.setAttribute('aria-expanded',String(!c));
+    var c=panel.classList.toggle('collapsed');fold.classList.toggle('on',c);fold.setAttribute('aria-expanded',String(!c));
   });
   var spin=document.getElementById('spin');
   var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>네모 플레이어 외관 금형</title>
+<title>네모 플레이어 스킨파츠</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#1b2233">
 <meta name="mobile-web-app-capable" content="yes">
@@ -81,6 +81,13 @@ svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:
 .dim th:first-child,.dim td:first-child{text-align:left;padding-left:0}
 .dim td{text-align:right;padding:0 0 0 14px;font-variant-numeric:tabular-nums}
 .dim .dn{margin-top:3px;font-size:.68rem;opacity:.8}
+.sk{background:#111114!important;color:#e8c14a!important;border-color:#111114!important;font-weight:700}
+#skg[hidden]{display:none!important}
+.seg.old{display:none!important}
+.ex[hidden]{display:none!important}
+.artb{font:inherit;font-size:.76rem;font-weight:600;white-space:nowrap;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+.artb[aria-pressed="true"]{background:#111114;color:#e8c14a;border-color:#111114}
+#artw[hidden]{display:none!important}
 .dim[data-mode=orig] th:nth-child(2),.dim[data-mode=orig] td:nth-child(2),.dim[data-mode=split] th:nth-child(3),.dim[data-mode=split] td:nth-child(3){color:var(--fg);font-weight:700}
 .legend-side{padding:2px 4px 0}
 .legend-side .foot{margin:4px 0 0}
@@ -144,17 +151,20 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><h1 data-k="title">네모 플레이어 외관 금형</h1><div class="seg" role="group" aria-label="언어 / 语言"><button type="button" id="lko" lang="ko" aria-pressed="true">한국어</button><button type="button" id="lzh" lang="zh" aria-pressed="false">中文</button></div></div>
+  <div class="top"><h1 data-k="title">네모 플레이어 스킨파츠</h1><div class="seg" role="group" aria-label="언어 / 语言"><button type="button" id="lko" lang="ko" aria-pressed="true">한국어</button><button type="button" id="lzh" lang="zh" aria-pressed="false">中文</button></div></div>
   <div class="grid">
     <div class="view">
     <div class="stage">
       <div class="dock">
-        <div class="seg" role="group"><button type="button" id="asm" aria-pressed="false" data-kt="asm"><span data-k="asm">합쳐진 모양</span></button><button type="button" id="sep" aria-pressed="true" data-kt="sep"><span data-k="sep">분리된 모양</span></button></div>
+        <div class="tg" id="skg"><button class="btn ib txt sk" id="sk" type="button"><span data-k="sk1">스킨파츠 빼기</span></button><button class="btn ib txt sk" id="sw" type="button"><span data-k="sw">스킨파츠 교체</span></button></div>
+        <div class="seg" role="group"><button type="button" id="vp" aria-pressed="true"><span data-k="vp">완제품</span></button><button type="button" id="vm" aria-pressed="false"><span data-k="vm">금형별 분해</span></button></div>
+        <div class="seg old" role="group"><button type="button" id="asm" aria-pressed="false" data-kt="asm"><span data-k="asm">합쳐진 모양</span></button><button type="button" id="sep" aria-pressed="true" data-kt="sep"><span data-k="sep">분리된 모양</span></button></div>
+        <div class="seg old" role="group"><button type="button" id="cm" aria-pressed="true"><span data-k="cm">금형 색</span></button><button type="button" id="cr" aria-pressed="false"><span data-k="cr">완제품 색</span></button></div>
         <div class="ex"><label for="ex" data-k="ex">분해</label><input type="range" id="ex" min="0" max="100" value="100" data-kt="exT"><span id="exv" hidden>100</span></div>
-        <div class="tg">
+                <div class="tg">
         <button class="btn ib" id="reset" type="button" data-kt="reset"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg><span data-k="reset">각도 초기화</span></button>
         <button class="btn ib" id="resetall" type="button" data-kt="resetall"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span data-k="resetall">초기화</span></button>
-        <button class="btn ib" id="spin" type="button" aria-pressed="true" data-kt="spin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg><span data-k="spin">자동 회전</span></button>
+        <button class="btn ib" id="spin" type="button" aria-pressed="false" data-kt="spin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg><span data-k="spin">자동 회전</span></button>
         </div>
         <button class="btn ib txt mo-only" id="lt" type="button"><span>中文</span></button><button class="btn ib mo-only" id="fs" type="button" data-kt="fs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button><button class="fold" id="fold" type="button" data-kt="fold" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span class="fl" data-k="mold">금형</span></button>
       </div>
@@ -167,6 +177,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
           <button class="mh" id="c1" type="button" aria-pressed="true"><span class="n">1</span><h3><span data-k="m1">전면 + 후면 커버</span></h3><span class="sw"></span></button>
           <div class="sub"><div class="seg v1" role="group"><button type="button" id="mo" aria-pressed="false" data-k="mo">원안</button><button type="button" id="ms" aria-pressed="true" data-k="ms">수정안</button></div></div>
           <div class="sub chips" id="p1"></div>
+          <div class="sub" id="artw"><button type="button" class="artb" id="art" aria-pressed="false"><span data-k="art">아티스트 예시 (왕관)</span></button></div>
           <div class="dim" id="dim" data-mode="split"><table><thead><tr><th data-k="tt">두께 (mm)</th><th data-k="mo">원안</th><th data-k="ms">수정안</th></tr></thead><tbody><tr><td data-k="dT">전체 두께</td><td>23.9</td><td>23.9</td></tr><tr><td data-k="dU">상단</td><td>1.9</td><td><span data-k="tbd">미정</span> + 0.85</td></tr><tr><td data-k="dS">측면</td><td>1.7</td><td><span data-k="tbd">미정</span> + 0.85</td></tr></tbody></table><div class="dn" data-k="dN">수정안 = 본체(두께 미정) + 스킨파츠 0.85</div></div>
         </section>
         <section class="mold" style="--c:var(--m2)">
@@ -203,10 +214,12 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     '15':{n:'측면 단버튼',z:'侧面单按键',m:2,to:[76,30,10]}
   };
   var COL={1:0x1f6fd6,2:0xe8730f,3:0x9aa3b2,4:0xf4f6fa,5:0x14a8c4};
+  var art=false,skinU=null,real=false,skOut=0,skBusy=false,SK=36;
+  var PCOL={1:0xcdcdd0,2:0xcdcdd0,3:0xb4bac6,4:0xf4f6fa,5:0xcdcdd0};
   var MNAME={1:'금형 ①',2:'금형 ②',3:'금형 ③',4:'금형 ④',5:'스킨파츠'};
   var MZ={1:'模具 ①',2:'模具 ②',3:'模具 ③',4:'模具 ④',5:'Skin Parts'};
   var I18N={
-    title:['네모 플레이어 외관 금형','Nemo Player 外观模具'],
+    title:['네모 플레이어 스킨파츠','Nemo Player Skin Parts'],
     asm:['합쳐진 모양','组装状态'],sep:['분리된 모양','分解状态'],
     ex:['분해','分解'],exT:['분해 정도','分解程度'],
     reset:['각도 초기화','重置角度'],resetall:['초기화','全部重置'],spin:['자동 회전','自动旋转'],
@@ -214,7 +227,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     m1:['전면 + 후면 커버','前盖 + 后盖'],m2:['스피커 후면 + 버튼','喇叭后盖 + 按键'],m3:['투명 도어','透明门'],m4:['LED 투명 캡','LED 透明帽'],
     pr1:['¥11,000 · 220만원','¥11,000 · 220万韩元'],pr2:['¥8,000 · 160만원','¥8,000 · 160万韩元'],pr3:['¥9,350 · 187만원','¥9,350 · 187万韩元'],pr4:['¥5,000 · 100만원','¥5,000 · 100万韩元'],
     mo:['원안','原方案'],ms:['수정안','修改方案'],
-    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dT:['전체 두께','整体厚度'],dS:['측면','侧面'],dU:['상단','顶部'],dN:['수정안 = 본체(두께 미정) + 스킨파츠 0.85','修改方案 = 主体(厚度待定) + Skin Parts 0.85'],tbd:['미정','待定'],fs:['전체 화면','全屏'],
+    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dT:['전체 두께','整体厚度'],dS:['측면','侧面'],dU:['상단','顶部'],dN:['수정안 = 본체(두께 미정) + 스킨파츠 0.85','修改方案 = 主体(厚度待定) + Skin Parts 0.85'],tbd:['미정','待定'],art:['아티스트 예시 (왕관)','艺人示例(王冠)'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['스킨파츠 빼기','拔出换肤件'],sk0:['스킨파츠 끼우기','装回换肤件'],sw:['스킨파츠 교체','更换换肤件'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
     err:['3D 데이터를 불러오지 못했습니다','无法加载 3D 数据']
   };
   var lang=0;try{var sv=localStorage.getItem('nemo-lang');lang=sv==='zh'?1:sv==='ko'?0:(/^zh/i.test(navigator.language||'')?1:0)}catch(e){lang=/^zh/i.test(navigator.language||'')?1:0}
@@ -230,8 +243,9 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   controls.target.set(14,0,18);
   controls.enableDamping=true;controls.autoRotate=true;controls.autoRotateSpeed=1.2;
   controls.update();
-  var base=camera.position.clone(),T0=controls.target.clone(),portrait=false;
-  function homeCam(){camera.position.copy(T0.clone().add(base.clone().sub(T0).multiplyScalar(portrait?1.3:1)))}
+  var base=camera.position.clone(),T0=controls.target.clone(),portrait=false,view='p';
+  var bp=new THREE.Vector3(111,-125,79),T1=new THREE.Vector3(6,0,9);controls.autoRotate=false;
+  function homeCam(){var B=view==='p'?bp:base,T=view==='p'?T1:T0;camera.position.copy(T.clone().add(B.clone().sub(T).multiplyScalar(portrait?1.3:1)))}
   scene.add(new THREE.HemisphereLight(0xffffff,0x8899aa,0.75));
   var d1=new THREE.DirectionalLight(0xffffff,0.8);d1.position.set(120,-160,220);scene.add(d1);
   var d2=new THREE.DirectionalLight(0xffffff,0.35);d2.position.set(-150,120,-60);scene.add(d2);
@@ -249,13 +263,14 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     Object.keys(meshes).forEach(function(id){
       var me=meshes[id],d=DEF[id];
       me.visible=partOn[id]!==false&&vOK(id);
-      me.material.color.setHex(colorFor(id));
+      me.material.color.setHex((id==='16'&&art)?0xffffff:(real?PCOL:COL)[d.m]);
+      if(d.m===3)me.material.opacity=real?0.2:0.45;if(d.m===4)me.material.opacity=real?0.55:0.7;
       me.material.emissive.setHex(selected===id?0x333333:0x000000);
     });
   }
   function place(){
     Object.keys(meshes).forEach(function(id){
-      var d=DEF[id],c=meshes[id].userData.c,o=d.off||[d.to[0]-c.x,d.to[1]-c.y,d.to[2]-c.z];meshes[id].position.set(c.x+o[0]*explode,c.y+o[1]*explode,c.z+o[2]*explode);
+      var d=DEF[id],c=meshes[id].userData.c,o=d.off||[d.to[0]-c.x,d.to[1]-c.y,d.to[2]-c.z];meshes[id].position.set(c.x+o[0]*explode+(id==='16'?skOut*SK:0),c.y+o[1]*explode,c.z+o[2]*explode);
     });
   }
   function resize(){
@@ -279,9 +294,24 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
       g.computeBoundingBox();var cc=new THREE.Vector3();g.boundingBox.getCenter(cc);g.translate(-cc.x,-cc.y,-cc.z);
       var mat=new THREE.MeshStandardMaterial({color:COL[DEF[id].m],roughness:0.55,metalness:0.05,side:THREE.DoubleSide,
         transparent:DEF[id].m===3||DEF[id].m===4,opacity:DEF[id].m===3?0.45:(DEF[id].m===4?0.7:1),depthWrite:DEF[id].m!==3&&DEF[id].m!==4});
+      
+      if(id==='16'){mat.onBeforeCompile=function(sh){
+        skinU=sh.uniforms.uArt={value:art?1:0};
+        sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vOP;varying vec3 vON;')
+          .replace('#include <begin_vertex>','#include <begin_vertex>\nvOP=position;vON=normal;');
+        sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uArt;varying vec3 vOP;varying vec3 vON;float gGold=0.0;')
+          .replace('#include <color_fragment>','#include <color_fragment>\n'+
+            'if(uArt>0.5){float g=0.0;\n'+
+            'if(abs(vON.y)>0.6){float u=vOP.x,w=vOP.z;float tri=abs(mod(u+3.6,3.6)/1.8-1.0);float top=-1.4+3.6*tri;\n'+
+            ' if(abs(u)<3.7&&w>-4.0&&w<max(top,-2.6))g=1.0;\n'+
+            ' float pk=floor(u/3.6+0.5)*3.6;if(length(vec2(u-pk,w-2.75))<0.55)g=1.0;}\n'+
+            'else if(vON.x>0.6){if(abs(abs(vOP.y)-30.6)<0.45||abs(abs(vOP.z)-6.2)<0.4)g=1.0;}\n'+
+            'gGold=g;diffuseColor.rgb=mix(vec3(0.07,0.07,0.085),vec3(1.0,0.82,0.22),g);}')
+          .replace('#include <metalnessmap_fragment>','#include <metalnessmap_fragment>\nif(uArt>0.5){metalnessFactor=mix(0.05,0.15,gGold);roughnessFactor=mix(0.5,0.4,gGold);}');
+      };}
       var me=new THREE.Mesh(g,mat);me.userData.id=id;me.userData.c=cc;meshes[id]=me;scene.add(me);
     });
-    place();sync();
+    setView('p');
   }).catch(function(){hint.textContent=T('err')});
 
   // picking
@@ -323,9 +353,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   document.getElementById('resetall').addEventListener('click',function(){
     Object.keys(meshes).forEach(function(k){meshes[k].quaternion.identity()});
     Object.keys(partOn).forEach(function(k){delete partOn[k]});mode='split';document.getElementById('mo').setAttribute('aria-pressed','false');document.getElementById('ms').setAttribute('aria-pressed','true');
-    explode=1;ex.value=100;exv.textContent='100';selected=null;segSync();
-    homeCam();controls.target.copy(T0);controls.update();
-    place();sync();
+    selected=null;setView(view);
     hint.textContent='';
   });
   document.getElementById('reset').addEventListener('click',function(){
@@ -350,6 +378,8 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
       document.getElementById(ids[m]).setAttribute('aria-pressed',String(any));
     });
     document.getElementById('dim').setAttribute('data-mode',mode);
+    document.getElementById('artw').hidden=mode!=='split';
+    document.getElementById('skg').hidden=mode!=='split'||view!=='p';
     style();
   }
   Object.keys(ids).forEach(function(m){
@@ -371,6 +401,25 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     document.getElementById('ms').setAttribute('aria-pressed',String(m==='split'));
     sync();
   }
+  function setView(v){view=v;real=(v==='p');explode=(v==='p'?0:1);skOut=0;skLabel();ex.value=explode*100;exv.textContent=ex.value;
+    document.querySelector('.ex').hidden=(v==='p');
+    document.getElementById('vp').setAttribute('aria-pressed',String(v==='p'));document.getElementById('vm').setAttribute('aria-pressed',String(v!=='p'));
+    document.getElementById('cm').setAttribute('aria-pressed',String(!real));document.getElementById('cr').setAttribute('aria-pressed',String(real));
+    homeCam();controls.target.copy(v==='p'?T1:T0);controls.update();place();segSync();sync()}
+  document.getElementById('vp').addEventListener('click',function(){setView('p')});
+  document.getElementById('vm').addEventListener('click',function(){setView('m')});
+  function setArt(v){art=v;document.getElementById('art').setAttribute('aria-pressed',String(art));if(skinU)skinU.value=art?1:0;style()}
+  document.getElementById('art').addEventListener('click',function(){setArt(!art)});
+  function skLabel(){var k=skOut>0.5?'sk0':'sk1',e=document.querySelector('#sk span');e.setAttribute('data-k',k);e.textContent=T(k)}
+  function skAnim(to,ms,cb){var f=skOut,t0=performance.now();skBusy=true;(function st(n){var u=Math.min(1,(n-t0)/ms),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;skOut=f+(to-f)*e;place();if(u<1)requestAnimationFrame(st);else{skOut=to;place();skBusy=false;skLabel();if(cb)cb()}})(t0)}
+  function skReady(){if(explode>0)setEx(0);controls.autoRotate=false;spin.setAttribute('aria-pressed','false')}
+  document.getElementById('sk').addEventListener('click',function(){if(skBusy)return;skReady();skAnim(skOut<0.5?1:0,700)});
+  document.getElementById('sw').addEventListener('click',function(){if(skBusy)return;skReady();
+    var go=function(){skAnim(1,650,function(){setTimeout(function(){setArt(!art);setTimeout(function(){skAnim(0,650)},350)},250)})};
+    if(skOut>0.5){setTimeout(function(){setArt(!art);setTimeout(function(){skAnim(0,650)},350)},50)}else go()});
+  function setReal(v){real=v;document.getElementById('cm').setAttribute('aria-pressed',String(!v));document.getElementById('cr').setAttribute('aria-pressed',String(v));style()}
+  document.getElementById('cm').addEventListener('click',function(){setReal(false)});
+  document.getElementById('cr').addEventListener('click',function(){setReal(true)});
   document.getElementById('mo').addEventListener('click',function(){setMode('orig')});
   document.getElementById('ms').addEventListener('click',function(){setMode('split')});
   var fold=document.getElementById('fold'),panel=document.getElementById('panel');

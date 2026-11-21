@@ -270,7 +270,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     Object.keys(meshes).forEach(function(id){
       var me=meshes[id],d=DEF[id];
       me.visible=partOn[id]!==false&&vOK(id);
-      me.material.color.setHex((id==='16'&&skinIdx>=0)?SKC[skinIdx][0]:(real?PCOL:COL)[d.m]);
+      me.material.color.setHex((id==='16'&&skinIdx>=0&&!(real&&SKC[skinIdx][0]===0xf2f2ef))?SKC[skinIdx][0]:(real?PCOL:COL)[d.m]);
       if(d.m===3)me.material.opacity=real?0.2:0.45;if(d.m===4)me.material.opacity=real?0.55:0.7;
       me.material.emissive.setHex(selected===id?0x333333:0x000000);
     });

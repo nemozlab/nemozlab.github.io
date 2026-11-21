@@ -100,7 +100,7 @@ svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:
 .swb[aria-pressed="true"]{box-shadow:0 0 0 2px var(--fg)}
 #artw[hidden]{display:none!important}
 #artw #dsg{margin:0 0 9px}
-.dim[data-mode=orig] th:nth-child(2),.dim[data-mode=orig] td:nth-child(2),.dim[data-mode=split] th:nth-child(3),.dim[data-mode=split] td:nth-child(3){color:var(--fg);font-weight:700}
+.dim :is(th,td):nth-child(2){color:var(--fg);font-weight:700}
 .legend-side{padding:2px 4px 0}
 .legend-side .foot{margin:4px 0 0}
 .legend-side .prices{flex-direction:column;align-items:flex-start;gap:3px}
@@ -318,7 +318,17 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
           <button class="mh" id="c1" type="button" aria-pressed="true"><span class="n">1</span><h3><span data-k="m1">전면 + 후면 커버</span></h3><span class="sw"></span></button>
           <div class="sub"><div class="seg v1" role="group"><button type="button" id="mo" aria-pressed="false" data-k="mo">원안</button><button type="button" id="ms" aria-pressed="true" data-k="ms">수정안</button></div></div>
           <div class="sub chips" id="p1"></div>
-          <div class="dim" id="dim" data-mode="split"><table><thead><tr><th data-k="tt">두께 (mm)</th><th data-k="mo">원안</th><th data-k="ms">수정안</th></tr></thead><tbody><tr><td data-k="dT">전체 두께</td><td>23.9</td><td>23.9</td></tr><tr><td data-k="dU">상단</td><td>1.9</td><td><span data-k="tbd">미정</span> + 0.85</td></tr><tr><td data-k="dS">측면</td><td>1.7</td><td><span data-k="tbd">미정</span> + 0.85</td></tr></tbody></table><div class="dn" data-k="dN">수정안 = 본체(두께 미정) + 스킨 0.85</div></div>
+          <div class="dim">
+            <table>
+              <thead><tr><th scope="col" data-k="tt">두께 (mm)</th><th scope="col" data-k="dTotal">총두께</th><th scope="col" data-k="dBody">본체</th><th scope="col" data-k="dSkin">스킨</th></tr></thead>
+              <tbody>
+                <tr><th scope="row" data-k="dU">상단</th><td>1.9</td><td>1.05</td><td>0.85</td></tr>
+                <tr><th scope="row" data-k="dS">측면</th><td>1.7</td><td>0.85</td><td>0.85</td></tr>
+              </tbody>
+            </table>
+            <div class="dn" data-k="dN">* 본체 및 스킨 두께는 미정</div>
+            <div class="dn"><span data-k="dT">제품 전체 두께</span> 23.9 mm</div>
+          </div>
         </section>
         <section class="mold pastel" style="--c:var(--m2)">
           <button class="mh" id="c2" type="button" aria-pressed="true"><span class="n">2</span><h3><span data-k="m2">스피커 후면 + 버튼</span></h3><span class="sw"></span></button>
@@ -373,7 +383,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     m1:['커버 세트','外盖套组'],m2:['스피커 후면 + 버튼','喇叭后盖 + 按键'],m3:['투명 도어','透明门'],m4:['LED 투명 캡','LED 透明帽'],
     pr1:['¥11,000 · 220만원','¥11,000 · 220万韩元'],pr2:['¥8,000 · 160만원','¥8,000 · 160万韩元'],pr3:['¥9,350 · 187만원','¥9,350 · 187万韩元'],pr4:['¥5,000 · 100만원','¥5,000 · 100万韩元'],
     mo:['원안','原方案'],ms:['수정안','修改方案'],
-    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dT:['전체 두께','整体厚度'],dS:['측면','侧面'],dU:['상단','顶部'],dN:['수정안 = 본체(두께 미정) + 스킨 0.85','修改方案 = 主体(厚度待定) + Skin Parts 0.85'],tbd:['미정','待定'],skl:['스킨 색 · 데이지는 끼움 부품(공통)','换肤件颜色 · 雏菊为通用插接件'],dz0:['기본형','基础款'],dz1:['데이지','雏菊款'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['상단 스킨을 누르면 분리돼요','点击顶部外壳即可拆下'],sk0:['분리된 스킨을 누르면 다시 끼워져요','点击已拆下的外壳即可装回'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
+    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dT:['제품 전체 두께','产品整体厚度'],dTotal:['총두께','总厚度'],dBody:['본체','主体'],dSkin:['스킨','换肤件'],dS:['측면','侧面'],dU:['상단','顶部'],dN:['* 본체 및 스킨 두께는 미정','* 主体及换肤件的厚度待定'],skl:['스킨 색 · 데이지는 끼움 부품(공통)','换肤件颜色 · 雏菊为通用插接件'],dz0:['기본형','基础款'],dz1:['데이지','雏菊款'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['상단 스킨을 누르면 분리돼요','点击顶部外壳即可拆下'],sk0:['분리된 스킨을 누르면 다시 끼워져요','点击已拆下的外壳即可装回'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
     err:['3D 데이터를 불러오지 못했습니다','无法加载 3D 数据']
   };
   var lang=0;try{var sv=localStorage.getItem('nemo-lang');lang=sv==='zh'?1:sv==='ko'?0:(/^zh/i.test(navigator.language||'')?1:0)}catch(e){lang=/^zh/i.test(navigator.language||'')?1:0}
@@ -546,7 +556,6 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
       button.setAttribute('aria-current',String(activeMold===Number(m)));
     });
     document.getElementById('all-molds').setAttribute('aria-checked',String(Object.keys(DEF).filter(vOK).every(function(id){return partOn[id]!==false})));
-    document.getElementById('dim').setAttribute('data-mode',mode);
     style();
     syncDaisy();
   }

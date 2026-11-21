@@ -159,7 +159,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     <div class="view">
     <div class="stage">
       <div class="dock">
-        <div class="tg" id="skg"><button class="btn ib txt sk" id="sk" type="button"><span data-k="sk1">스킨파츠 빼기</span></button><button class="btn ib txt sk" id="sw" type="button"><span data-k="sw">스킨파츠 교체</span></button></div>
+        <div class="tg" id="skg"><button class="btn ib txt sk" id="sk" type="button"><span data-k="sk1">스킨파츠 빼기</span></button><button class="btn ib txt sk" id="sw" type="button"><span data-k="sw">스킨파츠 교체</span></button><div class="seg" id="dsg"><button type="button" data-d="0" data-k="dz0">기본형</button><button type="button" data-d="1" data-k="dz1" aria-pressed="true">데이지</button></div></div>
         <div class="seg" role="group"><button type="button" id="vp" aria-pressed="true"><span data-k="vp">완제품</span></button><button type="button" id="vm" aria-pressed="false"><span data-k="vm">금형별 분해</span></button></div>
         <div class="seg old" role="group"><button type="button" id="asm" aria-pressed="false" data-kt="asm"><span data-k="asm">합쳐진 모양</span></button><button type="button" id="sep" aria-pressed="true" data-kt="sep"><span data-k="sep">분리된 모양</span></button></div>
         <div class="seg old" role="group"><button type="button" id="cm" aria-pressed="true"><span data-k="cm">금형 색</span></button><button type="button" id="cr" aria-pressed="false"><span data-k="cr">완제품 색</span></button></div>
@@ -230,7 +230,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     m1:['전면 + 후면 커버','前盖 + 后盖'],m2:['스피커 후면 + 버튼','喇叭后盖 + 按键'],m3:['투명 도어','透明门'],m4:['LED 투명 캡','LED 透明帽'],
     pr1:['¥11,000 · 220만원','¥11,000 · 220万韩元'],pr2:['¥8,000 · 160만원','¥8,000 · 160万韩元'],pr3:['¥9,350 · 187만원','¥9,350 · 187万韩元'],pr4:['¥5,000 · 100만원','¥5,000 · 100万韩元'],
     mo:['원안','原方案'],ms:['수정안','修改方案'],
-    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dT:['전체 두께','整体厚度'],dS:['측면','侧面'],dU:['상단','顶部'],dN:['수정안 = 본체(두께 미정) + 스킨파츠 0.85','修改方案 = 主体(厚度待定) + Skin Parts 0.85'],tbd:['미정','待定'],skl:['스킨파츠 색 · 데이지는 끼움 부품(공통)','换肤件颜色 · 雏菊为通用插接件'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['스킨파츠 빼기','拔出换肤件'],sk0:['스킨파츠 끼우기','装回换肤件'],sw:['스킨파츠 교체','更换换肤件'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
+    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dT:['전체 두께','整体厚度'],dS:['측면','侧面'],dU:['상단','顶部'],dN:['수정안 = 본체(두께 미정) + 스킨파츠 0.85','修改方案 = 主体(厚度待定) + Skin Parts 0.85'],tbd:['미정','待定'],skl:['스킨파츠 색 · 데이지는 끼움 부품(공통)','换肤件颜色 · 雏菊为通用插接件'],dz0:['기본형','基础款'],dz1:['데이지','雏菊款'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['스킨파츠 빼기','拔出换肤件'],sk0:['스킨파츠 끼우기','装回换肤件'],sw:['스킨파츠 교체','更换换肤件'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
     err:['3D 데이터를 불러오지 못했습니다','无法加载 3D 数据']
   };
   var lang=0;try{var sv=localStorage.getItem('nemo-lang');lang=sv==='zh'?1:sv==='ko'?0:(/^zh/i.test(navigator.language||'')?1:0)}catch(e){lang=/^zh/i.test(navigator.language||'')?1:0}
@@ -395,7 +395,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     document.getElementById('ms').setAttribute('aria-pressed',String(m==='split'));
     sync();
   }
-  function setView(v){view=v;if(v==='p')grp.quaternion.setFromRotationMatrix(RM);else grp.quaternion.identity();if(cardM)cardM.visible=(v==='p');real=(v==='p');explode=(v==='p'?0:1);skOut=0;skLabel();ex.value=explode*100;exv.textContent=ex.value;
+  function setView(v){view=v;if(v==='p')grp.quaternion.setFromRotationMatrix(RM);else grp.quaternion.identity();if(cardM)cardM.visible=(v==='p'&&dz===1);real=(v==='p');explode=(v==='p'?0:1);skOut=0;skLabel();ex.value=explode*100;exv.textContent=ex.value;
     document.querySelector('.ex').hidden=(v==='p');
     document.getElementById('vp').setAttribute('aria-pressed',String(v==='p'));document.getElementById('vm').setAttribute('aria-pressed',String(v!=='p'));
     document.getElementById('cm').setAttribute('aria-pressed',String(!real));document.getElementById('cr').setAttribute('aria-pressed',String(real));
@@ -479,6 +479,14 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     SKC.forEach(function(c,i){var d=document.createElement('button');d.type='button';d.className='swb';d.style.background='#'+('000000'+c[0].toString(16)).slice(-6);d.setAttribute('data-i',String(i));d.title=c[1];box.appendChild(d)});
     box.addEventListener('click',function(ev){var t=ev.target.closest('.swb');if(t)setSkin(parseInt(t.getAttribute('data-i'),10))});
   }
+  var dz=1;
+  function setDesign(d){dz=d;
+    [].forEach.call(document.querySelectorAll('#dsg button'),function(b){b.setAttribute('aria-pressed',String(parseInt(b.getAttribute('data-d'),10)===d))});
+    if(daisyG)daisyG.visible=d===1;
+    if(cardM)cardM.visible=(view==='p'&&d===1);
+    if(d===0)setSkin(-1);else if(skinIdx<0)setSkin(0);
+  }
+  document.getElementById('dsg').addEventListener('click',function(ev){var t=ev.target.closest('button');if(t)setDesign(parseInt(t.getAttribute('data-d'),10))});
   function setSkin(i){skinIdx=i;
     [].forEach.call(document.querySelectorAll('#sw9 .swb'),function(b){b.setAttribute('aria-pressed',String(parseInt(b.getAttribute('data-i'),10)===i))});
     

@@ -772,8 +772,8 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 
   function makeDaisyWordmark(skin){
     var loader=new THREE.TextureLoader();
-    var matte=loader.load('gd-wordmark-color.png');
-    var relief=loader.load('gd-wordmark-normal.png');
+    var matte=loader.load('gd-wordmark-color.png?v=2');
+    var relief=loader.load('gd-wordmark-normal.png?v=2');
     matte.encoding=THREE.sRGBEncoding;
     var anisotropy=renderer.capabilities.getMaxAnisotropy();
     matte.anisotropy=anisotropy;

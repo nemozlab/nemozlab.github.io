@@ -247,9 +247,9 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   controls.enableDamping=true;controls.autoRotate=true;controls.autoRotateSpeed=1.2;
   controls.update();
   var base=camera.position.clone(),T0=controls.target.clone(),portrait=false,view='p';
-  var T1=new THREE.Vector3(0,12,0),bp=new THREE.Vector3(62,-132,44);controls.autoRotate=false;
+  var T1=new THREE.Vector3(0,12,8),bp=new THREE.Vector3(62,-132,52);controls.autoRotate=false;
   var shiftX=0;
-  function homeCam(){shiftX=0;var B=view==='p'?bp:base,T=view==='p'?T1:T0,f=view==='p'?(portrait?1.3:0.85):(portrait?1.3:1);camera.position.copy(T.clone().add(B.clone().sub(T).multiplyScalar(f)))}
+  function homeCam(){shiftX=0;var B=view==='p'?bp:base,T=view==='p'?T1:T0,f=view==='p'?(portrait?1.4:0.98):(portrait?1.3:1);camera.position.copy(T.clone().add(B.clone().sub(T).multiplyScalar(f)))}
   scene.add(new THREE.HemisphereLight(0xffffff,0x8899aa,0.75));
   var d1=new THREE.DirectionalLight(0xffffff,0.8);d1.position.set(120,-160,220);scene.add(d1);
   var d2=new THREE.DirectionalLight(0xffffff,0.35);d2.position.set(-150,120,-60);scene.add(d2);
@@ -303,7 +303,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
       
       var me=new THREE.Mesh(g,mat);me.userData.id=id;me.userData.c=cc;meshes[id]=me;grp.add(me);
     });
-    cardM=mkCard();grp.add(cardM);buildDaisies();buildSwatches();setSkin(-1);
+    cardM=mkCard();grp.add(cardM);buildDaisies();buildSwatches();setSkin(0);
     setView('p');
   }).catch(function(){hint.textContent=T('err')});
 
@@ -403,47 +403,73 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   document.getElementById('vp').addEventListener('click',function(){setView('p')});
   document.getElementById('vm').addEventListener('click',function(){setView('m')});
 
+  function drawArt(x,W,H,col){
+    x.clearRect(0,0,W,H);
+    x.fillStyle='rgba(255,255,255,0.10)';x.fillRect(0,0,W,H);
+    x.lineCap='round';x.lineJoin='round';
+    // 줄기: 상단 버튼 옆(좌상단)에서 시작해 카드 안쪽으로 이어짐
+    x.strokeStyle=col;x.fillStyle=col;
+    x.lineWidth=34;x.beginPath();x.moveTo(36,-10);x.bezierCurveTo(40,120,120,200,230,250);x.bezierCurveTo(330,296,430,300,520,380);x.stroke();
+    x.lineWidth=20;x.beginPath();x.moveTo(150,180);x.bezierCurveTo(230,150,300,100,360,70);x.stroke();
+    x.lineWidth=20;x.beginPath();x.moveTo(380,300);x.bezierCurveTo(440,260,500,210,560,170);x.stroke();
+    function leaf(a,b,ang,l,w){x.save();x.translate(a,b);x.rotate(ang);x.beginPath();x.moveTo(0,0);x.bezierCurveTo(l*0.25,-w,l*0.75,-w,l,0);x.bezierCurveTo(l*0.75,w,l*0.25,w,0,0);x.fill();x.restore()}
+    leaf(60,110,0.55,120,34);leaf(110,205,1.15,100,28);leaf(300,300,0.9,110,30);leaf(470,345,-0.5,110,30);
+    function daisy(a,b,R){
+      x.fillStyle='#ffffff';x.strokeStyle='rgba(120,130,150,0.55)';x.lineWidth=3;
+      for(var k=0;k<8;k++){x.save();x.translate(a,b);x.rotate(k*Math.PI/4);x.beginPath();x.ellipse(R*0.62,0,R*0.4,R*0.24,0,0,7);x.fill();x.stroke();x.restore()}
+      x.fillStyle='#ffc21a';x.beginPath();x.arc(a,b,R*0.3,0,7);x.fill();
+    }
+    daisy(380,68,44);daisy(570,160,50);daisy(560,392,64);daisy(640,300,30);
+  }
   function mkCard(){
     var W=720,H=480,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
     function rr(a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
-    x.fillStyle='#7d2024';x.fillRect(0,0,W,H);
-    x.fillStyle='#4d1317';rr(20,16,W-40,64,14);x.fill();
-    [[48,48],[W-48,48],[48,H-44],[W-48,H-44]].forEach(function(p){x.fillStyle='#d9c9a8';x.beginPath();x.arc(p[0],p[1],9,0,7);x.fill()});
-    x.fillStyle='#efe5cb';rr(60,100,W-120,200,16);x.fill();
-    x.fillStyle='#2f9d96';x.fillRect(60,100,W-120,46);
-    x.fillStyle='#fff';x.font='bold 30px Arial,sans-serif';x.textBaseline='middle';x.fillText('MIX TAPE',84,124);
-    x.fillStyle='#7d2024';x.font='bold 56px Arial,sans-serif';x.fillText('A',W-130,124);
-    x.fillStyle='#8a6a60';for(var i=0;i<3;i++){x.fillRect(84,170+i*26,W-300,5)}
-    x.fillStyle='#2a2326';rr(150,214,W-300,70,34);x.fill();
-    [[245,249],[W-245,249]].forEach(function(p){x.fillStyle='#3aa6a0';x.beginPath();x.arc(p[0],p[1],34,0,7);x.fill();x.fillStyle='#efe5cb';x.beginPath();x.arc(p[0],p[1],18,0,7);x.fill();x.fillStyle='#2a2326';for(var k=0;k<6;k++){x.save();x.translate(p[0],p[1]);x.rotate(k*Math.PI/3);x.fillRect(10,-2.5,8,5);x.restore()}});
-    x.fillStyle='#2a1012';x.beginPath();x.moveTo(120,H-120);x.lineTo(W-120,H-120);x.lineTo(W-70,H-24);x.lineTo(70,H-24);x.closePath();x.fill();
-    x.fillStyle='#7d2024';for(var j=0;j<3;j++){rr(W/2-120+j*90,H-96,40,28,6);x.fill()}
-    var tex=new THREE.CanvasTexture(c);if(tex.anisotropy!==undefined)tex.anisotropy=4;
+    window.__cx=x;window.__cw=W;window.__ch=H;drawArt(x,W,H,'#16161a');
+    var tex=new THREE.CanvasTexture(c);window.__ct=tex;if(tex.anisotropy!==undefined)tex.anisotropy=4;
     var r=2.5,w=60,h=40,s=new THREE.Shape();s.moveTo(-w/2+r,-h/2);s.lineTo(w/2-r,-h/2);s.absarc(w/2-r,-h/2+r,r,-Math.PI/2,0,false);s.lineTo(w/2,h/2-r);s.absarc(w/2-r,h/2-r,r,0,Math.PI/2,false);s.lineTo(-w/2+r,h/2);s.absarc(-w/2+r,h/2-r,r,Math.PI/2,Math.PI,false);s.lineTo(-w/2,-h/2+r);s.absarc(-w/2+r,-h/2+r,r,Math.PI,Math.PI*1.5,false);
     var g=new THREE.ExtrudeGeometry(s,{depth:1.2,bevelEnabled:false,curveSegments:8});
     var P=g.attributes.position,uv=new Float32Array(P.count*2);for(var q=0;q<P.count;q++){uv[q*2]=1-(P.getX(q)+w/2)/w;uv[q*2+1]=(P.getY(q)+h/2)/h}
     g.setAttribute('uv',new THREE.BufferAttribute(uv,2));
-    var m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({map:tex,roughness:0.35,metalness:0.0}));
+    var m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({map:tex,roughness:0.35,metalness:0.0,transparent:true,side:THREE.DoubleSide}));
     m.rotation.z=-Math.PI/2;m.position.set(-3.45,0,1.55);
     return m;
   }
     var SKC=[[0x16161a,'블랙 / 黑'],[0xff8a1f,'오렌지 / 橙'],[0xffd426,'옐로우 / 黄'],[0xa6e04a,'라이트그린 / 浅绿'],[0x1fae5a,'그린 / 绿'],[0x3cc0f0,'스카이블루 / 天蓝'],[0x1f4fd6,'코발트블루 / 钴蓝'],[0xff5fa8,'핑크 / 粉'],[0x8a4ff0,'바이올렛 / 紫']];
-  var skinIdx=-1,daisyG=null,daisyMat=null,daisyCen=null;
+  var skinIdx=-1,daisyG=null,daisyMat=null,daisyCen=null,daisyRim=null;
+  function petalShape(R,k){
+    var sh=new THREE.Shape();
+    sh.moveTo(R*0.1*k,0);
+    sh.bezierCurveTo(R*0.2*k,-R*0.22*k,R*0.62*k,-R*0.31*k,R*0.9*k,-R*0.23*k);
+    sh.bezierCurveTo(R*1.04*k,-R*0.17*k,R*1.04*k,R*0.17*k,R*0.9*k,R*0.23*k);
+    sh.bezierCurveTo(R*0.62*k,R*0.31*k,R*0.2*k,R*0.22*k,R*0.1*k,0);
+    return sh;
+  }
   function mkDaisy(R,depth){
-    var g=new THREE.Group();
-    var sh=new THREE.Shape();sh.absellipse(R*0.56,0,R*0.46,R*0.2,0,Math.PI*2,false,0);
-    var pg=new THREE.ExtrudeGeometry(sh,{depth:depth,bevelEnabled:true,bevelThickness:0.18,bevelSize:0.18,bevelSegments:2,curveSegments:16});
-    for(var k=0;k<12;k++){var m=new THREE.Mesh(pg,daisyMat);m.rotation.z=k*Math.PI/6;m.position.z=(k%2)*0.12;g.add(m)}
-    var cg=new THREE.CylinderGeometry(R*0.3,R*0.3,depth+0.5,28);cg.rotateX(Math.PI/2);cg.translate(0,0,(depth+0.5)/2);
-    g.add(new THREE.Mesh(cg,daisyCen));
+    var g=new THREE.Group(),N=8;
+    var pg=new THREE.ExtrudeGeometry(petalShape(R,1),{depth:depth,bevelEnabled:true,bevelThickness:0.4,bevelSize:0.3,bevelSegments:5,curveSegments:28});
+    var rg=new THREE.ExtrudeGeometry(petalShape(R,1.1),{depth:depth*0.4,bevelEnabled:true,bevelThickness:0.2,bevelSize:0.15,bevelSegments:3,curveSegments:28});
+    for(var k=0;k<N;k++){
+      var a=k*2*Math.PI/N;
+      var r=new THREE.Mesh(rg,daisyRim);r.rotation.z=a;r.position.z=-0.2;g.add(r);
+      var m=new THREE.Mesh(pg,daisyMat);m.rotation.z=a;m.position.z=0.1+(k%2)*0.12;g.add(m);
+    }
+    var cg=new THREE.SphereGeometry(R*0.3,36,18,0,Math.PI*2,0,Math.PI/2);cg.rotateX(Math.PI/2);cg.scale(1,1,0.8);
+    var c=new THREE.Mesh(cg,daisyCen);c.position.z=depth+0.3;g.add(c);
     return g;
   }
   function buildDaisies(){
-    daisyMat=new THREE.MeshStandardMaterial({color:0xfafafa,roughness:0.45,metalness:0});
-    daisyCen=new THREE.MeshStandardMaterial({color:0xffc21a,roughness:0.45,metalness:0});
+    daisyMat=new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:0.32,metalness:0,clearcoat:0.5,clearcoatRoughness:0.25});
+    daisyRim=new THREE.MeshPhysicalMaterial({color:0xd9dde6,roughness:0.2,metalness:0.1,clearcoat:0.8,clearcoatRoughness:0.15});
+    daisyCen=new THREE.MeshPhysicalMaterial({color:0xffc21a,roughness:0.35,metalness:0,clearcoat:0.5,clearcoatRoughness:0.25});
     daisyG=new THREE.Group();
     var zf=-7.25+0.2;
-    [[0,3.7],[-19,2.3],[19,2.3]].forEach(function(a){var d=mkDaisy(a[1],1.1);d.rotation.y=Math.PI;d.position.set(0.1,a[0],zf);daisyG.add(d)});
+    var d=mkDaisy(11,2.0);d.rotation.y=Math.PI;d.position.set(15,-21,zf);daisyG.add(d);
+    var sm=meshes['16'].material;
+    function tube(pts,r){var cv=new THREE.CatmullRomCurve3(pts.map(function(q){return new THREE.Vector3(q[0],q[1],q[2])}));var t=new THREE.Mesh(new THREE.TubeGeometry(cv,28,r,14,false),sm);daisyG.add(t)}
+    tube([[3,-27,0],[8,-27,-1],[12,-25,-4],[15,-21,-6.6]],1.5);
+    tube([[5,-27,0],[8,-31,-2],[11,-34,-4.5],[14.5,-35,-6]],1.0);
+    tube([[5,-27,0],[9,-24,-2.5],[14,-19,-5],[19,-14.5,-6]],1.0);
+    var bs=new THREE.Mesh(new THREE.SphereGeometry(2.0,20,12),sm);bs.position.set(4.4,-27,0);daisyG.add(bs);
     meshes['16'].add(daisyG);
   }
   function buildSwatches(){
@@ -455,6 +481,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   function setSkin(i){skinIdx=i;
     [].forEach.call(document.querySelectorAll('#sw9 .swb'),function(b){b.setAttribute('aria-pressed',String(parseInt(b.getAttribute('data-i'),10)===i))});
     
+    if(window.__cx){drawArt(window.__cx,window.__cw,window.__ch,'#'+('000000'+(i>=0?SKC[i][0]:0xa8afbd).toString(16)).slice(-6));window.__ct.needsUpdate=true}
     style()}
   function skLabel(){var k=skOut>0.5?'sk0':'sk1',e=document.querySelector('#sk span');e.setAttribute('data-k',k);e.textContent=T(k)}
   function skAnim(to,ms,cb){var f=skOut,t0=performance.now();skBusy=true;(function st(n){var u=Math.min(1,(n-t0)/ms),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;skOut=f+(to-f)*e;place();if(u<1)requestAnimationFrame(st);else{skOut=to;place();skBusy=false;skLabel();if(cb)cb()}})(t0)}

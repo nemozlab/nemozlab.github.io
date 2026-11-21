@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>네모 플레이어 외관 금형</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1b2233">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
@@ -401,8 +407,6 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   function toggleFs(){try{var p;if(inFs()){p=(document.exitFullscreen||document.webkitExitFullscreen).call(document)}else{var r=de.requestFullscreen||de.webkitRequestFullscreen;if(r)p=r.call(de)}if(p&&p.catch)p.catch(function(){})}catch(e){}}
   if(!(de.requestFullscreen||de.webkitRequestFullscreen))fsBtn.hidden=true;
   fsBtn.addEventListener('click',toggleFs);
-  var autoFs=false;
-  window.addEventListener('pointerup',function(e){if(autoFs)return;autoFs=true;if(e.pointerType==='touch'&&isM()&&!inFs()&&e.target!==fsBtn&&!(e.target.closest&&e.target.closest('#fs'))){toggleFs()}});
 
   (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera)})();
 })();

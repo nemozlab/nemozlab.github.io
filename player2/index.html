@@ -397,7 +397,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     document.getElementById('ms').setAttribute('aria-pressed',String(m==='split'));
     sync();
   }
-  function setView(v){view=v;grp.quaternion.setFromRotationMatrix(RM);if(cardM)cardM.visible=(v==='p'&&dz===1);real=(v==='p');explode=(v==='p'?0:1);skOut=0;skLabel();ex.value=explode*100;exv.textContent=ex.value;
+  function setView(v){view=v;grp.quaternion.setFromRotationMatrix(RM);if(cardM)cardM.visible=false;real=(v==='p');explode=(v==='p'?0:1);skOut=0;skLabel();ex.value=explode*100;exv.textContent=ex.value;
     document.querySelector('.ex').classList.toggle('dis',v==='p');ex.disabled=(v==='p');
     document.getElementById('vp').setAttribute('aria-pressed',String(v==='p'));document.getElementById('vm').setAttribute('aria-pressed',String(v!=='p'));
     document.getElementById('cm').setAttribute('aria-pressed',String(!real));document.getElementById('cr').setAttribute('aria-pressed',String(real));
@@ -432,19 +432,23 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     var SKC=[[0x16161a,'블랙 / 黑'],[0xff8a1f,'오렌지 / 橙'],[0xffd426,'옐로우 / 黄'],[0xa6e04a,'라이트그린 / 浅绿'],[0x1fae5a,'그린 / 绿'],[0x3cc0f0,'스카이블루 / 天蓝'],[0x1f4fd6,'코발트블루 / 钴蓝'],[0xff5fa8,'핑크 / 粉'],[0x8a4ff0,'바이올렛 / 紫'],[0xf2f2ef,'화이트 / 白'],[0x4fd8c4,'네모즈 민트 / 尼莫兹薄荷']];
   var skinIdx=-1,daisyG=null,daisyMat=null,daisyCen=null,daisyRim=null,daisyEdge=null,daisyCenEdge=null,greenMat=null;
   function petalShape(R){var sh=new THREE.Shape();sh.absellipse(R*0.57,0,R*0.43,R*0.235,0,Math.PI*2,false,0);return sh;}
-  function mkDaisy(R,depth){var g=new THREE.Group();
-    var J=[6,-5,3,-6,2,6,-3,5,-4],L=[1,.9,1.05,.94,1.06,.92,1.04,.9,1.02];
-    for(var k=0;k<9;k++){var pg=new THREE.ExtrudeGeometry(petalShape(R*0.97*L[k]),{depth:depth,bevelEnabled:true,bevelThickness:0.12,bevelSize:0.12,bevelSegments:2,curveSegments:48});
-      var m=new THREE.Mesh(pg,daisyMat);m.rotation.z=(28+38*k+J[k])*Math.PI/180;m.position.z=(k%2)*0.3;g.add(m);}
-    var cg=new THREE.SphereGeometry(R*0.3,48,24);cg.scale(1,1,0.32);
-    var c=new THREE.Mesh(cg,daisyCen);c.position.z=depth+0.55;g.add(c);return g;}
-  function buildDaisies(){daisyMat=new THREE.MeshStandardMaterial({color:0xfbfbfa,emissive:0x0f1013,roughness:0.5,metalness:0});
-    daisyCen=new THREE.MeshStandardMaterial({color:0xf2b705,emissive:0x2e2000,roughness:0.55,metalness:0});
+  function mkDaisy(R,depth){
+    var g=new THREE.Group();
+    var sh=new THREE.Shape();sh.absellipse(R*0.56,0,R*0.46,R*0.2,0,Math.PI*2,false,0);
+    var pg=new THREE.ExtrudeGeometry(sh,{depth:depth,bevelEnabled:true,bevelThickness:0.18,bevelSize:0.18,bevelSegments:2,curveSegments:16});
+    for(var k=0;k<12;k++){var m=new THREE.Mesh(pg,daisyMat);m.rotation.z=k*Math.PI/6;m.position.z=(k%2)*0.12;g.add(m)}
+    var cg=new THREE.CylinderGeometry(R*0.3,R*0.3,depth+0.5,28);cg.rotateX(Math.PI/2);cg.translate(0,0,(depth+0.5)/2);
+    g.add(new THREE.Mesh(cg,daisyCen));
+    return g;
+  }
+  function buildDaisies(){
+    daisyMat=new THREE.MeshStandardMaterial({color:0xfafafa,roughness:0.45,metalness:0});
+    daisyCen=new THREE.MeshStandardMaterial({color:0xffc21a,roughness:0.45,metalness:0});
     daisyG=new THREE.Group();
-    var d=mkDaisy(12,0.6);d.rotation.y=Math.PI;d.rotation.z=-0.2;d.position.set(14,-20,-7.05);daisyG.add(d);
-    var sm=meshes['16'].material;
-    var st=new THREE.Mesh(new THREE.BoxGeometry(18.4,2.3,0.55),sm);st.position.set(4.9,-20,-7.42);daisyG.add(st);
-    meshes['16'].add(daisyG);}
+    var zf=-7.25+0.2;
+    [[0,3.7],[-19,2.3],[19,2.3]].forEach(function(a){var d=mkDaisy(a[1],1.1);d.rotation.y=Math.PI;d.position.set(0.1,a[0],zf);daisyG.add(d)});
+    meshes['16'].add(daisyG);
+  }
   function buildSwatches(){
     var box=document.getElementById('sw9');
     var b=document.createElement('button');b.type='button';b.className='swb plain';b.setAttribute('data-i','-1');b.title='기본 / 默认';box.appendChild(b);
@@ -458,7 +462,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   function setDesign(d){dz=d;
     [].forEach.call(document.querySelectorAll('#dsg button'),function(b){b.setAttribute('aria-pressed',String(parseInt(b.getAttribute('data-d'),10)===d))});
     if(daisyG)daisyG.visible=d===1;
-    if(cardM)cardM.visible=(view==='p'&&d===1);
+    if(cardM)cardM.visible=false;
     applyAllowed();if(allowed().indexOf(skinIdx)<0)setSkin(allowed()[0]);else setSkin(skinIdx);
   }
   document.getElementById('dsg').addEventListener('click',function(ev){var t=ev.target.closest('button');if(t)setDesign(parseInt(t.getAttribute('data-d'),10))});

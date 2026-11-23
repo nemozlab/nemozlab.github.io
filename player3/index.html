@@ -168,6 +168,9 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 .product-panel #artw{margin:4px 0}
 .artist-note{margin:10px 0 0;font-size:.78rem;line-height:1.5;color:var(--muted);word-break:keep-all}
 .artist-note strong{display:block;color:var(--fg)}
+.skin-mold-request{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.skin-mold-request h3{margin:0 0 4px;font-size:.85rem}
+.skin-mold-request p{margin:0;font-size:.78rem;line-height:1.55;color:var(--muted);word-break:keep-all}
 .skin-guide{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);box-sizing:border-box;text-align:center;font-size:.8rem;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 4px rgba(0,0,0,.12)}
 .skin-guide p{margin:0;padding:9px 12px 0;line-height:1.45;word-break:keep-all;overflow-wrap:break-word}
 .skin-guide p + p{padding-top:3px;color:var(--muted)}
@@ -358,6 +361,10 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
           </table>
           <div class="dn" data-k="dN">* 총두께는 예측치입니다.</div>
         </div>
+        <div class="skin-mold-request">
+          <h3 data-k="skinMoldTitle">금형 분리 요구사항</h3>
+          <p data-k="skinMoldReason">현재 상단 스킨 형태를 기준으로 전용 금형 1벌을 추가 제작하고자 합니다. 본체 금형을 공용으로 쓰면서 아티스트별 상단 스킨을 별도로 제작하고 교체할 수 있도록 하기 위함입니다.</p>
+        </div>
         <p class="artist-note">
           <strong data-k="dz1">데이지(아티스트 버전)</strong>
           <span data-k="artistNote">아티스트만을 위한 스킨 금형을 별도로 제작 예정</span>
@@ -429,6 +436,8 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     pr1:['US$1,650 (220만원)','US$1,650'],pr2:['US$1,200 (160만원)','US$1,200'],pr3:['US$1,400 (187만원)','US$1,400'],pr4:['US$750 (100만원)','US$750'],
     mo:['원안','原方案'],ms:['수정안','修改方案'],
     mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dTotal:['총두께','总厚度'],dBody:['본체','主体'],dSkin:['스킨','换肤件'],dU:['상단 기준 단면','顶部参考截面'],dFront:['전면 벽','前侧壁'],dRear:['후면 벽','后侧壁'],dN:['* 총두께는 예측치입니다.','* 总厚度为估算值。'],dz0:['기본형','基础款'],dz1:['데이지(아티스트 버전)','雏菊（艺人版）'],artistNote:['아티스트만을 위한 스킨 금형을 별도로 제작 예정','计划另行制作艺人专用的换肤件模具。'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['스킨 분리 · 결합부 보기','拆下换肤件 · 查看卡扣'],sk0:['스킨 다시 끼우기','装回换肤件'],snapFit:['스킨 양끝을 표시된 본체 홈에 맞추면 딸깍 고정돼요.','将换肤件两端对准标出的卡槽，即可卡紧。'],snapSlide:['스킨을 잡고 드래그하면 옮길 수 있어요.','拖动换肤件即可移动。'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
+    skinMoldTitle:['금형 분리 요구사항','模具拆分要求'],
+    skinMoldReason:['현재 상단 스킨 형태를 기준으로 전용 금형 1벌을 추가 제작하고자 합니다. 본체 금형을 공용으로 쓰면서 아티스트별 상단 스킨을 별도로 제작하고 교체할 수 있도록 하기 위함입니다.','希望以现有顶部换肤件的造型为基础，追加制作一套专用模具。这样可以共用机身模具，并按不同艺人单独制作和更换顶部换肤件。'],
     err:['3D 데이터를 불러오지 못했습니다','无法加载 3D 数据']
   };
   var lang=0;try{var sv=localStorage.getItem('nemo-lang');lang=sv==='zh'?1:sv==='ko'?0:(/^zh/i.test(navigator.language||'')?1:0)}catch(e){lang=/^zh/i.test(navigator.language||'')?1:0}

@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css">
-  <link rel="stylesheet" href="guide.css?v=viewer-layout">
+  <link rel="stylesheet" href="guide.css?v=sound-duration">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -192,19 +192,19 @@
         <p>제작 검토용 음원을 미리 들을 수 있어요. 음원 길이와 언어 구성, 다운로드 LED와 30초 이후 안내는 양산 사양을 확인 중이에요.</p>
       </div>
       <ol class="sound-list">
-        <li><div><h3>전원 켜짐</h3><p>플레이어 전원을 켤 때</p></div><audio controls preload="none" src="audio/01_sfx_power_on.mp3" aria-label="전원 켜짐 미리 듣기"></audio></li>
-        <li><div><h3>전원 꺼짐</h3><p>플레이어를 끄거나 전원이 자동으로 꺼질 때</p></div><audio controls preload="none" src="audio/02_sfx_power_off.mp3" aria-label="전원 꺼짐 미리 듣기"></audio></li>
-        <li><div><h3>배터리 부족</h3><p>배터리가 부족할 때</p></div><audio controls preload="none" src="audio/03_sfx_low_battery.mp3" aria-label="배터리 부족 미리 듣기"></audio></li>
-        <li><div><h3>Wi-Fi 설정 시작</h3><p>플레이어가 Wi-Fi 설정 모드에 들어갈 때</p><p class="voice-line">“Wi-Fi 설정 모드로 진입합니다.”</p></div><audio controls preload="none" src="audio/04_voice_wifi_setup_enter.mp3" aria-label="Wi-Fi 설정 시작 미리 듣기"></audio></li>
-        <li><div><h3>Wi-Fi 설정 성공</h3><p>새 Wi-Fi 설정으로 연결이 확인됐을 때</p><p class="voice-line">“Wi-Fi 설정에 성공했습니다.”</p></div><audio controls preload="none" src="audio/05_voice_wifi_setup_success.mp3" aria-label="Wi-Fi 설정 성공 미리 듣기"></audio></li>
-        <li><div><h3>Wi-Fi 설정 실패</h3><p>설정 도중 Wi-Fi 연결에 실패하거나 대기 시간이 끝났을 때</p><p class="voice-line">“Wi-Fi 설정에 실패했습니다.”</p></div><audio controls preload="none" src="audio/06_voice_wifi_setup_fail.mp3" aria-label="Wi-Fi 설정 실패 미리 듣기"></audio></li>
-        <li><div><h3>Wi-Fi 연결 끊김</h3><p>음원 다운로드 중 Wi-Fi가 끊겼을 때</p></div><audio controls preload="none" src="audio/07_sfx_wifi_disconnected.mp3" aria-label="Wi-Fi 연결 끊김 미리 듣기"></audio></li>
-        <li><div><h3>Wi-Fi 다시 연결됨</h3><p>Wi-Fi가 다시 연결됐을 때</p></div><audio controls preload="none" src="audio/08_sfx_wifi_connected.mp3" aria-label="Wi-Fi 다시 연결됨 미리 듣기"></audio></li>
-        <li><div><h3>Wi-Fi 연결 필요</h3><p>피스의 음원이 저장되어 있지 않고 Wi-Fi에도 연결되어 있지 않을 때</p><p class="voice-line">“Wi-Fi에 연결해 주세요.”</p></div><audio controls preload="none" src="audio/09_voice_wifi_connect_request.mp3" aria-label="Wi-Fi 연결 필요 미리 듣기"></audio></li>
-        <li><div><h3>다운로드 중 첫 안내</h3><p>다운로드가 필요한 상태에서 피스를 넣고 3초가 지났을 때</p><p class="voice-line">“다운로드 중입니다.”</p></div><audio controls preload="none" src="audio/10_voice_downloading_1.mp3" aria-label="다운로드 중 첫 안내 미리 듣기"></audio></li>
-        <li><div><h3>다운로드 중 두 번째 안내</h3><p>설계 문서에는 다운로드가 끝나지 않은 채 30초가 지났을 때로 기록되어 있어요.</p><p class="voice-line">“다운로드 중입니다. 잠시만 기다려 주세요.”</p></div><audio controls preload="none" src="audio/11_voice_downloading_2.mp3" aria-label="다운로드 중 두 번째 안내 미리 듣기"></audio></li>
-        <li><div><h3>랜덤 재생 켜기</h3><p>재생·일시정지 버튼을 3초간 눌러 랜덤 재생을 켤 때</p></div><audio controls preload="none" src="audio/12_sfx_shuffle_mode_enter.mp3" aria-label="랜덤 재생 켜기 미리 듣기"></audio></li>
-        <li><div><h3>랜덤 재생 끄기</h3><p>재생·일시정지 버튼을 다시 3초간 눌러 랜덤 재생을 끌 때</p></div><audio controls preload="none" src="audio/13_sfx_shuffle_mode_exit.mp3" aria-label="랜덤 재생 끄기 미리 듣기"></audio></li>
+        <li><div><h3>전원 켜짐 <time class="sound-duration" datetime="PT4.0S">4.0초</time></h3><p>플레이어 전원을 켤 때</p></div><audio controls preload="none" src="audio/01_sfx_power_on.mp3" aria-label="전원 켜짐 미리 듣기"></audio></li>
+        <li><div><h3>전원 꺼짐 <time class="sound-duration" datetime="PT3.9S">3.9초</time></h3><p>플레이어를 끄거나 전원이 자동으로 꺼질 때</p></div><audio controls preload="none" src="audio/02_sfx_power_off.mp3" aria-label="전원 꺼짐 미리 듣기"></audio></li>
+        <li><div><h3>배터리 부족 <time class="sound-duration" datetime="PT3.2S">3.2초</time></h3><p>배터리가 부족할 때</p></div><audio controls preload="none" src="audio/03_sfx_low_battery.mp3" aria-label="배터리 부족 미리 듣기"></audio></li>
+        <li><div><h3>Wi-Fi 설정 시작 <time class="sound-duration" datetime="PT12.2S">12.2초</time></h3><p>플레이어가 Wi-Fi 설정 모드에 들어갈 때</p><p class="voice-line">“Wi-Fi 설정 모드로 진입합니다.”</p></div><audio controls preload="none" src="audio/04_voice_wifi_setup_enter.mp3" aria-label="Wi-Fi 설정 시작 미리 듣기"></audio></li>
+        <li><div><h3>Wi-Fi 설정 성공 <time class="sound-duration" datetime="PT11.5S">11.5초</time></h3><p>새 Wi-Fi 설정으로 연결이 확인됐을 때</p><p class="voice-line">“Wi-Fi 설정에 성공했습니다.”</p></div><audio controls preload="none" src="audio/05_voice_wifi_setup_success.mp3" aria-label="Wi-Fi 설정 성공 미리 듣기"></audio></li>
+        <li><div><h3>Wi-Fi 설정 실패 <time class="sound-duration" datetime="PT11.7S">11.7초</time></h3><p>설정 도중 Wi-Fi 연결에 실패하거나 대기 시간이 끝났을 때</p><p class="voice-line">“Wi-Fi 설정에 실패했습니다.”</p></div><audio controls preload="none" src="audio/06_voice_wifi_setup_fail.mp3" aria-label="Wi-Fi 설정 실패 미리 듣기"></audio></li>
+        <li><div><h3>Wi-Fi 연결 끊김 <time class="sound-duration" datetime="PT2.7S">2.7초</time></h3><p>음원 다운로드 중 Wi-Fi가 끊겼을 때</p></div><audio controls preload="none" src="audio/07_sfx_wifi_disconnected.mp3" aria-label="Wi-Fi 연결 끊김 미리 듣기"></audio></li>
+        <li><div><h3>Wi-Fi 다시 연결됨 <time class="sound-duration" datetime="PT1.8S">1.8초</time></h3><p>Wi-Fi가 다시 연결됐을 때</p></div><audio controls preload="none" src="audio/08_sfx_wifi_connected.mp3" aria-label="Wi-Fi 다시 연결됨 미리 듣기"></audio></li>
+        <li><div><h3>Wi-Fi 연결 필요 <time class="sound-duration" datetime="PT11.3S">11.3초</time></h3><p>피스의 음원이 저장되어 있지 않고 Wi-Fi에도 연결되어 있지 않을 때</p><p class="voice-line">“Wi-Fi에 연결해 주세요.”</p></div><audio controls preload="none" src="audio/09_voice_wifi_connect_request.mp3" aria-label="Wi-Fi 연결 필요 미리 듣기"></audio></li>
+        <li><div><h3>다운로드 중 첫 안내 <time class="sound-duration" datetime="PT8.8S">8.8초</time></h3><p>다운로드가 필요한 상태에서 피스를 넣고 3초가 지났을 때</p><p class="voice-line">“다운로드 중입니다.”</p></div><audio controls preload="none" src="audio/10_voice_downloading_1.mp3" aria-label="다운로드 중 첫 안내 미리 듣기"></audio></li>
+        <li><div><h3>다운로드 중 두 번째 안내 <time class="sound-duration" datetime="PT17.0S">17.0초</time></h3><p>설계 문서에는 다운로드가 끝나지 않은 채 30초가 지났을 때로 기록되어 있어요.</p><p class="voice-line">“다운로드 중입니다. 잠시만 기다려 주세요.”</p></div><audio controls preload="none" src="audio/11_voice_downloading_2.mp3" aria-label="다운로드 중 두 번째 안내 미리 듣기"></audio></li>
+        <li><div><h3>랜덤 재생 켜기 <time class="sound-duration" datetime="PT1.8S">1.8초</time></h3><p>재생·일시정지 버튼을 3초간 눌러 랜덤 재생을 켤 때</p></div><audio controls preload="none" src="audio/12_sfx_shuffle_mode_enter.mp3" aria-label="랜덤 재생 켜기 미리 듣기"></audio></li>
+        <li><div><h3>랜덤 재생 끄기 <time class="sound-duration" datetime="PT1.7S">1.7초</time></h3><p>재생·일시정지 버튼을 다시 3초간 눌러 랜덤 재생을 끌 때</p></div><audio controls preload="none" src="audio/13_sfx_shuffle_mode_exit.mp3" aria-label="랜덤 재생 끄기 미리 듣기"></audio></li>
         <li><div><h3>Wi-Fi에 이미 연결됨</h3><p class="voice-line">“Wi-Fi에 이미 연결되어 있습니다.”</p></div></li>
       </ol>
     </section>

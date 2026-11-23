@@ -159,14 +159,17 @@ details p { color: var(--muted); padding-bottom: 14px; }
 @media (max-width: 560px) {
   .demo-viewer { margin-inline: -6px; }
   .demo-stage { width: calc(100% - 12px); height: auto; aspect-ratio: 5 / 4; max-height: 360px; margin: 20px auto; }
-  .demo-controls { justify-content: center; gap: 7px; }
   .demo-viewer-toolbar button, .demo-controls #demo-skin-toggle { min-height: 44px; font-size: 14px; }
   #demo-next { inline-size: 112px; }
-  .demo-skin { width: min(100%, 304px); justify-content: center; }
+  .demo-skin { width: 100%; justify-content: space-between; }
   .demo-swatches button { position: relative; width: 44px; height: 44px; border: 0; background: transparent; }
   .demo-swatches button::before { content: ""; position: absolute; inset: 7px; border: 1px solid var(--line); border-radius: 50%; background: var(--swatch); }
   .demo-swatches button[aria-pressed="true"] { outline: 0; }
   .demo-swatches button[aria-pressed="true"]::before { outline: 2px solid var(--green); outline-offset: 2px; }
+  .demo-track { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-block: 10px; }
+  .demo-track-title { min-width: 0; overflow-wrap: anywhere; }
+  .demo-track-duration { flex: none; white-space: nowrap; }
+  .demo-track-separator { display: none; }
   .usage-steps > li { grid-template-columns: minmax(0, 1fr); }
   .step-copy { padding: 14px 11px 15px 39px; }
   .step-copy::before { left: 10px; }

@@ -56,7 +56,7 @@ p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
 .demo-icon .icon-fill { fill: currentColor; stroke: none; }
 #demo-playback:not([data-playing]) .pause-icon,
 #demo-playback[data-playing] .play-icon { display: none; }
-#demo-next[aria-disabled="true"], #demo-skin-toggle[aria-disabled="true"] { opacity: .55; cursor: default; }
+#demo-next[aria-disabled="true"], #demo-skin-toggle[aria-disabled="true"], #demo-playback:disabled { opacity: .55; cursor: default; }
 .demo-reset[aria-pressed="true"] { border-color: var(--green); color: var(--green); background: var(--mist); }
 .primary-link { color: var(--white); background: var(--ink); border-color: var(--ink); }
 .back-to-top { border-color: #04b7be; color: var(--green); text-decoration: none; }

@@ -165,6 +165,7 @@ details p { color: var(--muted); padding-bottom: 14px; }
   .led-table :is(th, td) { padding: 8px; }
 }
 @media (max-width: 560px) {
+  .demo-stage { height: auto; aspect-ratio: 2 / 3; }
   .demo-controls { justify-content: center; gap: 7px; }
   .demo-actions { display: grid; grid-template-columns: 44px 44px minmax(0, 1fr) 44px; width: min(100%, 304px); gap: 6px; }
   .demo-controls .demo-actions button, .demo-controls #demo-skin-toggle { min-height: 44px; font-size: 14px; }
@@ -178,10 +179,9 @@ details p { color: var(--muted); padding-bottom: 14px; }
   .step-copy { padding: 14px 11px 15px 39px; }
   .step-copy::before { left: 10px; }
   .step-copy p, .wifi-steps, .step-copy a { font-size: .91rem; }
-  .step-photo { --photo-height: clamp(160px, 43vw, 192px); height: var(--photo-height); min-height: 0; padding: 10px 12px; }
+  .step-photo { --photo-height: clamp(208px, 59vw, 282px); height: var(--photo-height); min-height: 0; padding: 10px 12px; }
   .step-photo > img { height: calc(var(--photo-height) - 20px); }
-  .card-photo > img { max-width: 84%; }
-  .buttons-photo > img { max-width: var(--guide-top-image-width); }
+  .card-photo > img, .buttons-photo > img { max-width: 90%; }
   .power-photo { flex-direction: row; gap: 8px; }
   .power-photo .power-caption { font-size: 1rem; }
   .power-photo .power-caption span { font-size: 19px; }

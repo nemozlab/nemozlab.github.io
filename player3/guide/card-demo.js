@@ -19,7 +19,7 @@
     ['투명 전면 커버를 열어보세요.', '커버 열기'],
     ['열린 커버에서 NFC 피스를 위로 빼보세요.', '피스 빼기'],
     ['NFC 피스를 커버 안쪽 거치부에 넣어보세요.', '피스 넣기'],
-    ['커버를 닫으면 예시 음원이 재생돼요.', '커버 닫고 재생'],
+    ['커버를 닫으면 앨범이 재생돼요.', '커버 닫고 앨범 재생'],
   ];
   let step = 0;
   let drawModel;
@@ -29,8 +29,8 @@
   function show() {
     const playing = !audio.paused && !audio.ended;
     const [message, action] = steps[step] || [
-      playbackError ? '예시 음원을 불러오지 못했어요.' : playing ? '예시 음원 재생 중' : '커버가 닫혔어요. 예시 음원을 들을 수 있어요.',
-      playing ? '재생 멈추기' : '예시 음원 재생',
+      playbackError ? '앨범을 재생할 수 없어요.' : playing ? '앨범 재생 중' : '',
+      playing ? '일시정지' : '앨범 재생',
     ];
     instruction.textContent = message;
     next.textContent = action;

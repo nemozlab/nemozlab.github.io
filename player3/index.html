@@ -172,9 +172,6 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 .skin-guide p + p{padding-top:3px;color:var(--muted)}
 .skin-guide button{font:inherit;font-weight:700;color:inherit;background:transparent;border:0;border-radius:16px;min-height:36px;padding:6px 14px;cursor:pointer}
 .skin-guide button:hover{text-decoration:underline}
-.skin-guide .drag-modes{display:inline-flex;gap:2px;margin:6px 0 2px;padding:2px;border:1px solid var(--line);border-radius:14px}
-.skin-guide .drag-modes button{border-radius:11px}
-.skin-guide .drag-modes button[aria-pressed="true"]{background:var(--fg);color:var(--panel)}
 .skin-guide button:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
 .grid[data-view="m"] .skin-guide{display:none}
 .panel-dismiss,.sheet-close{display:none}
@@ -336,7 +333,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
           <button class="btn ib txt mo-only" id="lt" type="button"><span>中文</span></button><button class="btn ib mo-only" id="fs" type="button" data-kt="fs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button><button class="fold" id="fold" type="button" data-kt="fold" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span class="fl" data-k="skinPanel">스킨</span></button>
         </div>
       </div>
-      <div class="cvwrap"><canvas id="cv"></canvas><button class="panel-dismiss" type="button" data-kt="closeSkin" aria-label="스킨 옵션 닫기"></button><div class="skin-guide"><div id="snap-note" hidden><p data-k="snapFit">표시된 세 곳을 맞춰 누르면 딸깍 고정돼요.</p><p id="snap-gesture" data-k="snapDrag">스킨을 드래그하면 회전해요.</p><div class="drag-modes" role="group" data-kt="skinAction" aria-label="스킨 조작"><button id="sk-rotate" type="button" data-k="snapRotate" aria-pressed="true">회전</button><button id="sk-move" type="button" data-k="snapMove" aria-pressed="false">이동</button></div></div><button id="sk" type="button"><span data-k="sk1">스킨 분리 · 결합부 보기</span></button></div><div class="tip" id="tip"></div><div class="legend"><p class="foot prices"><b data-k="mc">금형비</b><span class="pp" style="--c:var(--m1)"><i class="dot"></i>① <span data-k="pr1">220만원</span></span><span class="pp" style="--c:var(--m2)"><i class="dot"></i>② <span data-k="pr2">160만원</span></span><span class="pp" style="--c:var(--m3)"><i class="dot"></i>③ <span data-k="pr3">187만원</span></span><span class="pp" style="--c:var(--m4)"><i class="dot lt"></i>④ <span data-k="pr4">100만원</span></span></p></div></div>
+      <div class="cvwrap"><canvas id="cv"></canvas><button class="panel-dismiss" type="button" data-kt="closeSkin" aria-label="스킨 옵션 닫기"></button><div class="skin-guide"><div id="snap-note" hidden><p data-k="snapFit">표시된 세 곳을 맞춰 누르면 딸깍 고정돼요.</p><p data-k="snapSlide">스킨을 잡고 드래그하면 옮길 수 있어요.</p></div><button id="sk" type="button"><span data-k="sk1">스킨 분리 · 결합부 보기</span></button></div><div class="tip" id="tip"></div><div class="legend"><p class="foot prices"><b data-k="mc">금형비</b><span class="pp" style="--c:var(--m1)"><i class="dot"></i>① <span data-k="pr1">220만원</span></span><span class="pp" style="--c:var(--m2)"><i class="dot"></i>② <span data-k="pr2">160만원</span></span><span class="pp" style="--c:var(--m3)"><i class="dot"></i>③ <span data-k="pr3">187만원</span></span><span class="pp" style="--c:var(--m4)"><i class="dot lt"></i>④ <span data-k="pr4">100만원</span></span></p></div></div>
     </div>
     </div>
     <div class="panel" id="panel">
@@ -423,11 +420,11 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     asm:['합쳐진 모양','组装状态'],sep:['분리된 모양','分解状态'],
     ex:['분해','分解'],exT:['분해 정도','分解程度'],
     reset:['각도 초기화','重置角度'],resetall:['초기화','全部重置'],spin:['자동 회전','自动旋转'],
-    home:['홈','首页'],skinAction:['스킨 조작','换肤件操作'],fold:['접기 / 펼치기','折叠 / 展开'],closeSkin:['스킨 옵션 닫기','关闭换肤选项'],closePanel:['팝업 닫기','关闭面板'],
+    home:['홈','首页'],fold:['접기 / 펼치기','折叠 / 展开'],closeSkin:['스킨 옵션 닫기','关闭换肤选项'],closePanel:['팝업 닫기','关闭面板'],
     m1:['커버 세트','外盖套组'],m2:['스피커 후면 + 버튼','喇叭后盖 + 按键'],m3:['투명 도어','透明门'],m4:['LED 투명 캡','LED 透明帽'],
     pr1:['220만원','US$1,650'],pr2:['160만원','US$1,200'],pr3:['187만원','US$1,400'],pr4:['100만원','US$750'],
     mo:['원안','原方案'],ms:['수정안','修改方案'],
-    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dTotal:['총두께','总厚度'],dBody:['본체','主体'],dSkin:['스킨','换肤件'],dU:['상단 기준 단면','顶部参考截面'],dFront:['전면 벽','前侧壁'],dRear:['후면 벽','后侧壁'],dN:['* STEP 기준 단면 실측. 총두께는 조립 틈을 제외한 본체와 스킨의 합입니다.','* STEP 参考截面测量值。总厚度为主体与换肤件的厚度之和，不含装配间隙。'],skl:['스킨 색 · 데이지는 끼움 부품(공통)','换肤件颜色 · 雏菊为通用插接件'],dz0:['기본형','基础款'],dz1:['데이지','雏菊款'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['스킨 분리 · 결합부 보기','拆下换肤件 · 查看卡扣'],sk0:['스킨 다시 끼우기','装回换肤件'],snapFit:['표시된 세 곳을 맞춰 누르면 딸깍 고정돼요.','将换肤件对准标记的三处位置，按下即可固定。'],snapDrag:['스킨을 드래그하면 회전해요.','拖动换肤件即可旋转。'],snapSlide:['스킨을 드래그하면 원하는 방향으로 옮길 수 있어요.','拖动换肤件即可移动。'],snapRotate:['회전','旋转'],snapMove:['이동','移动'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
+    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dTotal:['총두께','总厚度'],dBody:['본체','主体'],dSkin:['스킨','换肤件'],dU:['상단 기준 단면','顶部参考截面'],dFront:['전면 벽','前侧壁'],dRear:['후면 벽','后侧壁'],dN:['* STEP 기준 단면 실측. 총두께는 조립 틈을 제외한 본체와 스킨의 합입니다.','* STEP 参考截面测量值。总厚度为主体与换肤件的厚度之和，不含装配间隙。'],skl:['스킨 색 · 데이지는 끼움 부품(공통)','换肤件颜色 · 雏菊为通用插接件'],dz0:['기본형','基础款'],dz1:['데이지','雏菊款'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['스킨 분리 · 결합부 보기','拆下换肤件 · 查看卡扣'],sk0:['스킨 다시 끼우기','装回换肤件'],snapFit:['표시된 세 곳을 맞춰 누르면 딸깍 고정돼요.','将换肤件对准标记的三处位置，按下即可固定。'],snapSlide:['스킨을 잡고 드래그하면 옮길 수 있어요.','拖动换肤件即可移动。'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
     err:['3D 데이터를 불러오지 못했습니다','无法加载 3D 数据']
   };
   var lang=0;try{var sv=localStorage.getItem('nemo-lang');lang=sv==='zh'?1:sv==='ko'?0:(/^zh/i.test(navigator.language||'')?1:0)}catch(e){lang=/^zh/i.test(navigator.language||'')?1:0}
@@ -531,7 +528,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     }
     return hits.length?hits[0].object.userData.id:null;
   }
-  // 부품을 잡고 드래그하면 그 부품만 회전, 빈 곳을 드래그하면 전체 시점 회전
+  // 완제품에서는 분리한 스킨을 이동하고, 금형별 분해에서는 부품을 회전한다.
   var dragId=null,last=null,stage=cv.parentNode;
   stage.addEventListener('pointerdown',function(e){
     if(!e.isPrimary||(e.target.closest&&e.target.closest('.dock,.skin-guide,.panel-dismiss')))return;
@@ -556,8 +553,6 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
       var local=grp.quaternion.clone().invert();
       up.applyQuaternion(local);
       rt.applyQuaternion(local);
-    }
-    if(view==='p'&&skinMoveMode){
       var depth=me.getWorldPosition(new THREE.Vector3()).applyMatrix4(camera.matrixWorldInverse).z;
       var scale=2*Math.max(camera.near,-depth)*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))/cv.clientHeight;
       skinOffset.addScaledVector(rt,dx*scale).addScaledVector(up,-dy*scale);
@@ -596,7 +591,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     hint.textContent='';
   });
   document.getElementById('reset').addEventListener('click',function(){
-    if(canManipulateParts()||canManipulateSkin())resetPartRotations();
+    if(canManipulateParts())resetPartRotations();
     homeCam();
     controls.target.copy(view==='p'?T1:TM);
     place();
@@ -683,7 +678,6 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     skMotion++;
     skBusy=false;
     skinOffset.set(0,0,0);
-    setSkinMoveMode(false);
     document.getElementById('sk').disabled=false;
     grp.quaternion.setFromRotationMatrix(RM);real=(v==='p');explode=(v==='p'?0:1);skOut=0;skLabel();ex.value=explode*100;exv.textContent=ex.value;
     document.querySelector('.ex').classList.toggle('dis',v==='p');ex.disabled=(v==='p');
@@ -931,7 +925,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     style()}
   var snapMarkers=new THREE.Group();
   var markerRay=new THREE.Raycaster(), markerTarget=new THREE.Vector3(), markerDirection=new THREE.Vector3();
-  var skinOffset=new THREE.Vector3(), skinMoveMode=false;
+  var skinOffset=new THREE.Vector3();
   function buildSnapMarkers(){
     var geometry=new THREE.SphereGeometry(1.05,16,12);
     var material=new THREE.MeshBasicMaterial({color:0xd44760});
@@ -957,20 +951,6 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     });
   }
   function canManipulateSkin(){return view==='p'&&skOut===1&&!skBusy}
-  function setSkinMoveMode(move){
-    skinMoveMode=move;
-    document.getElementById('sk-rotate').setAttribute('aria-pressed',String(!move));
-    document.getElementById('sk-move').setAttribute('aria-pressed',String(move));
-    var tip=document.getElementById('snap-gesture');
-    tip.dataset.k=move?'snapSlide':'snapDrag';
-    tip.textContent=T(tip.dataset.k);
-  }
-  document.getElementById('sk-rotate').addEventListener('click',function(){
-    if(canManipulateSkin())setSkinMoveMode(false);
-  });
-  document.getElementById('sk-move').addEventListener('click',function(){
-    if(canManipulateSkin())setSkinMoveMode(true);
-  });
   function skLabel(){
     var detached=canManipulateSkin(), k=detached?'sk0':'sk1', e=document.querySelector('#sk span');
     e.dataset.k=k;
@@ -981,7 +961,6 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   var skMotion=0;
   function skAnim(to,ms){
     var from=skOut, started=performance.now(), motion=++skMotion;
-    var skin=meshes['16'], startRotation=skin.quaternion.clone(), seatedRotation=new THREE.Quaternion();
     var startOffset=skinOffset.clone();
     skBusy=true;
     document.getElementById('sk').disabled=true;
@@ -995,14 +974,12 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
       var eased=travel*travel*(3-2*travel);
       if(to===0){
         var align=Math.min(1,u/0.35);
-        skin.quaternion.copy(startRotation).slerp(seatedRotation,align);
         skinOffset.copy(startOffset).multiplyScalar(1-align);
       }
       skOut=from+(to-from)*eased;
       place();
       if(u<1){requestAnimationFrame(step);return}
       skBusy=false;
-      if(to===0)setSkinMoveMode(false);
       document.getElementById('sk').disabled=false;
       skLabel();
     }

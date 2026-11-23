@@ -1,7 +1,6 @@
 (() => {
   const stage = document.querySelector('#demo-stage');
   const canvas = stage.querySelector('canvas');
-  const completion = stage.querySelector('.demo-completion');
   const preview = stage.querySelector('.demo-preview');
   const photo = preview.querySelector('.demo-product');
   const looseCard = stage.querySelector('.demo-loose-card');
@@ -95,11 +94,10 @@
     playback.setAttribute('aria-label', playback.title);
     syncControls();
     instruction.toggleAttribute('data-error', playbackError);
-    if (complete && document.activeElement === next) playback.focus({preventScroll: true});
-    next.hidden = complete;
-    completion.hidden = !complete || transitioning;
-    stepLabel.textContent = complete ? action : `${step + 1}) ${action}`;
-    next.setAttribute('aria-label', stepLabel.textContent);
+    if (!complete || !transitioning) {
+      stepLabel.textContent = complete ? action : `${step + 1}) ${action}`;
+      next.setAttribute('aria-label', stepLabel.textContent);
+    }
     stage.setAttribute('aria-label', complete ? '네모 플레이어 3D 모델' : action);
     stage.dataset.step = step;
     if (!drawModel) {

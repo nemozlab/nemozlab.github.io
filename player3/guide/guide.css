@@ -157,7 +157,8 @@ details p { color: var(--muted); padding-bottom: 14px; }
   .led-table :is(th, td) { padding: 8px; }
 }
 @media (max-width: 560px) {
-  .demo-stage { height: auto; aspect-ratio: 5 / 4; max-height: 360px; }
+  .demo-viewer { margin-inline: -6px; }
+  .demo-stage { width: calc(100% - 12px); height: auto; aspect-ratio: 5 / 4; max-height: 360px; margin: 20px auto; }
   .demo-viewer-toolbar button, .demo-controls #demo-skin-toggle { min-height: 44px; font-size: 14px; }
   #demo-next { inline-size: 112px; }
   .demo-skin { width: 100%; justify-content: space-between; }

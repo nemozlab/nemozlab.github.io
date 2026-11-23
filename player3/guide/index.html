@@ -36,13 +36,14 @@
   <main id="main" class="shell">
     <section class="hero" aria-labelledby="title">
       <div class="hero-copy">
-        <h1 id="title">네모 플레이어<br>사용법</h1>
+        <h1 id="title">네모 플레이어 사용법</h1>
         <p>Wi-Fi를 처음 한 번 설정한 뒤, NFC 피스를 넣어 음악을 들어보세요.</p>
         <a class="primary-link" href="#setup">사용 순서 보기 <span aria-hidden="true">↓</span></a>
       </div>
-      <div class="hero-photo">
+      <a class="hero-photo" href="images/front.webp" data-zoom aria-label="네모 플레이어 제품 사진 확대">
         <img src="images/front.webp" alt="투명 전면 커버에 NFC 피스를 넣은 네모 플레이어">
-      </div>
+        <span>제품 사진 확대 <span aria-hidden="true">↗</span></span>
+      </a>
     </section>
 
 
@@ -61,29 +62,32 @@
               <li>앱이 입력한 설정을 플레이어에 전달해요. 연결 성공이 표시되면 설정이 끝나요.</li>
             </ul>
           </div>
-          <div class="step-photo power-photo">
+          <a class="step-photo power-photo" href="images/right.webp" data-zoom="power" aria-label="오른쪽 전원 버튼 위치 확대">
             <div class="power-device">
               <img src="images/right.webp" alt="오른쪽 측면 아래의 전원 버튼" loading="lazy">
               <span class="power-indicator" aria-hidden="true"></span>
             </div>
             <span class="power-caption">전원 버튼</span>
-          </div>
+          </a>
         </li>
         <li id="play">
           <div class="step-copy"><h3>전면 커버 열기</h3><p>앞쪽의 투명 커버를 앞으로 여세요.</p></div>
-          <div class="step-photo"><img src="images/cover-open.webp" alt="투명 전면 커버를 앞으로 연 상태" loading="lazy"></div>
+          <a class="step-photo cover-photo" href="images/cover-open.webp" data-zoom="cover" aria-label="투명 전면 커버를 앞으로 연 상태 확대">
+            <span class="cover-frame"><img src="images/cover-open.webp" alt="투명 전면 커버를 앞으로 연 상태" loading="lazy"><span class="cover-outline" aria-hidden="true"></span></span>
+            <span class="cover-caption">투명 전면 커버</span>
+          </a>
         </li>
         <li>
           <div class="step-copy"><h3>NFC 피스 넣기</h3><p>피스를 열린 커버 안쪽의 카드 거치부에 넣으세요.</p></div>
-          <div class="step-photo card-photo"><img src="images/card.webp" alt="플레이어에 넣는 NFC 뮤직 카드 예시" loading="lazy"></div>
+          <a class="step-photo card-photo" href="images/card.webp" data-zoom aria-label="플레이어에 넣는 NFC 뮤직 카드 예시 확대"><img src="images/card.webp" alt="플레이어에 넣는 NFC 뮤직 카드 예시" loading="lazy"></a>
         </li>
         <li>
           <div class="step-copy"><h3>커버 닫고 재생</h3><p>음원이 저장되어 있으면 피스를 인식한 뒤 바로 재생돼요. 처음 듣는 피스는 Wi-Fi로 음원을 내려받아요.</p></div>
-          <div class="step-photo"><img src="images/front.webp" alt="피스를 넣고 전면 커버를 닫은 플레이어" loading="lazy"></div>
+          <a class="step-photo" href="images/front.webp" data-zoom aria-label="피스를 넣고 전면 커버를 닫은 플레이어 확대"><img src="images/front.webp" alt="피스를 넣고 전면 커버를 닫은 플레이어" loading="lazy"></a>
         </li>
         <li>
           <div class="step-copy"><h3>버튼과 볼륨 휠로 조작</h3><p>윗면 버튼으로 곡을 바꾸거나 재생을 멈출 수 있어요. 왼쪽 휠을 돌리면 음량이 조절돼요.</p><a href="#controls">버튼 위치 자세히 보기</a></div>
-          <div class="step-photo"><img src="images/top.webp" alt="왼쪽부터 이전, 재생·일시정지, 다음 버튼과 상태 LED" loading="lazy"></div>
+          <a class="step-photo" href="images/top.webp" data-zoom aria-label="왼쪽부터 이전, 재생·일시정지, 다음 버튼과 상태 LED 확대"><img src="images/top.webp" alt="왼쪽부터 이전, 재생·일시정지, 다음 버튼과 상태 LED" loading="lazy"></a>
         </li>
       </ol>
       <div class="download">
@@ -172,5 +176,19 @@
     <p>개발 기준으로 작성한 가이드입니다. 앱 연결과 피스 삽입 시 자동 재생은 양산 펌웨어에서 확인 중입니다.</p>
     <a href="#main">맨 위로 ↑</a>
   </footer>
+  <dialog class="photo-dialog" aria-labelledby="photo-caption">
+    <div class="photo-dialog-head">
+      <h2 id="photo-caption"></h2>
+      <form method="dialog"><button type="submit" aria-label="사진 닫기">닫기</button></form>
+    </div>
+    <div class="photo-dialog-visual">
+      <div class="dialog-photo-frame">
+        <img alt="">
+        <span class="cover-outline" hidden aria-hidden="true"></span>
+        <span class="power-indicator" hidden aria-hidden="true"></span>
+      </div>
+    </div>
+  </dialog>
+  <script src="photo.js"></script>
 </body>
 </html>

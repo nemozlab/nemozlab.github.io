@@ -22,14 +22,14 @@ a { color: var(--green); }
 a:focus-visible, summary:focus-visible { outline: 3px solid #148a78; outline-offset: 4px; }
 img { display: block; max-width: 100%; }
 p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
-.shell { width: min(1110px, calc(100% - 64px)); margin-inline: auto; }
+.shell { width: min(960px, calc(100% - 64px)); margin-inline: auto; }
 .skip { position: fixed; top: 12px; left: 12px; z-index: 3; background: var(--white); padding: 8px 12px; transform: translateY(-180%); }
 .skip:focus { transform: translateY(0); }
 .site-head{position:sticky;top:0;z-index:2;padding:8px max(10px,env(safe-area-inset-right,0px)) 8px max(10px,env(safe-area-inset-left,0px));background:var(--nav-bg);font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;line-height:normal}
 @media(max-width:820px){
   .site-head{padding:0}
 }
-.hero { width: min(100%, 960px); margin: 24px auto 0; }
+.hero { margin-top: 24px; }
 .hero h1 { font-size: 22px; font-weight: 600; line-height: 1.35; }
 .demo-views { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 12px; }
 .demo-views[hidden], .demo-skin[hidden] { display: none; }
@@ -133,6 +133,9 @@ details p { color: var(--muted); padding-bottom: 14px; }
 .fine-print { margin-top: 10px; color: var(--muted); font-size: .86rem; }
 .troubleshoot { margin-top: 14px; }
 .footer { border-top: 1px solid var(--line); margin-top: 44px; padding-block: 16px 30px; display: flex; justify-content: flex-end; }
+@media (min-width: 731px) {
+  .demo-stage { margin-block: 24px; }
+}
 @media (max-width: 730px) {
   .shell { width: calc(100% - 20px); }
   .site-head { position: relative; }
@@ -225,7 +228,7 @@ details p { color: var(--muted); padding-bottom: 14px; }
   .cover-caption { font-size: 14px; }
 }
 
-.sound-list{max-width:600px;list-style:none;counter-reset:audio-row;margin:0;padding:0;border-top:1px solid var(--line)}
+.sound-list{list-style:none;counter-reset:audio-row;margin:0;padding:0;border-top:1px solid var(--line)}
 .sound-list li{position:relative;counter-increment:audio-row;display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,260px);align-items:center;gap:12px;padding:12px 0 12px 31px;border-bottom:1px solid var(--line)}
 .sound-list li::before{content:counter(audio-row);position:absolute;left:0;top:12px;color:var(--muted);font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
 .sound-list h3{font-size:16px;font-weight:600}

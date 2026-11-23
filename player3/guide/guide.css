@@ -170,6 +170,7 @@ details p { color: var(--muted); padding-bottom: 14px; }
     padding-block: 41px;
   }
   .demo-viewer:has(.demo-skin:not([hidden])) .demo-stage { padding-block: 52px; }
+  .demo-product { max-width: 71%; }
   .demo-controls {
     position: absolute;
     inset-block-start: 12px;

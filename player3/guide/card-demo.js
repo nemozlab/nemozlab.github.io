@@ -474,6 +474,7 @@
     scene.add(card);
 
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const mobileViewer = matchMedia('(max-width: 560px)');
     let frame;
     let coverAngle = 0;
     let skinLift = 0;
@@ -509,7 +510,8 @@
       const {min, max} = frameBounds;
       const centerX = (min.x + max.x) / 2;
       const centerY = (min.y + max.y) / 2;
-      const height = Math.max(62, (max.y - min.y) / .88, (max.x - min.x) / (.9 * aspect));
+      const fitHeight = Math.max(62, (max.y - min.y) / .88, (max.x - min.x) / (.9 * aspect));
+      const height = mobileViewer.matches ? fitHeight / .8 : fitHeight;
       const halfWidth = height * aspect / 2;
       camera.left = centerX - halfWidth;
       camera.right = centerX + halfWidth;

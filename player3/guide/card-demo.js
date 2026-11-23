@@ -95,7 +95,7 @@
     syncControls();
     instruction.toggleAttribute('data-error', playbackError);
     if (!complete || !transitioning) {
-      stepLabel.textContent = complete ? action : `${step + 1}) ${action}`;
+      stepLabel.textContent = `${step + 1}. ${action}`;
       next.setAttribute('aria-label', stepLabel.textContent);
     }
     stage.setAttribute('aria-label', complete ? '네모 플레이어 3D 모델' : action);

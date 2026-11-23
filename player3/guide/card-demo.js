@@ -11,8 +11,6 @@
   const playback = document.querySelector('#demo-playback');
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
-  const zoomOut = document.querySelector('#demo-zoom-out');
-  const zoomIn = document.querySelector('#demo-zoom-in');
   const viewMenu = document.querySelector('.demo-views');
   const viewButtons = [...viewMenu.querySelectorAll('button')];
   const skinPanel = document.querySelector('.demo-skin');
@@ -159,8 +157,6 @@
   function updateZoom(value) {
     scale = value;
     preview.style.transform = `scale(${scale})`;
-    zoomOut.disabled = scale <= minZoom;
-    zoomIn.disabled = scale >= maxZoom;
   }
 
   viewMenu.hidden = false;
@@ -190,9 +186,6 @@
     zoomModel?.(zoom);
   }
 
-  zoomOut.addEventListener('click', () => setZoom(scale / zoomFactor));
-  zoomIn.addEventListener('click', () => setZoom(scale * zoomFactor));
-  zoomOut.parentElement.hidden = false;
 
   stage.addEventListener('pointerdown', event => {
     if (event.button !== 0) return;

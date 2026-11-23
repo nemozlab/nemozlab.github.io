@@ -138,12 +138,12 @@
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-58, 58, 43, -43, 1, 400);
     camera.up.set(0, 0, 1);
-    scene.add(new THREE.HemisphereLight(0xffffff, 0x9bafbc, .8));
-    const key = new THREE.DirectionalLight(0xffffff, .75);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x9bafbc, .62));
+    const key = new THREE.DirectionalLight(0xffffff, .49);
     key.position.set(-75, -80, 135);
     scene.add(key);
 
-    const shell = new THREE.MeshStandardMaterial({color: 0xcbd0d5, roughness: .68, side: THREE.DoubleSide});
+    const shell = new THREE.MeshStandardMaterial({color: 0xc5cad0, roughness: .68, side: THREE.DoubleSide});
     const glass = new THREE.MeshPhysicalMaterial({
       color: 0x829ba8, roughness: .22, metalness: .12,
       transparent: true, opacity: .33, depthWrite: false,
@@ -178,7 +178,8 @@
     const portMaterial = new THREE.MeshStandardMaterial({color: 0x4b5058, roughness: .64, side: THREE.DoubleSide});
     const ledMaterial = new THREE.MeshStandardMaterial({color: 0x9cc6ca, roughness: .36, side: THREE.DoubleSide});
     for (const id of ['0', '1', '13', '16']) scene.add(mesh(id, shell));
-    for (const id of ['buttons', 'power']) scene.add(controlMesh(id, shell));
+    const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .68, side: THREE.DoubleSide});
+    scene.add(controlMesh('buttons', buttons), controlMesh('power', buttons));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial), controlMesh('led', ledMaterial));
 
     // The front door swings around the lower horizontal edge of the CAD mesh.

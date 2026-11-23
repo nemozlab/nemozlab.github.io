@@ -7,7 +7,6 @@
   const next = document.querySelector('#demo-next');
   const reset = document.querySelector('#demo-reset');
   const auto = document.querySelector('#demo-auto');
-  const manual = document.querySelector('#demo-manual');
   const playback = document.querySelector('#demo-playback');
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
@@ -55,7 +54,6 @@
     next.setAttribute('aria-disabled', String(transitioning || automatic || step === steps.length));
     skinToggle.setAttribute('aria-disabled', String(transitioning || automatic));
     auto.setAttribute('aria-pressed', String(automatic));
-    manual.setAttribute('aria-pressed', String(!automatic));
   }
 
   function stopAutomatic() {
@@ -298,17 +296,19 @@
     restart();
   });
   auto.addEventListener('click', () => {
-    if (automatic) return;
+    if (automatic) {
+      stopAutomatic();
+      return;
+    }
     automatic = true;
     syncControls();
     restart(() => queueStep(250));
   });
-  manual.addEventListener('click', stopAutomatic);
   playback.addEventListener('click', togglePlayback);
 
   for (const event of ['playing', 'pause', 'ended']) audio.addEventListener(event, show);
   stage.disabled = false;
-  next.hidden = reset.hidden = auto.hidden = manual.hidden = playback.hidden = false;
+  next.hidden = reset.hidden = auto.hidden = playback.hidden = false;
   show();
 
   async function loadModel(THREE) {

@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css">
-  <link rel="stylesheet" href="guide.css?v=page-scroll">
+  <link rel="stylesheet" href="guide.css?v=mobile-layout">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -63,10 +63,7 @@
             홈
           </button>
           <button class="demo-reset" type="button" id="demo-auto" aria-pressed="false" hidden>자동재생</button>
-          <div class="demo-step-controls" role="group" aria-label="단계별 재생 조작">
-            <button class="demo-reset" type="button" id="demo-manual" aria-pressed="true" hidden>단계별 재생</button>
-            <button class="primary-link" type="button" id="demo-next" hidden>1) 커버 열기</button>
-          </div>
+          <button class="primary-link" type="button" id="demo-next" hidden>1) 커버 열기</button>
           <button class="demo-reset" type="button" id="demo-playback" hidden>앨범 재생</button>
         </div>
         <div class="demo-skin" hidden>
@@ -250,6 +247,6 @@
   </dialog>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="guide.js?v=card-demo"></script>
-  <script defer src="card-demo.js?v=page-scroll-key"></script>
+  <script defer src="card-demo.js?v=mobile-layout"></script>
 </body>
 </html>

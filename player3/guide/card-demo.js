@@ -28,7 +28,7 @@
   let toggleModelSkin;
   let resetSkin;
   let rotateModel;
-  let pickSkin;
+  let pickModelPart;
   let cardNeedsStowing;
   const minZoom = .55;
   const maxZoom = 1.75;
@@ -92,7 +92,7 @@
   function show() {
     const playing = !audio.paused && !audio.ended;
     const complete = step === steps.length;
-    const [message, action] = steps[step] || ['커버가 닫혔어요.', playing ? '음악 멈추기' : '처음으로'];
+    const [message, action] = steps[step] || ['커버가 닫혔어요.', '커버 다시 열기'];
     instruction.textContent = playbackError ? '앨범을 재생할 수 없어요.' : message;
     playback.toggleAttribute('data-playing', playing);
     playback.title = playing ? '일시정지' : '앨범 재생';
@@ -103,7 +103,7 @@
       stepLabel.textContent = `${step + 1}. ${action}`;
       next.setAttribute('aria-label', stepLabel.textContent);
     }
-    stage.setAttribute('aria-label', complete ? '네모 플레이어 3D 모델' : action);
+    stage.setAttribute('aria-label', action);
     stage.dataset.step = step;
     if (!drawModel) {
       const image = step === 2 ? 'cad-demo-open-empty.webp?v=rounded-card' :
@@ -131,8 +131,13 @@
   }
 
   function advance() {
-    if (transitioning || step === steps.length) return;
+    if (transitioning) return;
     if (activeView !== 'home' && !drawModel) selectView('home');
+    if (step === steps.length) {
+      pausePlayback();
+      audio.currentTime = 0;
+      step = 0;
+    }
     step += 1;
     if (step === 1) pausePlayback();
     moveModel(() => {
@@ -154,6 +159,12 @@
       pausePlayback();
     }
     show();
+  }
+
+  function replayTrack() {
+    if (!canPlay()) return;
+    audio.currentTime = 0;
+    play();
   }
 
   function markView(name) {
@@ -180,12 +191,29 @@
   }
 
   skinToggle.addEventListener('click', toggleSkin);
+  stage.addEventListener('dragstart', event => event.preventDefault());
   stage.addEventListener('click', event => {
-    if (!dragged || event.detail === 0) {
-      if (event.detail > 0 && pickSkin?.(event)) toggleSkin();
-      else if (!automatic) advance();
-    }
+    const keyboard = event.detail === 0;
+    const wasDragged = dragged;
     dragged = false;
+    if (automatic || transitioning || (wasDragged && !keyboard)) return;
+    if (keyboard) {
+      advance();
+      return;
+    }
+    if (pickModelPart) {
+      const part = pickModelPart(event);
+      if (part === 'play') togglePlayback();
+      else if (part === 'previous' || part === 'next') replayTrack();
+      else if (part === 'model') advance();
+      return;
+    }
+    if ([photo, looseCard].some(image => {
+      if (image.hidden) return false;
+      const bounds = image.getBoundingClientRect();
+      return event.clientX >= bounds.left && event.clientX <= bounds.right &&
+        event.clientY >= bounds.top && event.clientY <= bounds.bottom;
+    })) advance();
   });
 
   function distanceBetweenTouches() {
@@ -285,9 +313,7 @@
     rotateModel(...movement[event.key]);
   });
   next.addEventListener('click', () => {
-    if (automatic || transitioning) return;
-    if (step === steps.length) restart();
-    else advance();
+    if (!automatic) advance();
   });
 
   function restart(onComplete) {
@@ -395,7 +421,8 @@
     scene.add(skin);
     scene.add(mesh('13', portMaterial));
     const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
-    scene.add(controlMesh('buttons', buttons), controlMesh('power', buttons));
+    const trackButtons = controlMesh('buttons', buttons);
+    scene.add(trackButtons, controlMesh('power', buttons));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial), controlMesh('led', ledMaterial));
 
     function buttonIcon(type) {
@@ -429,9 +456,11 @@
         new THREE.MeshBasicMaterial({map: texture, transparent: true, alphaTest: .3}),
       );
     }
-    for (const [type, x] of [['previous', -10.2], ['play', 0], ['next', 10.2]]) {
+    const trackActions = ['previous', 'play', 'next'];
+    for (const [index, type] of trackActions.entries()) {
       const icon = buttonIcon(type);
-      icon.position.set(x, 9.6, 27.31);
+      icon.position.set((index - 1) * 10.2, 9.6, 27.31);
+      icon.userData.trackAction = type;
       scene.add(icon);
     }
 
@@ -652,11 +681,16 @@
     for (const swatch of skinSwatches) swatch.addEventListener('click', () => setSkinColor(swatch));
     const ray = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    pickSkin = event => {
+    pickModelPart = event => {
       const bounds = canvas.getBoundingClientRect();
       mouse.set(2 * (event.clientX - bounds.left) / bounds.width - 1, 1 - 2 * (event.clientY - bounds.top) / bounds.height);
       ray.setFromCamera(mouse, camera);
-      return ray.intersectObjects(scene.children, true)[0]?.object === skin;
+      const hit = ray.intersectObjects(modelMeshes, false)[0];
+      if (!hit) return;
+      if (hit.object === trackButtons) {
+        return trackActions[THREE.MathUtils.clamp(Math.round(hit.point.x / 10.2) + 1, 0, 2)];
+      }
+      return hit.object.userData.trackAction || 'model';
     };
     cardNeedsStowing = () => cardOffset > .001;
     skinPanel.hidden = false;
@@ -670,7 +704,7 @@
       zoomModel = null;
       transitioning = false;
       stopAutomatic();
-      selectModelView = toggleModelSkin = resetSkin = rotateModel = pickSkin = cardNeedsStowing = null;
+      selectModelView = toggleModelSkin = resetSkin = rotateModel = pickModelPart = cardNeedsStowing = null;
       stage.classList.remove('has-model');
       skinPanel.hidden = true;
       drawModel = null;

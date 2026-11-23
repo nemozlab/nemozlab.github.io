@@ -5,6 +5,7 @@
   const photo = preview.querySelector('.demo-product');
   const looseCard = stage.querySelector('.demo-loose-card');
   const next = document.querySelector('#demo-next');
+  const stepLabel = next.querySelector('.step-label');
   const reset = document.querySelector('#demo-reset');
   const auto = document.querySelector('#demo-auto');
   const playback = document.querySelector('#demo-playback');
@@ -83,13 +84,18 @@
 
   function show() {
     const playing = !audio.paused && !audio.ended;
+    const complete = step === steps.length;
     const [message, action] = steps[step] || ['커버가 닫혔어요.', '완료'];
     instruction.textContent = playbackError ? '앨범을 재생할 수 없어요.' : message;
-    playback.textContent = playing ? '일시정지' : '앨범 재생';
+    playback.toggleAttribute('data-playing', playing);
+    playback.title = playing ? '일시정지' : '앨범 재생';
+    playback.setAttribute('aria-label', playback.title);
     syncControls();
     instruction.toggleAttribute('data-error', playbackError);
-    next.textContent = step < steps.length ? `${step + 1}) ${action}` : action;
-    stage.setAttribute('aria-label', step === steps.length ? '네모 플레이어 3D 모델' : action);
+    next.toggleAttribute('data-complete', complete);
+    stepLabel.textContent = complete ? action : `${step + 1}) ${action}`;
+    next.setAttribute('aria-label', stepLabel.textContent);
+    stage.setAttribute('aria-label', complete ? '네모 플레이어 3D 모델' : action);
     stage.dataset.step = step;
     if (!drawModel) {
       const image = step === 2 ? 'cad-demo-open-empty.webp?v=rounded-card' :

@@ -97,7 +97,6 @@ svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:
 .ex.dis{opacity:.38}
 .dock button:disabled{opacity:.38;pointer-events:none}
 .sw9.dis{opacity:.45;pointer-events:none}
-.skl{display:block;font-size:.74rem;color:var(--muted);margin-bottom:6px}
 .sw9{display:flex;flex-wrap:wrap;gap:7px}
 .swb{width:24px;height:24px;border-radius:50%;border:2px solid var(--panel);box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}
 .swb.plain{background:linear-gradient(135deg,#e5e7ee 50%,#b7bdca 50%)}
@@ -343,8 +342,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
           <button class="sheet-close" type="button" data-kt="closePanel" aria-label="팝업 닫기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         </div>
         <div class="sub" id="artw">
-            <div class="seg" id="dsg" role="group" aria-label="스킨 디자인 / 换肤款式"><button type="button" data-d="0" data-k="dz0" aria-pressed="true">기본형</button><button type="button" data-d="1" data-k="dz1" aria-pressed="false">데이지</button></div>
-            <span class="skl" data-k="skl">스킨 색 · 데이지는 끼움 부품(공통)</span>
+            <div class="seg" id="dsg" role="group" aria-label="스킨 디자인 / 换肤款式"><button type="button" data-d="0" data-k="dz0" aria-pressed="true">기본형</button><button type="button" data-d="1" data-k="dz1" aria-pressed="false">데이지(아티스트 버전)</button></div>
             <div class="sw9" id="sw9"></div>
           </div>
         <div class="dim">
@@ -424,7 +422,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     m1:['커버 세트','外盖套组'],m2:['스피커 후면 + 버튼','喇叭后盖 + 按键'],m3:['투명 도어','透明门'],m4:['LED 투명 캡','LED 透明帽'],
     pr1:['US$1,650 (220만원)','US$1,650'],pr2:['US$1,200 (160만원)','US$1,200'],pr3:['US$1,400 (187만원)','US$1,400'],pr4:['US$750 (100만원)','US$750'],
     mo:['원안','原方案'],ms:['수정안','修改方案'],
-    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dTotal:['총두께','总厚度'],dBody:['본체','主体'],dSkin:['스킨','换肤件'],dU:['상단 기준 단면','顶部参考截面'],dFront:['전면 벽','前侧壁'],dRear:['후면 벽','后侧壁'],dN:['* 총두께는 예측치입니다.','* 总厚度为估算值。'],skl:['스킨 색 · 데이지는 끼움 부품(공통)','换肤件颜色 · 雏菊为通用插接件'],dz0:['기본형','基础款'],dz1:['데이지','雏菊款'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['스킨 분리 · 결합부 보기','拆下换肤件 · 查看卡扣'],sk0:['스킨 다시 끼우기','装回换肤件'],snapFit:['스킨 양끝을 표시된 본체 홈에 맞추면 딸깍 고정돼요.','将换肤件两端对准标出的卡槽，即可卡紧。'],snapSlide:['스킨을 잡고 드래그하면 옮길 수 있어요.','拖动换肤件即可移动。'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
+    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dTotal:['총두께','总厚度'],dBody:['본체','主体'],dSkin:['스킨','换肤件'],dU:['상단 기준 단면','顶部参考截面'],dFront:['전면 벽','前侧壁'],dRear:['후면 벽','后侧壁'],dN:['* 총두께는 예측치입니다.','* 总厚度为估算值。'],dz0:['기본형','基础款'],dz1:['데이지(아티스트 버전)','雏菊（艺人版）'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['스킨 분리 · 결합부 보기','拆下换肤件 · 查看卡扣'],sk0:['스킨 다시 끼우기','装回换肤件'],snapFit:['스킨 양끝을 표시된 본체 홈에 맞추면 딸깍 고정돼요.','将换肤件两端对准标出的卡槽，即可卡紧。'],snapSlide:['스킨을 잡고 드래그하면 옮길 수 있어요.','拖动换肤件即可移动。'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
     err:['3D 데이터를 불러오지 못했습니다','无法加载 3D 数据']
   };
   var lang=0;try{var sv=localStorage.getItem('nemo-lang');lang=sv==='zh'?1:sv==='ko'?0:(/^zh/i.test(navigator.language||'')?1:0)}catch(e){lang=/^zh/i.test(navigator.language||'')?1:0}

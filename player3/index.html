@@ -449,7 +449,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   var d2=new THREE.DirectionalLight(0xffffff,0.35);d2.position.set(-150,120,-60);scene.add(d2);
 
   var grp=new THREE.Group();scene.add(grp);var RM=new THREE.Matrix4().set(0,1,0,0, 0,0,1,0, 1,0,0,0, 0,0,0,1);
-  var meshes={}, partOn={}, mode='split', splitOn=false, explode=1, selected=null, activeMold=null;
+  var meshes={}, partOn={}, partOffsets={}, mode='split', splitOn=false, explode=1, selected=null, activeMold=null;
   var hint=document.getElementById('tip');
 
   function b64(s,T){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return new T(u.buffer)}
@@ -478,7 +478,9 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   function place(){
     if(view==='p'){var dx=skOut*SK*0.4-shiftX;shiftX+=dx;camera.position.z+=dx;controls.target.z+=dx}
     Object.keys(meshes).forEach(function(id){
-      var d=DEF[id],c=meshes[id].userData.c,o=d.off||[d.to[0]-c.x,d.to[1]-c.y,d.to[2]-c.z];meshes[id].position.set(c.x+o[0]*explode+(id==='16'?skOut*SK:0),c.y+o[1]*explode,c.z+o[2]*explode);
+      var d=DEF[id],c=meshes[id].userData.c,o=d.off||[d.to[0]-c.x,d.to[1]-c.y,d.to[2]-c.z];
+      meshes[id].position.set(c.x+o[0]*explode+(id==='16'?skOut*SK:0),c.y+o[1]*explode,c.z+o[2]*explode);
+      if(view==='m'&&partOffsets[id])meshes[id].position.add(partOffsets[id]);
     });
     if(view==='p'&&meshes['16'])meshes['16'].position.add(skinOffset);
   }
@@ -528,7 +530,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     }
     return hits.length?hits[0].object.userData.id:null;
   }
-  // 완제품에서는 분리한 스킨을 이동하고, 금형별 분해에서는 부품을 회전한다.
+  // 분리한 부품은 드래그로 이동하고, 금형별 분해에서는 Shift를 누르면 개별 회전한다.
   var dragId=null,last=null,stage=cv.parentNode;
   stage.addEventListener('pointerdown',function(e){
     if(!e.isPrimary||(e.target.closest&&e.target.closest('.dock,.skin-guide,.panel-dismiss')))return;
@@ -549,13 +551,14 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     var dx=e.clientX-last[0],dy=e.clientY-last[1];last=[e.clientX,e.clientY];
     var me=meshes[dragId],k=0.01;
     var up=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion),rt=new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion);
-    if(view==='p'){
-      var local=grp.quaternion.clone().invert();
-      up.applyQuaternion(local);
-      rt.applyQuaternion(local);
+    var local=grp.quaternion.clone().invert();
+    up.applyQuaternion(local);
+    rt.applyQuaternion(local);
+    if(view==='p'||!e.shiftKey){
+      var offset=view==='p'?skinOffset:(partOffsets[dragId]??=new THREE.Vector3());
       var depth=me.getWorldPosition(new THREE.Vector3()).applyMatrix4(camera.matrixWorldInverse).z;
       var scale=2*Math.max(camera.near,-depth)*Math.tan(THREE.MathUtils.degToRad(camera.fov/2))/cv.clientHeight;
-      skinOffset.addScaledVector(rt,dx*scale).addScaledVector(up,-dy*scale);
+      offset.addScaledVector(rt,dx*scale).addScaledVector(up,-dy*scale);
       place();
       return;
     }
@@ -646,6 +649,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     explode=v;
     if(v===0){
       endPartGesture();
+      partOffsets={};
       resetPartRotations();
       selected=null;
       hint.textContent='';
@@ -668,6 +672,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   function setView(v){
     view=v;
     endPartGesture();
+    partOffsets={};
     if(v==='p')resetPartRotations();
     document.getElementById('viewer').dataset.view=v;
     var panelLabel=document.querySelector('#fold .fl');

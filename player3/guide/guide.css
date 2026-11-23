@@ -38,7 +38,6 @@ p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
 .demo-views button { padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer; }
 .demo-views button[aria-pressed="true"], #demo-skin-toggle[aria-pressed="true"] { border-color: var(--green); background: var(--mist); color: var(--green); }
 .demo-viewer { margin-top: 10px; overflow: hidden; border: 1px solid #e4eaed; border-radius: 14px; background: #f4f7f8; }
-.demo-angle { display: none; }
 .demo-skin { display: flex; align-items: center; gap: 8px; }
 .demo-swatches { display: flex; gap: 4px; }
 .demo-swatches button { width: 32px; height: 32px; border: 1px solid var(--line); border-radius: 50%; background: var(--swatch); cursor: pointer; }
@@ -166,9 +165,6 @@ details p { color: var(--muted); padding-bottom: 14px; }
   .led-table :is(th, td) { padding: 8px; }
 }
 @media (max-width: 560px) {
-  .demo-views:not([hidden]) { display: none; }
-  .demo-angle:not([hidden]) { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 4px 8px 0; font-size: 13px; color: var(--muted); }
-  .demo-angle select { min-height: 40px; min-width: 112px; padding-inline: 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--paper); color: var(--ink); font: inherit; font-weight: 600; }
   .demo-controls { justify-content: center; gap: 7px; }
   .demo-actions { display: grid; grid-template-columns: 44px 44px minmax(0, 1fr) 44px; width: min(100%, 304px); gap: 6px; }
   .demo-controls .demo-actions button, .demo-controls #demo-skin-toggle { min-height: 44px; font-size: 14px; }

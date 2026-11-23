@@ -11,6 +11,14 @@
   const playback = document.querySelector('#demo-playback');
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
+  const trackLabel = document.querySelector('.demo-track');
+  const trackControls = document.querySelectorAll('[data-track-direction]');
+  const tracks = [
+    {src: audio.getAttribute('src'), label: trackLabel.textContent},
+    {src: 'audio/yongyong-panorama-demo.mp3', label: '용용 · 소녀의 파노라마 (feat. 기욱 (ONEWE)) · 30초'},
+    {src: 'audio/yongyong-orange-sunny-angel-demo.mp3', label: '용용 · 오렌지 태양을 삼킨 천사 · 30초'},
+  ];
+  let trackIndex = 0;
   const viewMenu = document.querySelector('.demo-views');
   const viewButtons = [...viewMenu.querySelectorAll('button')];
   const skinPanel = document.querySelector('.demo-skin');
@@ -62,6 +70,7 @@
     skinToggle.setAttribute('aria-disabled', String(transitioning || automatic));
     auto.setAttribute('aria-pressed', String(automatic));
     playback.disabled = !canPlay();
+    for (const button of trackControls) button.disabled = playback.disabled;
   }
 
   function stopAutomatic() {
@@ -161,10 +170,15 @@
     show();
   }
 
-  function replayTrack() {
+  function changeTrack(direction) {
     if (!canPlay()) return;
-    audio.currentTime = 0;
+    pausePlayback();
+    trackIndex = (trackIndex + direction + tracks.length) % tracks.length;
+    const track = tracks[trackIndex];
+    audio.src = track.src;
+    trackLabel.textContent = track.label;
     play();
+    show();
   }
 
   function markView(name) {
@@ -204,7 +218,7 @@
     if (pickModelPart) {
       const part = pickModelPart(event);
       if (part === 'play') togglePlayback();
-      else if (part === 'previous' || part === 'next') replayTrack();
+      else if (part === 'previous' || part === 'next') changeTrack(part === 'previous' ? -1 : 1);
       else if (part === 'model') advance();
       return;
     }
@@ -349,6 +363,9 @@
     restart(() => queueStep(250));
   });
   playback.addEventListener('click', togglePlayback);
+  for (const button of trackControls) {
+    button.addEventListener('click', () => changeTrack(Number(button.dataset.trackDirection)));
+  }
 
   for (const event of ['playing', 'pause', 'ended']) audio.addEventListener(event, show);
   stage.disabled = false;

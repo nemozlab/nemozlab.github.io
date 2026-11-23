@@ -28,7 +28,7 @@
   let toggleModelSkin;
   let resetSkin;
   let rotateModel;
-  let pickSkin;
+  let pickModelPart;
   let cardNeedsStowing;
   const minZoom = .55;
   const maxZoom = 1.75;
@@ -92,7 +92,7 @@
   function show() {
     const playing = !audio.paused && !audio.ended;
     const complete = step === steps.length;
-    const [message, action] = steps[step] || ['커버가 닫혔어요.', playing ? '음악 멈추기' : '처음으로'];
+    const [message, action] = steps[step] || ['커버가 닫혔어요.', '커버 다시 열기'];
     instruction.textContent = playbackError ? '앨범을 재생할 수 없어요.' : message;
     playback.toggleAttribute('data-playing', playing);
     playback.title = playing ? '일시정지' : '앨범 재생';
@@ -103,7 +103,7 @@
       stepLabel.textContent = `${step + 1}. ${action}`;
       next.setAttribute('aria-label', stepLabel.textContent);
     }
-    stage.setAttribute('aria-label', complete ? '네모 플레이어 3D 모델' : action);
+    stage.setAttribute('aria-label', action);
     stage.dataset.step = step;
     if (!drawModel) {
       const image = step === 2 ? 'cad-demo-open-empty.webp?v=rounded-card' :
@@ -131,8 +131,13 @@
   }
 
   function advance() {
-    if (transitioning || step === steps.length) return;
+    if (transitioning) return;
     if (activeView !== 'home' && !drawModel) selectView('home');
+    if (step === steps.length) {
+      pausePlayback();
+      audio.currentTime = 0;
+      step = 0;
+    }
     step += 1;
     if (step === 1) pausePlayback();
     moveModel(() => {
@@ -154,6 +159,12 @@
       pausePlayback();
     }
     show();
+  }
+
+  function replayTrack() {
+    if (!canPlay()) return;
+    audio.currentTime = 0;
+    play();
   }
 
   function markView(name) {
@@ -180,12 +191,29 @@
   }
 
   skinToggle.addEventListener('click', toggleSkin);
+  stage.addEventListener('dragstart', event => event.preventDefault());
   stage.addEventListener('click', event => {
-    if (!dragged || event.detail === 0) {
-      if (event.detail > 0 && pickSkin?.(event)) toggleSkin();
-      else if (!automatic) advance();
-    }
+    const keyboard = event.detail === 0;
+    const wasDragged = dragged;
     dragged = false;
+    if (automatic || transitioning || (wasDragged && !keyboard)) return;
+    if (keyboard) {
+      advance();
+      return;
+    }
+    if (pickModelPart) {
+      const part = pickModelPart(event);
+      if (part === 'play') togglePlayback();
+      else if (part === 'previous' || part === 'next') replayTrack();
+      else if (part === 'model') advance();
+      return;
+    }
+    if ([photo, looseCard].some(image => {
+      if (image.hidden) return false;
+      const bounds = image.getBoundingClientRect();
+      return event.clientX >= bounds.left && event.clientX <= bounds.right &&
+        event.clientY >= bounds.top && event.clientY <= bounds.bottom;
+    })) advance();
   });
 
   function distanceBetweenTouches() {
@@ -233,12 +261,7 @@
     if (!dragged && Math.hypot(dx, dy) < 5) return;
     dragged = true;
     if (!rotateModel) return;
-    const isTouch = event.pointerType === 'touch';
-    if (isTouch) {
-      pointer.horizontal ??= Math.abs(dx) > Math.abs(dy);
-      if (!pointer.horizontal) return;
-    }
-    rotateModel((event.clientX - pointer.lastX) / 18, isTouch ? 0 : (event.clientY - pointer.lastY) / 18);
+    rotateModel((event.clientX - pointer.lastX) / 18, (event.clientY - pointer.lastY) / 18);
     pointer.lastX = event.clientX;
     pointer.lastY = event.clientY;
     stage.classList.add('is-dragging');
@@ -290,9 +313,7 @@
     rotateModel(...movement[event.key]);
   });
   next.addEventListener('click', () => {
-    if (automatic || transitioning) return;
-    if (step === steps.length) restart();
-    else advance();
+    if (!automatic) advance();
   });
 
   function restart(onComplete) {
@@ -353,7 +374,6 @@
 
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-58, 58, 43, -43, 1, 400);
-    camera.up.set(0, 0, 1);
     scene.add(new THREE.HemisphereLight(0xffffff, 0x9bafbc, .62));
     const key = new THREE.DirectionalLight(0xffffff, .49);
     key.position.set(-75, -80, 135);
@@ -401,7 +421,8 @@
     scene.add(skin);
     scene.add(mesh('13', portMaterial));
     const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
-    scene.add(controlMesh('buttons', buttons), controlMesh('power', buttons));
+    const trackButtons = controlMesh('buttons', buttons);
+    scene.add(trackButtons, controlMesh('power', buttons));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial), controlMesh('led', ledMaterial));
 
     function buttonIcon(type) {
@@ -435,9 +456,11 @@
         new THREE.MeshBasicMaterial({map: texture, transparent: true, alphaTest: .3}),
       );
     }
-    for (const [type, x] of [['previous', -10.2], ['play', 0], ['next', 10.2]]) {
+    const trackActions = ['previous', 'play', 'next'];
+    for (const [index, type] of trackActions.entries()) {
       const icon = buttonIcon(type);
-      icon.position.set(x, 9.6, 27.31);
+      icon.position.set((index - 1) * 10.2, 9.6, 27.31);
+      icon.userData.trackAction = type;
       scene.add(icon);
     }
 
@@ -494,9 +517,9 @@
     const views = Object.fromEntries(horizontalViews.map(({dataset: {view, yaw}}) => [
       view, [THREE.MathUtils.degToRad(Number(yaw)), Number(yaw) % 90 === 0 ? 0 : .35],
     ]));
-    views.top = [0, Math.PI / 2 - .001];
+    views.top = [0, Math.PI / 2];
     const viewTarget = new THREE.Vector3(0, -2, 0);
-    const cameraDirection = new THREE.Vector3();
+    const viewAngles = new THREE.Euler();
     const modelMeshes = [];
     scene.traverse(object => {
       if (!object.isMesh) return;
@@ -539,19 +562,21 @@
       camera.updateProjectionMatrix();
     }
     let cameraFrame;
-    function placeCamera(yaw, pitch) {
-      const radius = 170;
-      const horizontal = radius * Math.cos(pitch);
-      camera.position.set(horizontal * Math.sin(yaw), -horizontal * Math.cos(yaw), radius * Math.sin(pitch)).add(viewTarget);
+    function viewOrientation(name) {
+      const [yaw, pitch] = views[name];
+      return new THREE.Quaternion().setFromEuler(viewAngles.set(Math.PI / 2 - pitch, 0, yaw, 'ZXY'));
+    }
+
+    function placeCamera() {
+      // The camera's local +Z points away from the model.
+      camera.position.set(0, 0, 170).applyQuaternion(camera.quaternion).add(viewTarget);
     }
 
     function setCameraView(name, resetZoom = false) {
       cancelAnimationFrame(cameraFrame);
-      const [yaw, pitch] = views[name];
-      cameraDirection.copy(camera.position).sub(viewTarget);
-      const length = cameraDirection.length();
-      if (reducedMotion.matches || length < 1 || !stage.classList.contains('has-model')) {
-        placeCamera(yaw, pitch);
+      const orientation = viewOrientation(name);
+      if (reducedMotion.matches || !stage.classList.contains('has-model')) {
+        camera.quaternion.copy(orientation);
         if (resetZoom) {
           camera.zoom = 1;
           updateZoom(1);
@@ -560,15 +585,13 @@
         return;
       }
 
-      const startYaw = Math.atan2(cameraDirection.x, -cameraDirection.y);
-      const startPitch = Math.asin(THREE.MathUtils.clamp(cameraDirection.z / length, -1, 1));
-      const deltaYaw = Math.atan2(Math.sin(yaw - startYaw), Math.cos(yaw - startYaw));
+      const startOrientation = camera.quaternion.clone();
       const startZoom = camera.zoom;
       const start = performance.now();
       function tick(now) {
         const t = Math.min((now - start) / 460, 1);
         const ease = t * t * (3 - 2 * t);
-        placeCamera(startYaw + deltaYaw * ease, startPitch + (pitch - startPitch) * ease);
+        camera.quaternion.slerpQuaternions(startOrientation, orientation, ease);
         if (resetZoom) {
           camera.zoom = startZoom + (1 - startZoom) * ease;
           updateZoom(camera.zoom);
@@ -590,7 +613,7 @@
       card.position.copy(cardPosition).lerp(stowedPosition, cardOffset).add(slide);
       card.rotation.x = Math.PI / 2 + coverAngle * (1 - cardOffset);
       skin.position.z = skinLift;
-      camera.lookAt(viewTarget);
+      placeCamera();
       frameModel();
       renderer.render(scene, camera);
     }
@@ -627,10 +650,9 @@
     selectModelView = setCameraView;
     rotateModel = (dx, dy) => {
       cancelAnimationFrame(cameraFrame);
-      cameraDirection.copy(camera.position).sub(viewTarget);
-      const yaw = Math.atan2(cameraDirection.x, -cameraDirection.y) - dx * .14;
-      const pitch = Math.max(-1.42, Math.min(1.42, Math.asin(cameraDirection.z / cameraDirection.length()) + dy * .14));
-      placeCamera(yaw, pitch);
+      camera.rotateY(-dx * .14);
+      camera.rotateX(-dy * .14);
+      camera.quaternion.normalize();
       markView(null);
       render();
     };
@@ -659,11 +681,16 @@
     for (const swatch of skinSwatches) swatch.addEventListener('click', () => setSkinColor(swatch));
     const ray = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
-    pickSkin = event => {
+    pickModelPart = event => {
       const bounds = canvas.getBoundingClientRect();
       mouse.set(2 * (event.clientX - bounds.left) / bounds.width - 1, 1 - 2 * (event.clientY - bounds.top) / bounds.height);
       ray.setFromCamera(mouse, camera);
-      return ray.intersectObjects(scene.children, true)[0]?.object === skin;
+      const hit = ray.intersectObjects(modelMeshes, false)[0];
+      if (!hit) return;
+      if (hit.object === trackButtons) {
+        return trackActions[THREE.MathUtils.clamp(Math.round(hit.point.x / 10.2) + 1, 0, 2)];
+      }
+      return hit.object.userData.trackAction || 'model';
     };
     cardNeedsStowing = () => cardOffset > .001;
     skinPanel.hidden = false;
@@ -677,7 +704,7 @@
       zoomModel = null;
       transitioning = false;
       stopAutomatic();
-      selectModelView = toggleModelSkin = resetSkin = rotateModel = pickSkin = cardNeedsStowing = null;
+      selectModelView = toggleModelSkin = resetSkin = rotateModel = pickModelPart = cardNeedsStowing = null;
       stage.classList.remove('has-model');
       skinPanel.hidden = true;
       drawModel = null;
@@ -694,8 +721,8 @@
       render();
     };
     camera.zoom = scale;
-    placeCamera(...views.home);
-    camera.lookAt(viewTarget);
+    camera.quaternion.copy(viewOrientation('home'));
+    placeCamera();
     camera.updateMatrixWorld(true);
     homeViewMatrix.copy(camera.matrixWorldInverse);
     setCameraView(views[activeView] ? activeView : 'home');

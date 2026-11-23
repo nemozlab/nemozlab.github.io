@@ -570,7 +570,7 @@
       findFrameBounds(homeViewMatrix);
       frameBounds.getSize(frameSize);
       const fitHeight = Math.max(62, frameSize.y / .88, frameSize.x / (.9 * aspect));
-      const height = mobileViewer.matches ? fitHeight / .8 : fitHeight;
+      const height = mobileViewer.matches ? fitHeight / .68 : fitHeight;
 
       findFrameBounds(camera.matrixWorldInverse);
       const {x: centerX, y: centerY} = frameBounds.getCenter(frameCenter);

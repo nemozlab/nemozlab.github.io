@@ -22,3 +22,12 @@ if (typeof photoDialog?.showModal === 'function') {
     photoDialog.showModal();
   });
 }
+
+const soundPreviews = [...document.querySelectorAll('.sound-list audio')];
+for (const preview of soundPreviews) {
+  preview.addEventListener('play', () => {
+    for (const other of soundPreviews) {
+      if (other !== preview && !other.paused) other.pause();
+    }
+  });
+}

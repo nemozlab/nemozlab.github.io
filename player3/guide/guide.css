@@ -151,3 +151,18 @@ details p { color: var(--muted); padding-bottom: 14px; }
   clip-path:polygon(evenodd,24% 54%,96% 33%,100% 37.7%,87.8% 80.3%,16.3% 100%,11.3% 93.8%,24% 54%,26% 56%,13.8% 93.4%,17.4% 97.4%,85.8% 78.7%,97.4% 38%,95% 35.4%,26% 56%);
 }
 .photo-dialog-visual .power-indicator{left:48%;width:28px;height:28px}
+
+.sound-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.sound-list li{display:grid;grid-template-columns:minmax(0,1fr) minmax(190px,260px);align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.sound-list h3{font-size:16px;font-weight:600}
+.sound-list p{font-size:13px;color:var(--muted)}
+.sound-list .voice-line{margin-top:4px;color:var(--ink)}
+.sound-list audio{display:block;width:100%;height:40px}
+@media(max-width:560px){
+  .sound-list li{grid-template-columns:1fr;gap:7px}
+  .sound-list audio{max-width:285px}
+}
+@media(max-width:390px){
+  .contents{gap:2px}
+  .contents a{padding-inline:4px}
+}

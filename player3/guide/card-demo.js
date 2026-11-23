@@ -12,6 +12,7 @@
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
   const viewMenu = document.querySelector('.demo-views');
+  const angle = document.querySelector('#demo-angle');
   const viewButtons = [...viewMenu.querySelectorAll('button')];
   const skinPanel = document.querySelector('.demo-skin');
   const skinToggle = document.querySelector('#demo-skin-toggle');
@@ -143,6 +144,7 @@
 
   function markView(name) {
     activeView = name;
+    angle.value = name ?? '';
     for (const button of viewButtons) button.setAttribute('aria-pressed', String(button.dataset.view === name));
   }
 
@@ -157,6 +159,12 @@
     preview.style.transform = `scale(${scale})`;
   }
 
+  for (const button of viewButtons) {
+    angle.add(new Option(button.textContent, button.dataset.view));
+  }
+  angle.value = activeView;
+  angle.addEventListener('change', () => selectView(angle.value));
+  angle.parentElement.hidden = false;
   viewMenu.hidden = false;
 
   for (const button of viewButtons) button.addEventListener('click', () => selectView(button.dataset.view));
@@ -472,8 +480,6 @@
     let skinLift = 0;
     let skinDetached = false;
     let cardOffset = 0;
-    let viewShift = 0;
-    let viewHeight = 0;
     const coverOpening = THREE.MathUtils.degToRad(35);
     const views = Object.fromEntries(horizontalViews.map(({dataset: {view, yaw}}) => [
       view, [THREE.MathUtils.degToRad(Number(yaw)), Number(yaw) % 90 === 0 ? 0 : .35],
@@ -481,7 +487,37 @@
     views.top = [0, Math.PI / 2 - .001];
     const viewTarget = new THREE.Vector3(0, -2, 0);
     const cameraDirection = new THREE.Vector3();
-    const target = new THREE.Vector3();
+    const modelMeshes = [];
+    scene.traverse(object => {
+      if (!object.isMesh) return;
+      object.geometry.computeBoundingBox();
+      modelMeshes.push(object);
+    });
+    const frameBounds = new THREE.Box3();
+    const meshBounds = new THREE.Box3();
+    const viewMatrix = new THREE.Matrix4();
+    let aspect = 1;
+
+    function frameModel() {
+      scene.updateMatrixWorld(true);
+      camera.updateMatrixWorld(true);
+      frameBounds.makeEmpty();
+      for (const mesh of modelMeshes) {
+        viewMatrix.multiplyMatrices(camera.matrixWorldInverse, mesh.matrixWorld);
+        meshBounds.copy(mesh.geometry.boundingBox).applyMatrix4(viewMatrix);
+        frameBounds.union(meshBounds);
+      }
+      const {min, max} = frameBounds;
+      const centerX = (min.x + max.x) / 2;
+      const centerY = (min.y + max.y) / 2;
+      const height = Math.max(62, (max.y - min.y) / .88, (max.x - min.x) / (.9 * aspect));
+      const halfWidth = height * aspect / 2;
+      camera.left = centerX - halfWidth;
+      camera.right = centerX + halfWidth;
+      camera.top = centerY + height / 2;
+      camera.bottom = centerY - height / 2;
+      camera.updateProjectionMatrix();
+    }
     let cameraFrame;
     function placeCamera(yaw, pitch) {
       const radius = 170;
@@ -498,7 +534,6 @@
         placeCamera(yaw, pitch);
         if (resetZoom) {
           camera.zoom = 1;
-          camera.updateProjectionMatrix();
           updateZoom(1);
         }
         render();
@@ -516,7 +551,6 @@
         placeCamera(startYaw + deltaYaw * ease, startPitch + (pitch - startPitch) * ease);
         if (resetZoom) {
           camera.zoom = startZoom + (1 - startZoom) * ease;
-          camera.updateProjectionMatrix();
           updateZoom(camera.zoom);
         }
         render();
@@ -536,18 +570,16 @@
       card.position.copy(cardPosition).lerp(stowedPosition, cardOffset).add(slide);
       card.rotation.x = Math.PI / 2 + coverAngle * (1 - cardOffset);
       skin.position.z = skinLift;
-      target.set(viewShift, -2, viewHeight);
-      camera.position.sub(viewTarget).add(target);
-      viewTarget.copy(target);
       camera.lookAt(viewTarget);
+      frameModel();
       renderer.render(scene, camera);
     }
     function update(state, onComplete) {
       cancelAnimationFrame(frame);
-      const from = [coverAngle, cardOffset, viewShift, skinLift, viewHeight];
-      const targets = [state > 0 && state < 4 ? coverOpening : 0, state === 2 ? 1 : 0, state === 2 ? 25 : 0, skinDetached ? 36 : 0, skinDetached ? 13 : 0];
+      const from = [coverAngle, cardOffset, skinLift];
+      const targets = [state > 0 && state < 4 ? coverOpening : 0, state === 2 ? 1 : 0, skinDetached ? 36 : 0];
       if (reducedMotion.matches || from.every((n, i) => n === targets[i])) {
-        [coverAngle, cardOffset, viewShift, skinLift, viewHeight] = targets;
+        [coverAngle, cardOffset, skinLift] = targets;
         render();
         onComplete?.();
         return;
@@ -556,7 +588,7 @@
       function tick(now) {
         const t = Math.min((now - start) / 460, 1);
         const ease = t * t * (3 - 2 * t);
-        [coverAngle, cardOffset, viewShift, skinLift, viewHeight] = from.map((value, i) => value + (targets[i] - value) * ease);
+        [coverAngle, cardOffset, skinLift] = from.map((value, i) => value + (targets[i] - value) * ease);
         render();
         if (t < 1) frame = requestAnimationFrame(tick);
         else onComplete?.();
@@ -566,13 +598,8 @@
 
     function resize() {
       const {width, height} = stage.getBoundingClientRect();
-      const aspect = width / height;
-      const span = Math.max(104, 150 / aspect);
-      camera.left = -span * aspect / 2;
-      camera.right = span * aspect / 2;
-      camera.top = span / 2;
-      camera.bottom = -span / 2;
-      camera.updateProjectionMatrix();
+      if (!width || !height) return;
+      aspect = width / height;
       renderer.setSize(width, height, false);
       render();
     }
@@ -644,7 +671,6 @@
     zoomModel = zoom => {
       cancelAnimationFrame(cameraFrame);
       camera.zoom = zoom;
-      camera.updateProjectionMatrix();
       render();
     };
     camera.zoom = scale;

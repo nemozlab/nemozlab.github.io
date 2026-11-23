@@ -27,12 +27,15 @@
   let selectModelView;
   let toggleModelSkin;
   let resetSkin;
-  let rotateWithKeys;
+  let rotateModel;
   let pickSkin;
   let cardNeedsStowing;
   const maxZoom = 1.75;
   let scale = 1;
   let pointer;
+  let zoomModel;
+  const touches = new Map();
+  let pinchDistance;
   let dragged = false;
   const steps = [
     ['투명 전면 커버를 열어보세요.', '커버 열기'],
@@ -166,66 +169,99 @@
     dragged = false;
   });
 
+  function distanceBetweenTouches() {
+    const [first, second] = touches.values();
+    return Math.hypot(first.x - second.x, first.y - second.y);
+  }
+
+  function setZoom(value) {
+    const zoom = Math.max(1, Math.min(maxZoom, value));
+    updateZoom(zoom);
+    zoomModel?.(zoom);
+  }
+
   stage.addEventListener('pointerdown', event => {
     if (event.button !== 0) return;
-    if (!event.isPrimary) {
-      pointer = null;
-      dragged = true;
-      return;
+    stage.setPointerCapture(event.pointerId);
+    if (event.pointerType === 'touch' && rotateModel) {
+      touches.set(event.pointerId, {x: event.clientX, y: event.clientY});
+      if (touches.size >= 2) {
+        pointer = null;
+        dragged = true;
+        pinchDistance = distanceBetweenTouches();
+        return;
+      }
     }
+    if (!event.isPrimary) return;
     dragged = false;
-    pointer = {id: event.pointerId, x: event.clientX, y: event.clientY, lastX: event.clientX};
-    if (!drawModel) stage.setPointerCapture(pointer.id);
+    pointer = {id: event.pointerId, x: event.clientX, y: event.clientY, lastX: event.clientX, lastY: event.clientY};
   });
+
   stage.addEventListener('pointermove', event => {
+    if (touches.has(event.pointerId)) {
+      touches.set(event.pointerId, {x: event.clientX, y: event.clientY});
+      if (touches.size >= 2) {
+        const distance = distanceBetweenTouches();
+        if (pinchDistance > 0) setZoom(scale * distance / pinchDistance);
+        pinchDistance = distance;
+        return;
+      }
+    }
     if (event.pointerId !== pointer?.id) return;
     const dx = event.clientX - pointer.x;
     const dy = event.clientY - pointer.y;
-    if (Math.hypot(dx, dy) < 5) return;
+    if (!dragged && Math.hypot(dx, dy) < 5) return;
     dragged = true;
-    if (drawModel && event.pointerType === 'touch') {
+    if (!rotateModel) return;
+    const isTouch = event.pointerType === 'touch';
+    if (isTouch) {
       pointer.horizontal ??= Math.abs(dx) > Math.abs(dy);
       if (!pointer.horizontal) return;
-      rotateWithKeys((event.clientX - pointer.lastX) / 18, 0);
-      pointer.lastX = event.clientX;
     }
-    if (drawModel) {
-      markView(null);
-      stage.classList.add('is-dragging');
-    }
+    rotateModel((event.clientX - pointer.lastX) / 18, isTouch ? 0 : (event.clientY - pointer.lastY) / 18);
+    pointer.lastX = event.clientX;
+    pointer.lastY = event.clientY;
+    stage.classList.add('is-dragging');
   });
+
+  function finishPointer(event) {
+    if (touches.delete(event.pointerId)) {
+      pinchDistance = touches.size >= 2 ? distanceBetweenTouches() : undefined;
+    }
+    if (event.pointerId === pointer?.id) pointer = null;
+    stage.classList.remove('is-dragging');
+  }
+
   stage.addEventListener('pointerup', event => {
-    if (event.pointerId !== pointer?.id) return;
-    const dx = event.clientX - pointer.x;
-    const dy = event.clientY - pointer.y;
-    if (!drawModel && Math.abs(dx) > 22 && Math.abs(dx) > Math.abs(dy)) {
-      const index = Math.max(0, swipeViews.indexOf(activeView));
-      selectView(swipeViews[(index + (dx < 0 ? 1 : swipeViews.length - 1)) % swipeViews.length]);
+    if (!rotateModel && event.pointerId === pointer?.id) {
+      const dx = event.clientX - pointer.x;
+      const dy = event.clientY - pointer.y;
+      if (Math.abs(dx) > 22 && Math.abs(dx) > Math.abs(dy)) {
+        dragged = true;
+        const index = Math.max(0, swipeViews.indexOf(activeView));
+        selectView(swipeViews[(index + (dx < 0 ? 1 : swipeViews.length - 1)) % swipeViews.length]);
+      }
     }
-    pointer = null;
-    stage.classList.remove('is-dragging');
+    finishPointer(event);
   });
-  stage.addEventListener('pointercancel', () => {
-    pointer = null;
+
+  stage.addEventListener('pointercancel', event => {
     dragged = true;
-    stage.classList.remove('is-dragging');
+    finishPointer(event);
   });
+
   stage.addEventListener('wheel', event => {
-    if (!event.ctrlKey && !event.metaKey) {
-      if (drawModel) event.stopPropagation();
-      return;
-    }
-    if (drawModel || event.deltaY === 0) return;
+    if ((!event.ctrlKey && !event.metaKey) || event.deltaY === 0) return;
     event.preventDefault();
-    const value = Math.max(1, Math.min(maxZoom, scale * (event.deltaY < 0 ? 1.12 : 1 / 1.12)));
-    updateZoom(value);
-  }, {capture: true, passive: false});
+    setZoom(scale * (event.deltaY < 0 ? 1.12 : 1 / 1.12));
+  }, {passive: false});
 
   stage.addEventListener('keydown', event => {
-    const movement = {ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1]};
-    if (!movement[event.key] || !rotateWithKeys) return;
+    const movement = {ArrowLeft: [-1, 0], ArrowRight: [1, 0]};
+    if (event.shiftKey) Object.assign(movement, {ArrowUp: [0, -1], ArrowDown: [0, 1]});
+    if (!movement[event.key] || !rotateModel) return;
     event.preventDefault();
-    rotateWithKeys(...movement[event.key]);
+    rotateModel(...movement[event.key]);
   });
   next.addEventListener('click', () => {
     if (!automatic) advance();
@@ -431,34 +467,20 @@
       view, [THREE.MathUtils.degToRad(Number(yaw)), Number(yaw) % 90 === 0 ? 0 : .35],
     ]));
     views.top = [0, Math.PI / 2 - .001];
-    const orbit = new THREE.OrbitControls(camera, canvas);
-    // OrbitControls cancels single-touch scrolling. Leave those gestures to the page and pointer handler.
-    for (const type of ['touchstart', 'touchmove']) {
-      canvas.addEventListener(type, event => {
-        if (event.touches.length < 2) event.stopImmediatePropagation();
-      }, {capture: true, passive: true});
-    }
-    orbit.enablePan = false;
-    orbit.minZoom = 1;
-    orbit.maxZoom = maxZoom;
-    orbit.target.set(0, -2, 0);
-    orbit.addEventListener('change', () => {
-      updateZoom(camera.zoom);
-      renderer.render(scene, camera);
-    });
+    const viewTarget = new THREE.Vector3(0, -2, 0);
     const cameraDirection = new THREE.Vector3();
     const target = new THREE.Vector3();
     let cameraFrame;
     function placeCamera(yaw, pitch) {
       const radius = 170;
       const horizontal = radius * Math.cos(pitch);
-      camera.position.set(horizontal * Math.sin(yaw), -horizontal * Math.cos(yaw), radius * Math.sin(pitch)).add(orbit.target);
+      camera.position.set(horizontal * Math.sin(yaw), -horizontal * Math.cos(yaw), radius * Math.sin(pitch)).add(viewTarget);
     }
 
     function setCameraView(name, resetZoom = false) {
       cancelAnimationFrame(cameraFrame);
       const [yaw, pitch] = views[name];
-      cameraDirection.copy(camera.position).sub(orbit.target);
+      cameraDirection.copy(camera.position).sub(viewTarget);
       const length = cameraDirection.length();
       if (reducedMotion.matches || length < 1 || !stage.classList.contains('has-model')) {
         placeCamera(yaw, pitch);
@@ -466,10 +488,8 @@
           camera.zoom = 1;
           camera.updateProjectionMatrix();
           updateZoom(1);
-          render();
-        } else {
-          orbit.update();
         }
+        render();
         return;
       }
 
@@ -487,13 +507,11 @@
           camera.updateProjectionMatrix();
           updateZoom(camera.zoom);
         }
-        orbit.update();
-        if (resetZoom) renderer.render(scene, camera);
+        render();
         if (t < 1) cameraFrame = requestAnimationFrame(tick);
       }
       cameraFrame = requestAnimationFrame(tick);
     }
-    orbit.addEventListener('start', () => cancelAnimationFrame(cameraFrame));
     const slot = new THREE.Vector3(0, 2.6, -.85).sub(hinge.position);
     const stowedPosition = new THREE.Vector3(65, -19, 6);
     const axis = new THREE.Vector3(1, 0, 0);
@@ -507,9 +525,9 @@
       card.rotation.x = Math.PI / 2 + coverAngle * (1 - cardOffset);
       skin.position.z = skinLift;
       target.set(viewShift, -2, viewHeight);
-      camera.position.sub(orbit.target).add(target);
-      orbit.target.copy(target);
-      orbit.update();
+      camera.position.sub(viewTarget).add(target);
+      viewTarget.copy(target);
+      camera.lookAt(viewTarget);
       renderer.render(scene, camera);
     }
     function update(state, onComplete) {
@@ -548,14 +566,14 @@
     }
 
     selectModelView = setCameraView;
-    rotateWithKeys = (dx, dy) => {
+    rotateModel = (dx, dy) => {
       cancelAnimationFrame(cameraFrame);
-      cameraDirection.copy(camera.position).sub(orbit.target);
+      cameraDirection.copy(camera.position).sub(viewTarget);
       const yaw = Math.atan2(cameraDirection.x, -cameraDirection.y) - dx * .14;
       const pitch = Math.max(-1.42, Math.min(1.42, Math.asin(cameraDirection.z / cameraDirection.length()) + dy * .14));
-      camera.position.set(viewShift + 170 * Math.cos(pitch) * Math.sin(yaw), -2 - 170 * Math.cos(pitch) * Math.cos(yaw), viewHeight + 170 * Math.sin(pitch));
+      placeCamera(yaw, pitch);
       markView(null);
-      orbit.update();
+      render();
     };
     function setSkinDetached(value) {
       skinDetached = value;
@@ -597,10 +615,10 @@
       observer.disconnect();
       cancelAnimationFrame(frame);
       cancelAnimationFrame(cameraFrame);
-      orbit.dispose();
+      zoomModel = null;
       transitioning = false;
       stopAutomatic();
-      selectModelView = toggleModelSkin = resetSkin = rotateWithKeys = pickSkin = cardNeedsStowing = null;
+      selectModelView = toggleModelSkin = resetSkin = rotateModel = pickSkin = cardNeedsStowing = null;
       stage.classList.remove('has-model');
       skinPanel.hidden = true;
       drawModel = null;
@@ -611,6 +629,12 @@
     drawModel = update;
     canvas.hidden = false;
     preview.hidden = true;
+    zoomModel = zoom => {
+      cancelAnimationFrame(cameraFrame);
+      camera.zoom = zoom;
+      camera.updateProjectionMatrix();
+      render();
+    };
     camera.zoom = scale;
     placeCamera(...views.home);
     setCameraView(views[activeView] ? activeView : 'home');
@@ -622,6 +646,6 @@
     preview.hidden = false;
   }
 
-  if (window.THREE?.OrbitControls) loadModel(window.THREE).catch(showPhotoPreview);
+  if (window.THREE) loadModel(window.THREE).catch(showPhotoPreview);
   else showPhotoPreview();
 })();

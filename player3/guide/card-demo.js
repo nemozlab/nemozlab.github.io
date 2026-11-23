@@ -12,6 +12,7 @@
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
   const trackLabel = document.querySelector('.demo-track');
+  const trackButtons = document.querySelectorAll('[data-track-direction]');
   const streamPanel = document.querySelector('.demo-stream');
   const streamMount = document.querySelector('#demo-stream-player');
   const streamLink = streamPanel.querySelector('a');
@@ -77,7 +78,9 @@
     next.setAttribute('aria-disabled', String(transitioning || automatic));
     skinToggle.setAttribute('aria-disabled', String(transitioning || automatic));
     auto.setAttribute('aria-pressed', String(automatic));
-    playback.disabled = !canPlay();
+    const playbackDisabled = !canPlay();
+    playback.disabled = playbackDisabled;
+    for (const button of trackButtons) button.disabled = playbackDisabled;
   }
 
   function stopAutomatic() {
@@ -433,6 +436,9 @@
     restart(() => queueStep(250));
   });
   playback.addEventListener('click', togglePlayback);
+  for (const button of trackButtons) {
+    button.addEventListener('click', () => changeTrack(Number(button.dataset.trackDirection)));
+  }
 
   for (const event of ['playing', 'pause', 'ended']) audio.addEventListener(event, show);
   stage.disabled = false;
@@ -505,8 +511,8 @@
     scene.add(skin);
     scene.add(mesh('13', portMaterial));
     const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
-    const trackButtons = controlMesh('buttons', buttons);
-    scene.add(trackButtons, controlMesh('power', buttons));
+    const buttonMesh = controlMesh('buttons', buttons);
+    scene.add(buttonMesh, controlMesh('power', buttons));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial), controlMesh('led', ledMaterial));
 
     function buttonIcon(type) {
@@ -771,7 +777,7 @@
       ray.setFromCamera(mouse, camera);
       const hit = ray.intersectObjects(modelMeshes, false)[0];
       if (!hit) return;
-      if (hit.object === trackButtons) {
+      if (hit.object === buttonMesh) {
         return trackActions[THREE.MathUtils.clamp(Math.round(hit.point.x / 10.2) + 1, 0, 2)];
       }
       return hit.object.userData.trackAction || 'model';

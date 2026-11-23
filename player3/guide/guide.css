@@ -105,9 +105,10 @@ p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
 .power-photo > img { width: auto; height: 118px; flex: none; }
 .power-caption{color:var(--green);font-size:.82rem;font-weight:750;white-space:nowrap}
 .power-caption span { font-size: 16px; }
-.download { margin-top: 14px; padding: 18px 20px; border-radius: 14px; background: var(--mist); }
+.download { margin-top: 12px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--white); }
 .download h3 { font-size: 16px; }
-.download p { margin-top: 6px; }
+.download p { margin-top: 6px; color: var(--muted); font-size: .94rem; }
+.download strong { color: var(--ink); }
 .download .piece-types { margin-top: 10px; font-size: .91rem; }
 dt { font-weight: 750; }
 dd { color: var(--muted); font-size: .91rem; }
@@ -120,7 +121,8 @@ dd { color: var(--muted); font-size: .91rem; }
 .side-photo { width: min(100%, calc(var(--view-width) * 144 / 382)); }
 .control-views img { display: block; width: 100%; height: auto; }
 @media (max-width: 640px) {
-  .control-views { --view-width: clamp(184px, 52vw, 220px); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .shell { --guide-top-image-width: clamp(184px, 52vw, 220px); }
+  .control-views { --view-width: var(--guide-top-image-width); grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .control-views figure:first-child { grid-column: 1 / -1; }
 }
 .button-callout { position: absolute; top: var(--y, 29%); left: var(--x); transform: translate(-50%, -50%); }
@@ -195,11 +197,11 @@ details p { color: var(--muted); padding-bottom: 14px; }
   .step-copy { padding: 14px 11px 15px 39px; }
   .step-copy::before { left: 10px; }
   .step-copy p, .wifi-steps, .step-copy a { font-size: .91rem; }
-  .step-photo { padding: 10px; }
-  .step-photo > img { height: clamp(144px, 42vw, 190px); }
-  .card-photo > img, .buttons-photo > img { max-width: 84%; }
-  .power-photo { flex-direction: row; gap: 8px; min-height: 0; }
-  .power-photo > img { height: clamp(128px, 38vw, 180px); }
+  .step-photo { --photo-height: clamp(160px, 43vw, 192px); height: var(--photo-height); min-height: 0; padding: 10px 12px; }
+  .step-photo > img { height: calc(var(--photo-height) - 20px); }
+  .card-photo > img { max-width: 84%; }
+  .buttons-photo > img { max-width: var(--guide-top-image-width); }
+  .power-photo { flex-direction: row; gap: 8px; }
   .power-photo .power-caption { font-size: 1rem; }
   .power-photo .power-caption span { font-size: 19px; }
 }
@@ -222,8 +224,10 @@ details p { color: var(--muted); padding-bottom: 14px; }
 .cover-frame img{width:100%;height:auto}
 .cover-caption{color:var(--green);font-size:12px;font-weight:700;text-align:center}
 @media (max-width: 560px) {
-  .cover-frame { width: min(100%, clamp(180px, 57vw, 245px)); }
+  .cover-frame { width: 100%; }
+  .cover-frame img { height: calc(var(--photo-height) - 46px); object-fit: contain; }
   .cover-caption { font-size: 14px; }
+  .download { padding: 14px; }
 }
 
 .sound-list{max-width:600px;list-style:none;counter-reset:audio-row;margin:0;padding:0;border-top:1px solid var(--line)}

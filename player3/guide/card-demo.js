@@ -505,23 +505,32 @@
     });
     const frameBounds = new THREE.Box3();
     const meshBounds = new THREE.Box3();
+    const frameSize = new THREE.Vector3();
+    const frameCenter = new THREE.Vector3();
     const viewMatrix = new THREE.Matrix4();
+    const homeViewMatrix = new THREE.Matrix4();
     let aspect = 1;
+
+    function findFrameBounds(cameraView) {
+      frameBounds.makeEmpty();
+      for (const mesh of modelMeshes) {
+        viewMatrix.multiplyMatrices(cameraView, mesh.matrixWorld);
+        meshBounds.copy(mesh.geometry.boundingBox).applyMatrix4(viewMatrix);
+        frameBounds.union(meshBounds);
+      }
+    }
 
     function frameModel() {
       scene.updateMatrixWorld(true);
       camera.updateMatrixWorld(true);
-      frameBounds.makeEmpty();
-      for (const mesh of modelMeshes) {
-        viewMatrix.multiplyMatrices(camera.matrixWorldInverse, mesh.matrixWorld);
-        meshBounds.copy(mesh.geometry.boundingBox).applyMatrix4(viewMatrix);
-        frameBounds.union(meshBounds);
-      }
-      const {min, max} = frameBounds;
-      const centerX = (min.x + max.x) / 2;
-      const centerY = (min.y + max.y) / 2;
-      const fitHeight = Math.max(62, (max.y - min.y) / .88, (max.x - min.x) / (.9 * aspect));
+      // Use the default angle for scale and the current angle for centering.
+      findFrameBounds(homeViewMatrix);
+      frameBounds.getSize(frameSize);
+      const fitHeight = Math.max(62, frameSize.y / .88, frameSize.x / (.9 * aspect));
       const height = mobileViewer.matches ? fitHeight / .8 : fitHeight;
+
+      findFrameBounds(camera.matrixWorldInverse);
+      const {x: centerX, y: centerY} = frameBounds.getCenter(frameCenter);
       const halfWidth = height * aspect / 2;
       camera.left = centerX - halfWidth;
       camera.right = centerX + halfWidth;
@@ -686,6 +695,9 @@
     };
     camera.zoom = scale;
     placeCamera(...views.home);
+    camera.lookAt(viewTarget);
+    camera.updateMatrixWorld(true);
+    homeViewMatrix.copy(camera.matrixWorldInverse);
     setCameraView(views[activeView] ? activeView : 'home');
     resize();
     update(step);

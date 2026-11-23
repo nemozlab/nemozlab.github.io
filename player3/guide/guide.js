@@ -1,3 +1,14 @@
+const contentsLinks = [...document.querySelectorAll('.contents a')];
+function markCurrentSection() {
+  const current = contentsLinks.find(link => link.hash === location.hash) ?? contentsLinks[0];
+  for (const link of contentsLinks) {
+    if (link === current) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  }
+}
+window.addEventListener('hashchange', markCurrentSection);
+markCurrentSection();
+
 const photoDialog = document.querySelector('.photo-dialog');
 if (typeof photoDialog?.showModal === 'function') {
   const photo = photoDialog.querySelector('img');

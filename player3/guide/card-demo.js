@@ -12,7 +12,6 @@
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
   const viewMenu = document.querySelector('.demo-views');
-  const angle = document.querySelector('#demo-angle');
   const viewButtons = [...viewMenu.querySelectorAll('button')];
   const skinPanel = document.querySelector('.demo-skin');
   const skinToggle = document.querySelector('#demo-skin-toggle');
@@ -144,7 +143,6 @@
 
   function markView(name) {
     activeView = name;
-    angle.value = name ?? '';
     for (const button of viewButtons) button.setAttribute('aria-pressed', String(button.dataset.view === name));
   }
 
@@ -159,12 +157,6 @@
     preview.style.transform = `scale(${scale})`;
   }
 
-  for (const button of viewButtons) {
-    angle.add(new Option(button.textContent, button.dataset.view));
-  }
-  angle.value = activeView;
-  angle.addEventListener('change', () => selectView(angle.value));
-  angle.parentElement.hidden = false;
   viewMenu.hidden = false;
 
   for (const button of viewButtons) button.addEventListener('click', () => selectView(button.dataset.view));

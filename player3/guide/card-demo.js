@@ -9,9 +9,6 @@
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
   const rotateHint = document.querySelector('.demo-rotate-hint');
-  const arrows = stage.querySelector('.demo-arrows');
-  const label = stage.querySelector('.demo-callout');
-  const arrow = arrows.querySelector('path');
   const viewMenu = document.querySelector('.demo-views');
   const viewButtons = [...viewMenu.querySelectorAll('button')];
   const zoomControls = document.querySelector('.demo-zoom');
@@ -48,8 +45,8 @@
     if (drawModel) {
       drawModel(step);
     } else {
-      photo.src = step === 2 ? 'images/cad-demo-open-empty.webp?v=right-angle' :
-        step === 1 || step === 3 ? 'images/cad-cover-open.webp?v=right-angle' : 'images/cad-front.webp?v=right-angle';
+      photo.src = step === 2 ? 'images/cad-demo-open-empty.webp?v=matte' :
+        step === 1 || step === 3 ? 'images/cad-cover-open.webp?v=matte' : 'images/cad-front.webp?v=matte';
       looseCard.hidden = step !== 2;
     }
   }
@@ -167,10 +164,10 @@
     rearLight.position.set(65, 110, 100);
     scene.add(key, rearLight);
 
-    const shell = new THREE.MeshStandardMaterial({color: 0xc5cad0, roughness: .68, side: THREE.DoubleSide});
+    const shell = new THREE.MeshStandardMaterial({color: 0xc5cad0, roughness: .94, side: THREE.DoubleSide});
     const glass = new THREE.MeshPhysicalMaterial({
-      color: 0x829ba8, roughness: .22, metalness: .12,
-      transparent: true, opacity: .33, depthWrite: false,
+      color: 0x829ba8, roughness: .60, metalness: 0,
+      transparent: true, opacity: .25, depthWrite: false,
     });
     const rotation = new THREE.Matrix4().makeBasis(
       new THREE.Vector3(0, 0, 1),
@@ -198,12 +195,12 @@
       geometry.setIndex(new THREE.BufferAttribute(decode(part.f, Uint16Array), 1));
       return new THREE.Mesh(geometry, material);
     }
-    const wheelMaterial = new THREE.MeshStandardMaterial({color: 0xa5a9ae, roughness: .78, side: THREE.DoubleSide});
-    const portMaterial = new THREE.MeshStandardMaterial({color: 0x4b5058, roughness: .64, side: THREE.DoubleSide});
-    const ledMaterial = new THREE.MeshStandardMaterial({color: 0x9cc6ca, roughness: .36, side: THREE.DoubleSide});
+    const wheelMaterial = new THREE.MeshStandardMaterial({color: 0xa5a9ae, roughness: .92, side: THREE.DoubleSide});
+    const portMaterial = new THREE.MeshStandardMaterial({color: 0x4b5058, roughness: .89, side: THREE.DoubleSide});
+    const ledMaterial = new THREE.MeshStandardMaterial({color: 0x9cc6ca, roughness: .75, side: THREE.DoubleSide});
     for (const id of ['0', '1', '16']) scene.add(mesh(id, shell));
     scene.add(mesh('13', portMaterial));
-    const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .68, side: THREE.DoubleSide});
+    const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
     scene.add(controlMesh('buttons', buttons), controlMesh('power', buttons));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial), controlMesh('led', ledMaterial));
 
@@ -249,37 +246,6 @@
     const axis = new THREE.Vector3(1, 0, 0);
     const cardPosition = new THREE.Vector3();
     const slide = new THREE.Vector3();
-    const point = new THREE.Vector3();
-    function annotate() {
-      const frontFacing = step === 0 && Math.abs(yaw - homeYaw) < .43 && pitch > .08 && pitch < .83;
-      // Use the front cover's lower right edge as the callout anchor.
-      point.set(31, .4, -20).project(camera);
-      const x = (point.x + 1) * width / 2;
-      const y = (1 - point.y) * height / 2;
-      const visible = frontFacing && x >= 0 && x < width - 8 && y >= 0 && y < height - 24;
-      arrows.toggleAttribute('hidden', !visible);
-      label.hidden = !visible;
-      if (!visible) return;
-      const w = label.offsetWidth;
-      const h = label.offsetHeight;
-      const rightEdge = (point.set(33, 24, -20).project(camera).x + 1) * width / 2;
-      const fitsRight = rightEdge + 12 + w <= width - 4;
-      const lx = fitsRight ? rightEdge + 12 : Math.max(4, Math.min(width - w - 4, x - w / 2));
-      const ly = fitsRight ? Math.min(height - h - 4, y + 8) : y + 30;
-      if (ly + h > height - 4) {
-        arrows.setAttribute('hidden', '');
-        label.hidden = true;
-        return;
-      }
-      label.style.transform = `translate(${lx}px,${ly}px)`;
-      const startX = lx + w / 2;
-      const startY = ly + h / 2;
-      const angle = Math.atan2(y - startY, x - startX);
-      const tipX = x - Math.cos(angle) * 3;
-      const tipY = y - Math.sin(angle) * 3;
-      const edge = side => [tipX - 5 * Math.cos(angle + side), tipY - 5 * Math.sin(angle + side)].join(' ');
-      arrow.setAttribute('d', `M ${startX} ${startY} L ${tipX} ${tipY} M ${edge(.58)} L ${tipX} ${tipY} L ${edge(-.58)}`);
-    }
     function render() {
       hinge.rotation.x = coverAngle;
       cardPosition.copy(slot).applyAxisAngle(axis, coverAngle).add(hinge.position);
@@ -291,7 +257,6 @@
       camera.position.set(viewShift + horizontal * Math.sin(yaw), -2 - horizontal * Math.cos(yaw), radius * Math.sin(pitch));
       camera.lookAt(viewShift, -2, 0);
       renderer.render(scene, camera);
-      annotate();
     }
     function update(state) {
       cancelAnimationFrame(frame);
@@ -349,8 +314,6 @@
       rotateModel = resetView = null;
       stage.classList.remove('has-model');
       rotateHint.hidden = viewMenu.hidden = true;
-      arrows.setAttribute('hidden', '');
-      label.hidden = true;
       zoomModel = null;
       drawModel = null;
       canvas.hidden = true;

@@ -52,8 +52,6 @@ p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
 .demo-rotate-hint { position: absolute; right: 0; bottom: 7px; color: var(--muted); font-size: 13px; pointer-events: none; }
 .demo-stage.has-model { touch-action: none; }
 .demo-stage.is-dragging { cursor: grabbing; }
-.demo-callout { position: absolute; left: 0; top: 0; z-index: 1; padding: 0 4px; background: var(--paper); color: var(--green); font: 600 12px/1.5 Pretendard,system-ui,sans-serif; white-space: nowrap; pointer-events: none; }
-.demo-arrows { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; fill: none; stroke: var(--green); stroke-width: 1.2px; stroke-linecap: round; stroke-linejoin: round; }
 .demo-canvas { display: block; width: 100%; height: 100%; }
 .demo-zoom { position: absolute; left: 0; bottom: 7px; display: flex; gap: 4px; }
 .demo-zoom button { width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); font: 600 20px/1 system-ui, sans-serif; cursor: pointer; }

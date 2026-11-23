@@ -170,10 +170,17 @@ details p { color: var(--muted); padding-bottom: 14px; }
     padding-block: 41px;
   }
   .demo-viewer:has(.demo-skin:not([hidden])) .demo-stage { padding-block: 52px; }
-  .demo-controls { justify-content: center; gap: 7px; }
+  .demo-controls {
+    position: absolute;
+    inset-block-start: 12px;
+    inset-inline-end: 12px;
+    z-index: 1;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
   .demo-viewer-toolbar button, .demo-controls #demo-skin-toggle { min-height: 44px; font-size: 14px; }
   #demo-next { inline-size: 112px; padding-inline: 5px; }
-  .demo-skin { width: min(100%, 304px); justify-content: center; }
   .demo-swatches button { position: relative; width: 44px; height: 44px; border: 0; background: transparent; }
   .demo-swatches button::before { content: ""; position: absolute; inset: 7px; border: 1px solid var(--line); border-radius: 50%; background: var(--swatch); }
   .demo-swatches button[aria-pressed="true"] { outline: 0; }

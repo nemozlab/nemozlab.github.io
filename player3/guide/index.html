@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css">
-  <link rel="stylesheet" href="guide.css?v=viewer-flow">
+  <link rel="stylesheet" href="guide.css?v=orbit-45">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -37,17 +37,20 @@
     <section class="hero" aria-labelledby="title">
       <h1 id="title">네모 플레이어 사용법</h1>
       <div class="demo-views" role="group" aria-label="플레이어 보는 방향" hidden>
-        <button type="button" data-view="home" aria-pressed="true">기본</button>
-        <button type="button" data-view="front" aria-pressed="false">전면</button>
-        <button type="button" data-view="right" aria-pressed="false">오른쪽 측면</button>
-        <button type="button" data-view="back" aria-pressed="false" aria-label="뒷면 스피커">뒷면</button>
-        <button type="button" data-view="left" aria-pressed="false">왼쪽 측면</button>
+        <button type="button" data-view="home" data-yaw="45" aria-label="기본 각도, 오른쪽 앞 45도" aria-pressed="true">기본</button>
+        <button type="button" data-view="right" data-yaw="90" aria-pressed="false">오른쪽 측면</button>
+        <button type="button" data-view="back-right" data-yaw="135" aria-pressed="false">오른쪽 뒤</button>
+        <button type="button" data-view="back" data-yaw="180" aria-pressed="false" aria-label="뒷면 스피커">뒷면</button>
+        <button type="button" data-view="back-left" data-yaw="225" aria-pressed="false">왼쪽 뒤</button>
+        <button type="button" data-view="left" data-yaw="270" aria-pressed="false">왼쪽 측면</button>
+        <button type="button" data-view="front-left" data-yaw="315" aria-pressed="false">왼쪽 앞</button>
+        <button type="button" data-view="front" data-yaw="0" aria-pressed="false">전면</button>
         <button type="button" data-view="top" aria-pressed="false">윗면</button>
       </div>
       <div class="demo-viewer">
         <button class="demo-stage" type="button" id="demo-stage" aria-label="플레이어에서 커버 열기" disabled>
           <span class="demo-preview" hidden>
-            <img class="demo-product" src="images/cad-front.webp?v=rounded-card" alt="">
+            <img class="demo-product" src="images/cad-home-45.webp" alt="">
             <img class="demo-loose-card" src="images/card.webp?v=mymy" alt="" hidden>
           </span>
           <canvas class="demo-canvas" aria-hidden="true" hidden></canvas>
@@ -55,17 +58,16 @@
       </div>
       <div class="demo-controls">
         <div class="demo-actions" role="group" aria-label="피스와 재생 조작">
-          <button class="primary-link" type="button" id="demo-next" hidden>커버 열기</button>
-          <button class="demo-reset" type="button" id="demo-reset" hidden>
+          <button class="demo-reset" type="button" id="demo-reset" aria-label="홈, 처음부터" hidden>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7M5 9v12h5v-6h4v6h5V9"/></svg>
-            처음부터
+            홈
           </button>
           <button class="demo-reset" type="button" id="demo-auto" aria-pressed="false" hidden>자동재생</button>
-          <button class="demo-reset" type="button" id="demo-manual" aria-pressed="true" hidden>단계별 재생</button>
-        </div>
-        <div class="demo-zoom" role="group" aria-label="모델 확대·축소" hidden>
-          <button type="button" id="demo-zoom-out" aria-label="축소" disabled>−</button>
-          <button type="button" id="demo-zoom-in" aria-label="확대">+</button>
+          <div class="demo-step-controls" role="group" aria-label="단계별 재생 조작">
+            <button class="demo-reset" type="button" id="demo-manual" aria-pressed="true" hidden>단계별 재생</button>
+            <button class="primary-link" type="button" id="demo-next" hidden>1) 커버 열기</button>
+          </div>
+          <button class="demo-reset" type="button" id="demo-playback" hidden>앨범 재생</button>
         </div>
         <div class="demo-skin" hidden>
           <button type="button" id="demo-skin-toggle" aria-pressed="false">스킨 분리</button>
@@ -125,16 +127,7 @@
       <div class="download">
         <h3>처음 듣는 피스라면</h3>
         <p>저장된 음원이 없으면 Wi-Fi에 연결하고 NEMOZ 앱에서 다운로드를 시작하세요. 저장이 끝나면 재생되고, 이후에는 오프라인에서도 들을 수 있어요.</p>
-        <dl class="piece-types">
-          <div>
-            <dt>시리즈 피스</dt>
-            <dd>시리즈 음원을 미리 받아 두고, 꽂은 피스에 해당하는 한 곡을 재생해요.</dd>
-          </div>
-          <div>
-            <dt>앨범 피스</dt>
-            <dd>앨범 단위로 다운로드하고 앨범 전체를 재생해요.</dd>
-          </div>
-        </dl>
+        <p class="piece-types"><strong>앨범 피스</strong>는 앨범 전체를 재생하고, <strong>시리즈 피스</strong>는 꽂은 피스에 해당하는 한 곡을 재생해요.</p>
       </div>
     </section>
 
@@ -148,7 +141,7 @@
           <figure>
             <figcaption>윗면</figcaption>
             <div class="top-photo">
-              <img src="images/cad-top.webp?v=button-icons" alt="왼쪽부터 이전 버튼, 재생·일시정지 버튼, 다음 버튼, 상태 LED" loading="lazy">
+              <img src="images/cad-top.webp?v=button-icons" width="382" height="144" alt="왼쪽부터 이전 버튼, 재생·일시정지 버튼, 다음 버튼, 상태 LED" loading="lazy">
               <span class="button-callout" style="--x:35%" aria-hidden="true"><span class="button-number">1</span></span>
               <span class="button-callout" style="--x:50%" aria-hidden="true"><span class="button-number">2</span></span>
               <span class="button-callout" style="--x:66%" aria-hidden="true"><span class="button-number">3</span></span>
@@ -158,14 +151,14 @@
           <figure>
             <figcaption>왼쪽</figcaption>
             <div class="side-photo">
-              <img src="images/cad-left.webp?v=contrast" alt="왼쪽 측면의 볼륨 휠" loading="lazy">
+              <img src="images/cad-left.webp?v=contrast" width="144" height="311" alt="왼쪽 측면의 볼륨 휠" loading="lazy">
               <span class="button-callout" style="--x:84%;--y:45%" aria-hidden="true"><span class="button-number">5</span></span>
             </div>
           </figure>
           <figure>
             <figcaption>오른쪽</figcaption>
             <div class="side-photo">
-              <img src="images/cad-right.webp?v=contrast" alt="오른쪽 측면의 USB-C 포트와 전원 버튼" loading="lazy">
+              <img src="images/cad-right.webp?v=contrast" width="144" height="311" alt="오른쪽 측면의 USB-C 포트와 전원 버튼" loading="lazy">
               <span class="button-callout" style="--x:84%;--y:26%" aria-hidden="true"><span class="button-number">6</span></span>
               <span class="button-callout" style="--x:84%;--y:54%" aria-hidden="true"><span class="button-number">7</span></span>
             </div>
@@ -258,6 +251,6 @@
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="guide.js?v=card-demo"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script defer src="card-demo.js?v=viewer-flow"></script>
+  <script defer src="card-demo.js?v=orbit-45"></script>
 </body>
 </html>

@@ -8,6 +8,7 @@
   const reset = document.querySelector('#demo-reset');
   const auto = document.querySelector('#demo-auto');
   const manual = document.querySelector('#demo-manual');
+  const playback = document.querySelector('#demo-playback');
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
   const viewMenu = document.querySelector('.demo-views');
@@ -18,8 +19,10 @@
   const photoViews = {
     front: 'cad-face.webp', top: 'cad-top.webp?v=button-icons', left: 'cad-left.webp?v=contrast',
     right: 'cad-right.webp?v=contrast', back: 'cad-back.webp',
+    'back-right': 'cad-back-right.webp', 'back-left': 'cad-back-left.webp', 'front-left': 'cad-front-left.webp',
   };
-  const swipeViews = ['front', 'right', 'back', 'left'];
+  const horizontalViews = viewButtons.filter(button => button.hasAttribute('data-yaw'));
+  const swipeViews = horizontalViews.map(button => button.dataset.view);
   let activeView = 'home';
   let selectModelView;
   let toggleModelSkin;
@@ -27,19 +30,15 @@
   let rotateWithKeys;
   let pickSkin;
   let cardNeedsStowing;
-  const zoomControls = document.querySelector('.demo-zoom');
-  const zoomOut = document.querySelector('#demo-zoom-out');
-  const zoomIn = document.querySelector('#demo-zoom-in');
-  const zoomLevels = [1, 1.2, 1.45, 1.75];
+  const maxZoom = 1.75;
   let scale = 1;
-  let zoomModel;
   let pointer;
   let dragged = false;
   const steps = [
     ['투명 전면 커버를 열어보세요.', '커버 열기'],
     ['열린 커버에서 NFC 피스를 위로 빼보세요.', '피스 빼기'],
     ['NFC 피스를 커버 안쪽 거치부에 넣어보세요.', '피스 넣기'],
-    ['커버를 닫으면 앨범이 재생돼요.', '커버 닫고 앨범 재생'],
+    ['커버를 닫으면 앨범이 재생돼요.', '커버 닫기'],
   ];
   let step = 0;
   let drawModel;
@@ -50,7 +49,7 @@
   let autoTimer;
 
   function syncControls() {
-    next.setAttribute('aria-disabled', String(transitioning || automatic));
+    next.setAttribute('aria-disabled', String(transitioning || automatic || step === steps.length));
     skinToggle.setAttribute('aria-disabled', String(transitioning || automatic));
     auto.setAttribute('aria-pressed', String(automatic));
     manual.setAttribute('aria-pressed', String(!automatic));
@@ -83,18 +82,17 @@
 
   function show() {
     const playing = !audio.paused && !audio.ended;
-    const [message, action] = steps[step] || [
-      playbackError ? '앨범을 재생할 수 없어요.' : playing ? '앨범 재생 중' : '',
-      playing ? '일시정지' : '앨범 재생',
-    ];
-    instruction.textContent = message;
+    const [message, action] = steps[step] || ['커버가 닫혔어요.', '완료'];
+    instruction.textContent = playbackError ? '앨범을 재생할 수 없어요.' : message;
+    playback.textContent = playing ? '일시정지' : '앨범 재생';
+    syncControls();
     instruction.toggleAttribute('data-error', playbackError);
-    next.textContent = action;
-    stage.setAttribute('aria-label', action);
+    next.textContent = step < steps.length ? `${step + 1}) ${action}` : action;
+    stage.setAttribute('aria-label', step === steps.length ? '네모 플레이어 3D 모델' : action);
     stage.dataset.step = step;
     if (!drawModel) {
       const image = step === 2 ? 'cad-demo-open-empty.webp?v=rounded-card' :
-        step === 1 || step === 3 ? 'cad-cover-open.webp?v=rounded-card' : 'cad-front.webp?v=rounded-card';
+        step === 1 || step === 3 ? 'cad-cover-open.webp?v=rounded-card' : 'cad-home-45.webp';
       photo.src = 'images/' + (photoViews[activeView] || image);
       looseCard.hidden = step !== 2 || activeView !== 'home';
     }
@@ -112,19 +110,22 @@
   }
 
   function advance() {
-    if (transitioning) return;
-    if (step < steps.length) {
-      if (activeView !== 'home' && !drawModel) selectView('home');
-      step += 1;
-      moveModel(() => {
-        if (step === steps.length) {
-          stopAutomatic();
-          play();
-        } else {
-          queueStep(430);
-        }
-      });
-    } else if (audio.paused || audio.ended) {
+    if (transitioning || step === steps.length) return;
+    if (activeView !== 'home' && !drawModel) selectView('home');
+    step += 1;
+    moveModel(() => {
+      if (step === steps.length) {
+        stopAutomatic();
+        play();
+      } else {
+        queueStep(430);
+      }
+    });
+    show();
+  }
+
+  function togglePlayback() {
+    if (audio.paused || audio.ended) {
       play();
     } else {
       playAttempt += 1;
@@ -147,18 +148,9 @@
   function updateZoom(value) {
     scale = value;
     preview.style.transform = `scale(${scale})`;
-    zoomOut.disabled = scale <= zoomLevels[0] + .001;
-    zoomIn.disabled = scale >= zoomLevels.at(-1) - .001;
   }
 
-  function setZoom(value) {
-    updateZoom(value);
-    zoomModel?.(value);
-  }
-
-  zoomOut.addEventListener('click', () => setZoom(zoomLevels.filter(level => level < scale - .001).at(-1) ?? 1));
-  zoomIn.addEventListener('click', () => setZoom(zoomLevels.find(level => level > scale + .001) ?? zoomLevels.at(-1)));
-  zoomControls.hidden = viewMenu.hidden = false;
+  viewMenu.hidden = false;
 
   for (const button of viewButtons) button.addEventListener('click', () => selectView(button.dataset.view));
   function toggleSkin() {
@@ -177,17 +169,26 @@
   stage.addEventListener('pointerdown', event => {
     if (event.button !== 0) return;
     if (!event.isPrimary) {
+      pointer = null;
       dragged = true;
       return;
     }
     dragged = false;
-    pointer = {id: event.pointerId, x: event.clientX, y: event.clientY};
+    pointer = {id: event.pointerId, x: event.clientX, y: event.clientY, lastX: event.clientX};
     if (!drawModel) stage.setPointerCapture(pointer.id);
   });
   stage.addEventListener('pointermove', event => {
     if (event.pointerId !== pointer?.id) return;
-    if (Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) < 5) return;
+    const dx = event.clientX - pointer.x;
+    const dy = event.clientY - pointer.y;
+    if (Math.hypot(dx, dy) < 5) return;
     dragged = true;
+    if (drawModel && event.pointerType === 'touch') {
+      pointer.horizontal ??= Math.abs(dx) > Math.abs(dy);
+      if (!pointer.horizontal) return;
+      rotateWithKeys((event.clientX - pointer.lastX) / 18, 0);
+      pointer.lastX = event.clientX;
+    }
     if (drawModel) {
       markView(null);
       stage.classList.add('is-dragging');
@@ -198,7 +199,7 @@
     const dx = event.clientX - pointer.x;
     const dy = event.clientY - pointer.y;
     if (!drawModel && Math.abs(dx) > 22 && Math.abs(dx) > Math.abs(dy)) {
-      const index = swipeViews.indexOf(activeView === 'home' || activeView === 'top' ? 'front' : activeView);
+      const index = Math.max(0, swipeViews.indexOf(activeView));
       selectView(swipeViews[(index + (dx < 0 ? 1 : swipeViews.length - 1)) % swipeViews.length]);
     }
     pointer = null;
@@ -210,11 +211,15 @@
     stage.classList.remove('is-dragging');
   });
   stage.addEventListener('wheel', event => {
+    if (!event.ctrlKey && !event.metaKey) {
+      if (drawModel) event.stopPropagation();
+      return;
+    }
     if (drawModel || event.deltaY === 0) return;
     event.preventDefault();
-    const value = Math.max(1, Math.min(zoomLevels.at(-1), scale * (event.deltaY < 0 ? 1.12 : 1 / 1.12)));
-    setZoom(value);
-  }, {passive: false});
+    const value = Math.max(1, Math.min(maxZoom, scale * (event.deltaY < 0 ? 1.12 : 1 / 1.12)));
+    updateZoom(value);
+  }, {capture: true, passive: false});
 
   stage.addEventListener('keydown', event => {
     const movement = {ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1]};
@@ -234,7 +239,7 @@
     const cardIsOut = cardNeedsStowing?.();
     selectView('home', true);
     resetSkin?.();
-    if (!drawModel) setZoom(zoomLevels[0]);
+    if (!drawModel) updateZoom(1);
     step = 0;
     if (cardIsOut && drawModel) {
       transitioning = true;
@@ -257,10 +262,11 @@
     restart(() => queueStep(250));
   });
   manual.addEventListener('click', stopAutomatic);
+  playback.addEventListener('click', togglePlayback);
 
   for (const event of ['playing', 'pause', 'ended']) audio.addEventListener(event, show);
   stage.disabled = false;
-  next.hidden = reset.hidden = auto.hidden = manual.hidden = false;
+  next.hidden = reset.hidden = auto.hidden = manual.hidden = playback.hidden = false;
   show();
 
   async function loadModel(THREE) {
@@ -421,16 +427,20 @@
     let viewShift = 0;
     let viewHeight = 0;
     const coverOpening = THREE.MathUtils.degToRad(35);
-    const homeYaw = .54;
-    const homePitch = .35;
-    const views = {
-      home: [homeYaw, homePitch], front: [0, 0], top: [0, Math.PI / 2 - .001],
-      left: [-Math.PI / 2, 0], right: [Math.PI / 2, 0], back: [Math.PI, 0],
-    };
+    const views = Object.fromEntries(horizontalViews.map(({dataset: {view, yaw}}) => [
+      view, [THREE.MathUtils.degToRad(Number(yaw)), Number(yaw) % 90 === 0 ? 0 : .35],
+    ]));
+    views.top = [0, Math.PI / 2 - .001];
     const orbit = new THREE.OrbitControls(camera, canvas);
+    // OrbitControls cancels single-touch scrolling. Leave those gestures to the page and pointer handler.
+    for (const type of ['touchstart', 'touchmove']) {
+      canvas.addEventListener(type, event => {
+        if (event.touches.length < 2) event.stopImmediatePropagation();
+      }, {capture: true, passive: true});
+    }
     orbit.enablePan = false;
     orbit.minZoom = 1;
-    orbit.maxZoom = zoomLevels.at(-1);
+    orbit.maxZoom = maxZoom;
     orbit.target.set(0, -2, 0);
     orbit.addEventListener('change', () => {
       updateZoom(camera.zoom);
@@ -452,8 +462,14 @@
       const length = cameraDirection.length();
       if (reducedMotion.matches || length < 1 || !stage.classList.contains('has-model')) {
         placeCamera(yaw, pitch);
-        if (resetZoom) zoomModel(1);
-        else orbit.update();
+        if (resetZoom) {
+          camera.zoom = 1;
+          camera.updateProjectionMatrix();
+          updateZoom(1);
+          render();
+        } else {
+          orbit.update();
+        }
         return;
       }
 
@@ -587,7 +603,6 @@
       selectModelView = toggleModelSkin = resetSkin = rotateWithKeys = pickSkin = cardNeedsStowing = null;
       stage.classList.remove('has-model');
       skinPanel.hidden = true;
-      zoomModel = null;
       drawModel = null;
       canvas.hidden = true;
       preview.hidden = false;
@@ -596,14 +611,8 @@
     drawModel = update;
     canvas.hidden = false;
     preview.hidden = true;
-    zoomModel = scale => {
-      cancelAnimationFrame(cameraFrame);
-      camera.zoom = scale;
-      camera.updateProjectionMatrix();
-      render();
-    };
     camera.zoom = scale;
-    placeCamera(homeYaw, homePitch);
+    placeCamera(...views.home);
     setCameraView(views[activeView] ? activeView : 'home');
     resize();
     update(step);

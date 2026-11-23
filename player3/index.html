@@ -335,7 +335,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
           <button class="sheet-close" type="button" data-kt="closePanel" aria-label="팝업 닫기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         </div>
         <div class="sub" id="artw">
-            <div class="seg" id="dsg" role="group" aria-label="스킨 디자인 / 换肤款式"><button type="button" data-d="0" data-k="dz0">기본형</button><button type="button" data-d="1" data-k="dz1" aria-pressed="true">데이지</button></div>
+            <div class="seg" id="dsg" role="group" aria-label="스킨 디자인 / 换肤款式"><button type="button" data-d="0" data-k="dz0" aria-pressed="true">기본형</button><button type="button" data-d="1" data-k="dz1" aria-pressed="false">데이지</button></div>
             <span class="skl" data-k="skl">스킨 색 · 데이지는 끼움 부품(공통)</span>
             <div class="sw9" id="sw9"></div>
           </div>
@@ -499,7 +499,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     });
     var sharedView=new URLSearchParams(location.search).get('view');
     buildDaisies();buildSnapMarkers();buildSwatches();
-    setDesign(sharedView==='basic'?0:1);
+    setDesign(sharedView==='daisy'?1:0);
     setView(sharedView==='exploded'?'m':'p');
   }).catch(function(){hint.textContent=T('err')});
 
@@ -890,7 +890,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     SKC.forEach(function(c,i){var d=document.createElement('button');d.type='button';d.className='swb';d.style.background='#'+('000000'+c[0].toString(16)).slice(-6);d.setAttribute('data-i',String(i));d.title=c[1];d.setAttribute('aria-label',c[1]);box.appendChild(d)});
     box.addEventListener('click',function(ev){var t=ev.target.closest('.swb');if(t)setSkin(parseInt(t.getAttribute('data-i'),10))});
   }
-  var dz=1,BASIC3=[9,0,2],DAISY3=[9,0,2];
+  var dz=0,BASIC3=[9,0,2],DAISY3=[9,0,2];
   function allowed(){return dz===0?BASIC3:DAISY3}
   function applyAllowed(){var a=allowed();[].forEach.call(document.querySelectorAll('#sw9 .swb'),function(b){var i=parseInt(b.getAttribute('data-i'),10);var ix=a.indexOf(i);b.hidden=ix<0;b.style.order=ix<0?99:ix})}
   function setDesign(d){dz=d;

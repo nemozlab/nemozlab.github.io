@@ -45,6 +45,12 @@ p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
 .demo-controls button { white-space: nowrap; }
 .demo-instruction:not([data-error]) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .demo-instruction[data-error], .demo-track { background: var(--paper); color: var(--muted); font-size: 13px; padding: 8px 12px; }
+.demo-track-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; padding-inline-end: 4px; background: var(--paper); }
+.demo-track-row button { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--ink); cursor: pointer; }
+.demo-track-row button:hover:not(:disabled) { background: var(--mist); }
+.demo-track-row button:disabled { color: var(--muted); opacity: .5; cursor: default; }
+.demo-track-row button:focus-visible { outline: 2px solid var(--green); outline-offset: -2px; }
+.demo-track-row svg { width: 20px; height: 20px; fill: currentColor; }
 .demo-stream { padding: 0 12px 10px; background: var(--paper); font-size: 13px; }
 .demo-stream iframe { display: block; max-width: 100%; border: 0; border-radius: 12px; }
 .demo-stream a { display: inline-block; padding-block: 5px; }

@@ -11,6 +11,18 @@
   const playback = document.querySelector('#demo-playback');
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
+  const trackLabel = document.querySelector('.demo-track');
+  const streamPanel = document.querySelector('.demo-stream');
+  const streamMount = document.querySelector('#demo-stream-player');
+  const streamLink = streamPanel.querySelector('a');
+  const tracks = [
+    {label: trackLabel.textContent},
+    {label: '용용 · Lost Ember’', spotifyId: '0iX6X2sGT8hRBGMSx75IUp'},
+    {label: '용용 · BALENCIA (feat. ASH ISLAND)', spotifyId: '402pmJrmv11wWDbkWKWWao'},
+  ];
+  let trackIndex = 0;
+  let spotifyApi;
+  let stream;
   const viewMenu = document.querySelector('.demo-views');
   const viewButtons = [...viewMenu.querySelectorAll('button')];
   const skinPanel = document.querySelector('.demo-skin');
@@ -57,6 +69,10 @@
     return !transitioning && (step === 0 || step === steps.length);
   }
 
+  function isPlaying() {
+    return tracks[trackIndex].spotifyId ? stream?.playing === true : !audio.paused && !audio.ended;
+  }
+
   function syncControls() {
     next.setAttribute('aria-disabled', String(transitioning || automatic));
     skinToggle.setAttribute('aria-disabled', String(transitioning || automatic));
@@ -90,7 +106,8 @@
   }
 
   function show() {
-    const playing = !audio.paused && !audio.ended;
+    const spotifyId = tracks[trackIndex].spotifyId;
+    const playing = isPlaying();
     const complete = step === steps.length;
     const [message, action] = steps[step] || ['커버가 닫혔어요.', '커버 다시 열기'];
     instruction.textContent = playbackError ? '앨범을 재생할 수 없어요.' : message;
@@ -98,6 +115,7 @@
     playback.title = playing ? '일시정지' : '앨범 재생';
     playback.setAttribute('aria-label', playback.title);
     syncControls();
+    streamPanel.hidden = !spotifyId || !canPlay();
     instruction.toggleAttribute('data-error', playbackError);
     if (!complete || !transitioning) {
       stepLabel.textContent = `${step + 1}. ${action}`;
@@ -115,8 +133,13 @@
 
   function play() {
     if (!canPlay()) return;
-    const attempt = ++playAttempt;
     playbackError = false;
+    const spotifyId = tracks[trackIndex].spotifyId;
+    if (spotifyId) {
+      playStream(spotifyId);
+      return;
+    }
+    const attempt = ++playAttempt;
     if (audio.ended) audio.currentTime = 0;
     audio.play().catch(() => {
       if (attempt !== playAttempt) return;
@@ -128,18 +151,79 @@
   function pausePlayback() {
     playAttempt += 1;
     audio.pause();
+    if (stream) {
+      stream.wantsPlay = false;
+      stream.playing = false;
+      stream.controller?.pause();
+    }
+  }
+
+  function resetPlayback() {
+    pausePlayback();
+    audio.currentTime = 0;
+    const previousStream = stream;
+    stream = null;
+    previousStream?.controller?.destroy();
+    streamMount.replaceChildren();
+    playbackError = false;
+  }
+
+  function loadSpotifyApi() {
+    if (!spotifyApi) {
+      spotifyApi = new Promise((resolve, reject) => {
+        window.onSpotifyIframeApiReady = resolve;
+        const script = document.createElement('script');
+        script.src = 'https://open.spotify.com/embed/iframe-api/v1';
+        script.onerror = () => reject(new Error('Spotify is unavailable'));
+        document.head.append(script);
+      });
+    }
+    return spotifyApi;
+  }
+
+  function playStream(spotifyId) {
+    if (stream) {
+      stream.wantsPlay = true;
+      if (stream.ready) stream.controller.resume();
+      return;
+    }
+    const session = {wantsPlay: true, playing: false, ready: false, controller: null};
+    stream = session;
+    const placeholder = document.createElement('div');
+    streamMount.replaceChildren(placeholder);
+    loadSpotifyApi().then(api => {
+      if (stream !== session) return;
+      api.createController(placeholder, {uri: `spotify:track:${spotifyId}`, width: '100%', height: 152}, controller => {
+        if (stream !== session) {
+          controller.destroy();
+          return;
+        }
+        session.controller = controller;
+        controller.addListener('ready', () => {
+          if (stream !== session) return;
+          session.ready = true;
+          if (session.wantsPlay && canPlay()) controller.play();
+        });
+        controller.addListener('playback_update', ({data}) => {
+          if (stream !== session) return;
+          if (session.playing === !data.isPaused) return;
+          session.playing = !data.isPaused;
+          show();
+        });
+      });
+    }).catch(() => {
+      if (stream !== session) return;
+      stream = null;
+      playbackError = true;
+      show();
+    });
   }
 
   function advance() {
     if (transitioning) return;
     if (activeView !== 'home' && !drawModel) selectView('home');
-    if (step === steps.length) {
-      pausePlayback();
-      audio.currentTime = 0;
-      step = 0;
-    }
-    step += 1;
-    if (step === 1) pausePlayback();
+    step = step === steps.length ? 1 : step + 1;
+    if (step === 1) resetPlayback();
     moveModel(() => {
       if (step === steps.length) {
         stopAutomatic();
@@ -153,18 +237,20 @@
   }
 
   function togglePlayback() {
-    if (audio.paused || audio.ended) {
-      play();
-    } else {
-      pausePlayback();
-    }
+    if (isPlaying()) pausePlayback();
+    else play();
     show();
   }
 
-  function replayTrack() {
+  function changeTrack(direction) {
     if (!canPlay()) return;
-    audio.currentTime = 0;
+    resetPlayback();
+    trackIndex = (trackIndex + direction + tracks.length) % tracks.length;
+    const track = tracks[trackIndex];
+    trackLabel.textContent = track.label;
+    if (track.spotifyId) streamLink.href = `https://open.spotify.com/track/${track.spotifyId}`;
     play();
+    show();
   }
 
   function markView(name) {
@@ -204,7 +290,7 @@
     if (pickModelPart) {
       const part = pickModelPart(event);
       if (part === 'play') togglePlayback();
-      else if (part === 'previous' || part === 'next') replayTrack();
+      else if (part === 'previous' || part === 'next') changeTrack(part === 'previous' ? -1 : 1);
       else if (part === 'model') advance();
       return;
     }
@@ -317,9 +403,7 @@
   });
 
   function restart(onComplete) {
-    pausePlayback();
-    audio.currentTime = 0;
-    playbackError = false;
+    resetPlayback();
     const cardIsOut = cardNeedsStowing?.();
     selectView('home', true);
     resetSkin?.();

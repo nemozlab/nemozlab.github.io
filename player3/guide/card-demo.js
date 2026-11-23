@@ -40,7 +40,7 @@
       drawModel(step);
     } else {
       photo.src = step === 2 ? 'images/cad-demo-open-empty.webp?v=contrast' :
-        step === 1 || step === 3 ? 'images/cad-cover-open.webp?v=contrast' : 'images/cad-front.webp?v=contrast';
+        step === 1 || step === 3 ? 'images/cad-cover-open.webp?v=mymy' : 'images/cad-front.webp?v=mymy';
       looseCard.hidden = step !== 2;
     }
   }
@@ -127,7 +127,7 @@
     const [parts, controls, artwork] = await Promise.all([
       readParts('../parts.json'),
       readParts('control-parts.json'),
-      new THREE.TextureLoader().loadAsync('images/card.webp'),
+      new THREE.TextureLoader().loadAsync('images/card.webp?v=mymy'),
     ]);
     const renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true});
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));

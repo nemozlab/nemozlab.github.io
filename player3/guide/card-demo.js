@@ -257,6 +257,12 @@
   }, {passive: false});
 
   stage.addEventListener('keydown', event => {
+    if (!event.shiftKey && !event.altKey && !event.ctrlKey && !event.metaKey &&
+        (event.key === 'ArrowUp' || event.key === 'ArrowDown')) {
+      event.preventDefault();
+      window.scrollBy(0, event.key === 'ArrowDown' ? 40 : -40);
+      return;
+    }
     const movement = {ArrowLeft: [-1, 0], ArrowRight: [1, 0]};
     if (event.shiftKey) Object.assign(movement, {ArrowUp: [0, -1], ArrowDown: [0, 1]});
     if (!movement[event.key] || !rotateModel) return;

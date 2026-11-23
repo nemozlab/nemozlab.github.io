@@ -1,7 +1,8 @@
 (() => {
   const stage = document.querySelector('#demo-stage');
   const canvas = stage.querySelector('canvas');
-  const photo = stage.querySelector('.demo-product');
+  const preview = stage.querySelector('.demo-preview');
+  const photo = preview.querySelector('.demo-product');
   const looseCard = stage.querySelector('.demo-loose-card');
   const next = document.querySelector('#demo-next');
   const reset = document.querySelector('#demo-reset');
@@ -9,8 +10,16 @@
   const audio = document.querySelector('#demo-audio');
   const rotateHint = document.querySelector('.demo-rotate-hint');
   const arrows = stage.querySelector('.demo-arrows');
-  const labels = [...stage.querySelectorAll('.demo-callout')];
-  const paths = [...arrows.querySelectorAll('path')];
+  const label = stage.querySelector('.demo-callout');
+  const arrow = arrows.querySelector('path');
+  const viewMenu = document.querySelector('.demo-views');
+  const viewButtons = [...viewMenu.querySelectorAll('button')];
+  const zoomControls = document.querySelector('.demo-zoom');
+  const zoomOut = document.querySelector('#demo-zoom-out');
+  const zoomIn = document.querySelector('#demo-zoom-in');
+  const zoomLevels = [1, 1.2, 1.45, 1.75];
+  let zoomIndex = 0;
+  let zoomModel;
   let rotateModel;
   let resetView;
   let pointer;
@@ -39,8 +48,8 @@
     if (drawModel) {
       drawModel(step);
     } else {
-      photo.src = step === 2 ? 'images/cad-demo-open-empty.webp?v=contrast' :
-        step === 1 || step === 3 ? 'images/cad-cover-open.webp?v=mymy' : 'images/cad-front.webp?v=mymy';
+      photo.src = step === 2 ? 'images/cad-demo-open-empty.webp?v=right-angle' :
+        step === 1 || step === 3 ? 'images/cad-cover-open.webp?v=right-angle' : 'images/cad-front.webp?v=right-angle';
       looseCard.hidden = step !== 2;
     }
   }
@@ -68,6 +77,18 @@
     }
     show();
   }
+
+  function setZoom(value) {
+    zoomIndex = value;
+    const scale = zoomLevels[zoomIndex];
+    preview.style.transform = `scale(${scale})`;
+    zoomModel?.(scale);
+    zoomOut.disabled = zoomIndex === 0;
+    zoomIn.disabled = zoomIndex === zoomLevels.length - 1;
+  }
+  zoomOut.addEventListener('click', () => setZoom(zoomIndex - 1));
+  zoomIn.addEventListener('click', () => setZoom(zoomIndex + 1));
+  zoomControls.hidden = false;
 
   stage.addEventListener('click', event => {
     if (!dragged || event.detail === 0) advance();
@@ -109,6 +130,7 @@
     playbackError = false;
     step = 0;
     resetView?.();
+    setZoom(0);
     show();
     next.focus();
   });
@@ -141,7 +163,9 @@
     scene.add(new THREE.HemisphereLight(0xffffff, 0x9bafbc, .62));
     const key = new THREE.DirectionalLight(0xffffff, .49);
     key.position.set(-75, -80, 135);
-    scene.add(key);
+    const rearLight = new THREE.DirectionalLight(0xffffff, .34);
+    rearLight.position.set(65, 110, 100);
+    scene.add(key, rearLight);
 
     const shell = new THREE.MeshStandardMaterial({color: 0xc5cad0, roughness: .68, side: THREE.DoubleSide});
     const glass = new THREE.MeshPhysicalMaterial({
@@ -177,7 +201,8 @@
     const wheelMaterial = new THREE.MeshStandardMaterial({color: 0xa5a9ae, roughness: .78, side: THREE.DoubleSide});
     const portMaterial = new THREE.MeshStandardMaterial({color: 0x4b5058, roughness: .64, side: THREE.DoubleSide});
     const ledMaterial = new THREE.MeshStandardMaterial({color: 0x9cc6ca, roughness: .36, side: THREE.DoubleSide});
-    for (const id of ['0', '1', '13', '16']) scene.add(mesh(id, shell));
+    for (const id of ['0', '1', '16']) scene.add(mesh(id, shell));
+    scene.add(mesh('13', portMaterial));
     const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .68, side: THREE.DoubleSide});
     scene.add(controlMesh('buttons', buttons), controlMesh('power', buttons));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial), controlMesh('led', ledMaterial));
@@ -203,8 +228,19 @@
     let cardOffset = 0;
     let viewShift = 0;
     const coverOpening = THREE.MathUtils.degToRad(35);
-    const homeYaw = -.362;
-    const homePitch = .326;
+    const homeYaw = .54;
+    const homePitch = .35;
+    const views = {
+      home: [homeYaw, homePitch], front: [0, 0], top: [0, Math.PI / 2 - .001],
+      left: [-Math.PI / 2, 0], right: [Math.PI / 2, 0], back: [Math.PI, 0],
+    };
+    function markView(name) {
+      for (const button of viewButtons) button.setAttribute('aria-pressed', String(button.dataset.view === name));
+    }
+    function selectView(name) {
+      [yaw, pitch] = views[name];
+      markView(name);
+    }
     let yaw = homeYaw;
     let pitch = homePitch;
     let width, height;
@@ -214,34 +250,35 @@
     const cardPosition = new THREE.Vector3();
     const slide = new THREE.Vector3();
     const point = new THREE.Vector3();
-    const callouts = [
-      {anchor: [0, 7, 27], offset: [-45, -26]},
-      {anchor: [21.7, 7, 25.9], offset: [34, -28]},
-      {anchor: [24, .4, -14], offset: [41, 31]},
-    ];
     function annotate() {
-      const visible = step === 0 && Math.abs(yaw - homeYaw) < .43 && pitch > .08 && pitch < .83;
+      const frontFacing = step === 0 && Math.abs(yaw - homeYaw) < .43 && pitch > .08 && pitch < .83;
+      // Use the front cover's lower right edge as the callout anchor.
+      point.set(31, .4, -20).project(camera);
+      const x = (point.x + 1) * width / 2;
+      const y = (1 - point.y) * height / 2;
+      const visible = frontFacing && x >= 0 && x < width - 8 && y >= 0 && y < height - 24;
       arrows.toggleAttribute('hidden', !visible);
-      for (const label of labels) label.hidden = !visible;
+      label.hidden = !visible;
       if (!visible) return;
-      callouts.forEach(({anchor, offset}, i) => {
-        point.set(...anchor).project(camera);
-        const x = (point.x + 1) * width / 2;
-        const y = (1 - point.y) * height / 2;
-        const label = labels[i];
-        const w = label.offsetWidth;
-        const h = label.offsetHeight;
-        const lx = Math.max(4, Math.min(width - w - 4, x + offset[0] - w / 2));
-        const ly = Math.max(3, Math.min(height - h - 3, y + offset[1] - h / 2));
-        label.style.transform = `translate(${lx}px,${ly}px)`;
-        const startX = lx + w / 2;
-        const startY = ly + h / 2;
-        const angle = Math.atan2(y - startY, x - startX);
-        const tipX = x - Math.cos(angle) * 3;
-        const tipY = y - Math.sin(angle) * 3;
-        const edge = side => [tipX - 5 * Math.cos(angle + side), tipY - 5 * Math.sin(angle + side)].join(' ');
-        paths[i].setAttribute('d', `M ${startX} ${startY} L ${tipX} ${tipY} M ${edge(.58)} L ${tipX} ${tipY} L ${edge(-.58)}`);
-      });
+      const w = label.offsetWidth;
+      const h = label.offsetHeight;
+      const rightEdge = (point.set(33, 24, -20).project(camera).x + 1) * width / 2;
+      const fitsRight = rightEdge + 12 + w <= width - 4;
+      const lx = fitsRight ? rightEdge + 12 : Math.max(4, Math.min(width - w - 4, x - w / 2));
+      const ly = fitsRight ? Math.min(height - h - 4, y + 8) : y + 30;
+      if (ly + h > height - 4) {
+        arrows.setAttribute('hidden', '');
+        label.hidden = true;
+        return;
+      }
+      label.style.transform = `translate(${lx}px,${ly}px)`;
+      const startX = lx + w / 2;
+      const startY = ly + h / 2;
+      const angle = Math.atan2(y - startY, x - startX);
+      const tipX = x - Math.cos(angle) * 3;
+      const tipY = y - Math.sin(angle) * 3;
+      const edge = side => [tipX - 5 * Math.cos(angle + side), tipY - 5 * Math.sin(angle + side)].join(' ');
+      arrow.setAttribute('d', `M ${startX} ${startY} L ${tipX} ${tipY} M ${edge(.58)} L ${tipX} ${tipY} L ${edge(-.58)}`);
     }
     function render() {
       hinge.rotation.x = coverAngle;
@@ -290,14 +327,18 @@
     }
 
     rotateModel = (dx, dy) => {
+      markView(null);
       yaw -= dx * .012;
       pitch = Math.max(-1.42, Math.min(1.42, pitch + dy * .012));
       render();
     };
-    resetView = () => {
-      yaw = homeYaw;
-      pitch = homePitch;
-    };
+    resetView = () => selectView('home');
+    for (const button of viewButtons) button.addEventListener('click', () => {
+      if (!rotateModel) return;
+      selectView(button.dataset.view);
+      render();
+    });
+    viewMenu.hidden = false;
     rotateHint.hidden = false;
     stage.classList.add('has-model');
     const observer = new ResizeObserver(resize);
@@ -307,17 +348,24 @@
       cancelAnimationFrame(frame);
       rotateModel = resetView = null;
       stage.classList.remove('has-model');
-      rotateHint.hidden = true;
+      rotateHint.hidden = viewMenu.hidden = true;
       arrows.setAttribute('hidden', '');
-      for (const label of labels) label.hidden = true;
+      label.hidden = true;
+      zoomModel = null;
       drawModel = null;
       canvas.hidden = true;
-      photo.hidden = false;
+      preview.hidden = false;
       show();
     });
     drawModel = update;
     canvas.hidden = false;
-    photo.hidden = looseCard.hidden = true;
+    preview.hidden = true;
+    zoomModel = scale => {
+      camera.zoom = scale;
+      camera.updateProjectionMatrix();
+      render();
+    };
+    camera.zoom = zoomLevels[zoomIndex];
     resize();
     update(step);
   }

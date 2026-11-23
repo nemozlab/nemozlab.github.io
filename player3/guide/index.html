@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css">
-  <link rel="stylesheet" href="guide.css?v=demo-track">
+  <link rel="stylesheet" href="guide.css?v=viewer-angles">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -36,16 +36,28 @@
   <main id="main" class="shell">
     <section class="hero" aria-labelledby="title">
       <h1 id="title">네모 플레이어 사용법</h1>
+      <div class="demo-views" role="group" aria-label="플레이어 보는 방향" hidden>
+        <button type="button" data-view="home" aria-pressed="true">기본</button>
+        <button type="button" data-view="front" aria-pressed="false">전면</button>
+        <button type="button" data-view="top" aria-pressed="false">윗면</button>
+        <button type="button" data-view="left" aria-pressed="false">왼쪽</button>
+        <button type="button" data-view="right" aria-pressed="false">오른쪽</button>
+        <button type="button" data-view="back" aria-pressed="false" aria-label="뒷면 스피커">뒷면</button>
+      </div>
       <div class="demo-viewer">
         <button class="demo-stage" type="button" id="demo-stage" aria-label="플레이어에서 커버 열기" disabled>
-          <img class="demo-product" src="images/cad-front.webp?v=mymy" alt="">
-          <img class="demo-loose-card" src="images/card.webp?v=mymy" alt="" hidden>
+          <span class="demo-preview">
+            <img class="demo-product" src="images/cad-front.webp?v=right-angle" alt="">
+            <img class="demo-loose-card" src="images/card.webp?v=mymy" alt="" hidden>
+          </span>
           <canvas class="demo-canvas" aria-hidden="true" hidden></canvas>
-          <span class="demo-callout" aria-hidden="true" hidden>재생 버튼</span>
-          <span class="demo-callout" aria-hidden="true" hidden>상태 LED</span>
           <span class="demo-callout" aria-hidden="true" hidden>투명 전면 커버</span>
-          <svg class="demo-arrows" aria-hidden="true" hidden><path/><path/><path/></svg>
+          <svg class="demo-arrows" aria-hidden="true" hidden><path/></svg>
         </button>
+        <div class="demo-zoom" role="group" aria-label="모델 확대·축소" hidden>
+          <button type="button" id="demo-zoom-out" aria-label="축소" disabled>−</button>
+          <button type="button" id="demo-zoom-in" aria-label="확대">+</button>
+        </div>
         <p class="demo-rotate-hint" hidden>드래그해서 돌려보세요.</p>
       </div>
       <div class="demo-controls">
@@ -84,18 +96,18 @@
         </li>
         <li id="play">
           <div class="step-copy"><h3>전면 커버 열기</h3><p>앞쪽의 투명 커버를 앞으로 여세요. 커버는 35°까지 열려요.</p></div>
-          <a class="step-photo cover-photo" href="images/cad-cover-open.webp?v=mymy" data-zoom="cover" aria-label="투명 전면 커버를 앞으로 연 상태 확대">
-            <span class="cover-frame"><img src="images/cad-cover-open.webp?v=mymy" alt="투명 전면 커버를 앞으로 연 상태" loading="lazy"></span>
+          <a class="step-photo cover-photo" href="images/cad-cover-open.webp?v=right-angle" data-zoom="cover" aria-label="투명 전면 커버를 앞으로 연 상태 확대">
+            <span class="cover-frame"><img src="images/cad-cover-open.webp?v=right-angle" alt="투명 전면 커버를 앞으로 연 상태" loading="lazy"></span>
             <span class="cover-caption">투명 전면 커버</span>
           </a>
         </li>
         <li>
           <div class="step-copy"><h3>NFC 피스 넣기</h3><p>피스를 열린 커버 안쪽의 카드 거치부에 넣으세요.</p></div>
-          <a class="step-photo card-photo" href="images/cad-card-insert.webp?v=mymy" data-zoom aria-label="플레이어 커버 안쪽 거치부에 NFC 피스를 넣는 모습 확대"><img src="images/cad-card-insert.webp?v=mymy" alt="플레이어 커버 안쪽 거치부에 NFC 피스를 넣는 모습" loading="lazy"></a>
+          <a class="step-photo card-photo" href="images/cad-card-insert.webp?v=right-angle" data-zoom aria-label="플레이어 커버 안쪽 거치부에 NFC 피스를 넣는 모습 확대"><img src="images/cad-card-insert.webp?v=right-angle" alt="플레이어 커버 안쪽 거치부에 NFC 피스를 넣는 모습" loading="lazy"></a>
         </li>
         <li>
           <div class="step-copy"><h3>커버 닫고 앨범 재생</h3><p>음원이 저장되어 있으면 피스를 인식한 뒤 바로 재생돼요. 처음 듣는 피스는 Wi-Fi로 음원을 내려받아요.</p></div>
-          <a class="step-photo" href="images/cad-front.webp?v=mymy" data-zoom aria-label="피스를 넣고 전면 커버를 닫은 플레이어 확대"><img src="images/cad-front.webp?v=mymy" alt="피스를 넣고 전면 커버를 닫은 플레이어" loading="lazy"></a>
+          <a class="step-photo" href="images/cad-front.webp?v=right-angle" data-zoom aria-label="피스를 넣고 전면 커버를 닫은 플레이어 확대"><img src="images/cad-front.webp?v=right-angle" alt="피스를 넣고 전면 커버를 닫은 플레이어" loading="lazy"></a>
         </li>
         <li>
           <div class="step-copy"><h3>버튼과 볼륨 휠로 조작</h3><p>윗면 버튼으로 곡을 바꾸거나 재생을 멈출 수 있어요. 왼쪽 휠을 돌리면 음량이 조절돼요.</p><a href="#controls">버튼 위치 자세히 보기</a></div>
@@ -124,41 +136,42 @@
         <p>재생과 볼륨은 플레이어 본체에서 조작해요.</p>
       </div>
       <div class="device-map">
-        <figure class="top-map">
-          <figcaption>윗면 <span>전면 커버가 나를 향한 상태</span></figcaption>
-          <div class="top-photo">
-            <img src="images/cad-top.webp?v=contrast" alt="왼쪽부터 이전 버튼, 재생·일시정지 버튼, 다음 버튼, 상태 LED" loading="lazy">
-            <span class="button-callout" style="--x:33%" aria-hidden="true"><span class="button-number">1</span></span>
-            <span class="button-callout" style="--x:49%" aria-hidden="true"><span class="button-number">2</span></span>
-            <span class="button-callout" style="--x:64%" aria-hidden="true"><span class="button-number">3</span></span>
-            <span class="button-callout" style="--x:83%" aria-hidden="true"><span class="button-number">4</span></span>
-          </div>
-          <dl class="top-labels">
-            <div><dt><span class="button-number" aria-hidden="true">1</span>이전</dt><dd>이전 곡으로 이동해요.</dd></div>
-            <div><dt><span class="button-number" aria-hidden="true">2</span>재생 / 일시정지</dt><dd>짧게 눌러 재생하거나 멈춰요. 길게 눌러 랜덤 재생을 켜거나 꺼요.</dd></div>
-            <div><dt><span class="button-number" aria-hidden="true">3</span>다음</dt><dd>다음 곡으로 이동해요.</dd></div>
-            <div><dt><span class="button-number" aria-hidden="true">4</span>상태 LED</dt><dd><a href="#status">LED 색상별 의미 보기</a></dd></div>
-          </dl>
-        </figure>
-        <div class="side-maps">
+        <div class="control-views">
           <figure>
-            <figcaption>왼쪽 측면</figcaption>
-            <div class="side-body">
-              <img src="images/cad-left.webp?v=contrast" alt="왼쪽 측면 가운데에 있는 볼륨 휠" loading="lazy">
-              <div><strong>볼륨 휠</strong><p>휠을 돌려 음량을 조절하세요. 가장 작게 돌리면 무음이에요.</p></div>
+            <figcaption>윗면</figcaption>
+            <div class="top-photo">
+              <img src="images/cad-top.webp?v=contrast" alt="왼쪽부터 이전 버튼, 재생·일시정지 버튼, 다음 버튼, 상태 LED" loading="lazy">
+              <span class="button-callout" style="--x:35%" aria-hidden="true"><span class="button-number">1</span></span>
+              <span class="button-callout" style="--x:50%" aria-hidden="true"><span class="button-number">2</span></span>
+              <span class="button-callout" style="--x:66%" aria-hidden="true"><span class="button-number">3</span></span>
+              <span class="button-callout" style="--x:84%" aria-hidden="true"><span class="button-number">4</span></span>
             </div>
           </figure>
           <figure>
-            <figcaption>오른쪽 측면</figcaption>
-            <div class="side-body">
-              <img src="images/cad-right.webp?v=contrast" alt="오른쪽 측면 위에 있는 USB-C 포트와 아래에 있는 전원 버튼" loading="lazy">
-              <dl>
-                <div><dt>위 · USB-C</dt><dd>충전 케이블 연결</dd></div>
-                <div><dt>아래 · 전원 버튼</dt><dd>플레이어 켜기와 끄기</dd></div>
-              </dl>
+            <figcaption>왼쪽</figcaption>
+            <div class="side-photo">
+              <img src="images/cad-left.webp?v=contrast" alt="왼쪽 측면의 볼륨 휠" loading="lazy">
+              <span class="button-callout" style="--x:84%;--y:45%" aria-hidden="true"><span class="button-number">5</span></span>
+            </div>
+          </figure>
+          <figure>
+            <figcaption>오른쪽</figcaption>
+            <div class="side-photo">
+              <img src="images/cad-right.webp?v=contrast" alt="오른쪽 측면의 USB-C 포트와 전원 버튼" loading="lazy">
+              <span class="button-callout" style="--x:84%;--y:26%" aria-hidden="true"><span class="button-number">6</span></span>
+              <span class="button-callout" style="--x:84%;--y:54%" aria-hidden="true"><span class="button-number">7</span></span>
             </div>
           </figure>
         </div>
+        <dl class="top-labels">
+          <div><dt><span class="button-number" aria-hidden="true">1</span>이전</dt><dd>이전 곡으로 이동해요.</dd></div>
+          <div><dt><span class="button-number" aria-hidden="true">2</span>재생 / 일시정지</dt><dd>짧게 눌러 재생하거나 멈춰요. 길게 눌러 랜덤 재생을 켜거나 꺼요.</dd></div>
+          <div><dt><span class="button-number" aria-hidden="true">3</span>다음</dt><dd>다음 곡으로 이동해요.</dd></div>
+          <div><dt><span class="button-number" aria-hidden="true">4</span>상태 LED</dt><dd><a href="#status">LED 색상별 의미 보기</a></dd></div>
+          <div><dt><span class="button-number" aria-hidden="true">5</span>볼륨 휠</dt><dd>휠을 돌려 음량을 조절하세요. 가장 작게 돌리면 무음이에요.</dd></div>
+          <div><dt><span class="button-number" aria-hidden="true">6</span>USB-C 포트</dt><dd>충전 케이블을 연결하세요.</dd></div>
+          <div><dt><span class="button-number" aria-hidden="true">7</span>전원 버튼</dt><dd>플레이어를 켜고 끌 때 사용해요.</dd></div>
+        </dl>
       </div>
       <div class="questions">
         <details><summary>피스를 빼거나 바꾸면 어떻게 되나요?</summary><p>피스를 빼면 재생이 멈춰요. 같은 피스를 다시 넣으면 이어서 재생되고, 다른 피스를 넣으면 처음부터 재생돼요.</p></details>
@@ -253,6 +266,6 @@
   </dialog>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="guide.js?v=card-demo"></script>
-  <script defer src="card-demo.js?v=album-playback"></script>
+  <script defer src="card-demo.js?v=viewer-angles"></script>
 </body>
 </html>

@@ -53,10 +53,15 @@
   let automatic = false;
   let autoTimer;
 
+  function canPlay() {
+    return !transitioning && (step === 0 || step === steps.length);
+  }
+
   function syncControls() {
     next.setAttribute('aria-disabled', String(transitioning || automatic));
     skinToggle.setAttribute('aria-disabled', String(transitioning || automatic));
     auto.setAttribute('aria-pressed', String(automatic));
+    playback.disabled = !canPlay();
   }
 
   function stopAutomatic() {
@@ -109,6 +114,7 @@
   }
 
   function play() {
+    if (!canPlay()) return;
     const attempt = ++playAttempt;
     playbackError = false;
     if (audio.ended) audio.currentTime = 0;
@@ -119,10 +125,16 @@
     });
   }
 
+  function pausePlayback() {
+    playAttempt += 1;
+    audio.pause();
+  }
+
   function advance() {
     if (transitioning || step === steps.length) return;
     if (activeView !== 'home' && !drawModel) selectView('home');
     step += 1;
+    if (step === 1) pausePlayback();
     moveModel(() => {
       if (step === steps.length) {
         stopAutomatic();
@@ -139,8 +151,7 @@
     if (audio.paused || audio.ended) {
       play();
     } else {
-      playAttempt += 1;
-      audio.pause();
+      pausePlayback();
     }
     show();
   }
@@ -285,8 +296,7 @@
   });
 
   function restart(onComplete) {
-    playAttempt += 1;
-    audio.pause();
+    pausePlayback();
     audio.currentTime = 0;
     playbackError = false;
     const cardIsOut = cardNeedsStowing?.();
@@ -474,6 +484,7 @@
     scene.add(card);
 
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    const mobileViewer = matchMedia('(max-width: 560px)');
     let frame;
     let coverAngle = 0;
     let skinLift = 0;
@@ -509,7 +520,8 @@
       const {min, max} = frameBounds;
       const centerX = (min.x + max.x) / 2;
       const centerY = (min.y + max.y) / 2;
-      const height = Math.max(62, (max.y - min.y) / .88, (max.x - min.x) / (.9 * aspect));
+      const fitHeight = Math.max(62, (max.y - min.y) / .88, (max.x - min.x) / (.9 * aspect));
+      const height = mobileViewer.matches ? fitHeight / .8 : fitHeight;
       const halfWidth = height * aspect / 2;
       camera.left = centerX - halfWidth;
       camera.right = centerX + halfWidth;

@@ -16,7 +16,9 @@
   const tracks = [
     {src: audio.getAttribute('src'), label: trackLabel.textContent},
     {src: 'audio/yongyong-panorama-demo.mp3', label: '용용 · 소녀의 파노라마 (feat. 기욱 (ONEWE)) · 30초'},
+    {src: 'audio/yongyong-monday-demo.mp3', label: '용용 · 월요병 · 30초'},
     {src: 'audio/yongyong-orange-sunny-angel-demo.mp3', label: '용용 · 오렌지 태양을 삼킨 천사 · 30초'},
+    {src: 'audio/yongyong-rainy-night-demo.mp3', label: '용용 · 밤비 : Rainy night · 30초'},
   ];
   let trackIndex = 0;
   const viewMenu = document.querySelector('.demo-views');
@@ -365,6 +367,7 @@
   playback.addEventListener('click', togglePlayback);
   for (const button of trackControls) {
     button.addEventListener('click', () => changeTrack(Number(button.dataset.trackDirection)));
+    button.hidden = false;
   }
 
   for (const event of ['playing', 'pause', 'ended']) audio.addEventListener(event, show);

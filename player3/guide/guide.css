@@ -51,6 +51,7 @@ p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
 #demo-next { inline-size: 132px; white-space: nowrap; }
 #demo-skin-toggle { inline-size: 90px; }
 .demo-actions .demo-reset { inline-size: 44px; padding-inline: 0; }
+.demo-actions #demo-auto { font-size: 11px; font-weight: 700; }
 .demo-icon { width: 21px; height: 21px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .demo-icon .icon-fill { fill: currentColor; stroke: none; }
 #demo-playback:not([data-playing]) .pause-icon,
@@ -158,7 +159,17 @@ details p { color: var(--muted); padding-bottom: 14px; }
 }
 @media (max-width: 560px) {
   .demo-viewer { margin-inline: -6px; }
-  .demo-stage { width: calc(100% - 12px); height: auto; aspect-ratio: 5 / 4; max-height: 360px; margin: 20px auto; }
+  .demo-stage {
+    box-sizing: content-box;
+    width: calc(100% - 12px);
+    height: auto;
+    aspect-ratio: 5 / 6;
+    max-height: 540px;
+    margin: 20px auto;
+    /* Account for the controls and track row when scaling the full viewer. */
+    padding-block: 41px;
+  }
+  .demo-viewer:has(.demo-skin:not([hidden])) .demo-stage { padding-block: 52px; }
   .demo-controls { justify-content: center; gap: 7px; }
   .demo-viewer-toolbar button, .demo-controls #demo-skin-toggle { min-height: 44px; font-size: 14px; }
   #demo-next { inline-size: 112px; }

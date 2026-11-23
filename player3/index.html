@@ -925,14 +925,21 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     style()}
   var snapMarkers=new THREE.Group();
   var markerRay=new THREE.Raycaster(), markerTarget=new THREE.Vector3(), markerDirection=new THREE.Vector3();
+  var markerFacing=new THREE.Quaternion();
   var skinOffset=new THREE.Vector3();
   function buildSnapMarkers(){
-    var geometry=new THREE.SphereGeometry(1.05,16,12);
-    var material=new THREE.MeshBasicMaterial({color:0xd44760});
-    // The two side catches in STEP coordinates.
-    [[22.55,-31.25,10.25],[22.55,31.25,10.25]].forEach(function(position){
-      var marker=new THREE.Mesh(geometry,material);
-      marker.position.fromArray(position);
+    var ringGeometry=new THREE.RingGeometry(0.75,1.16,32);
+    var ringMaterial=new THREE.MeshBasicMaterial({color:0xd44760,depthWrite:false});
+    var lineMaterial=new THREE.LineBasicMaterial({color:0xd44760,depthWrite:false});
+    [-1,1].forEach(function(side){
+      var marker=new THREE.Group();
+      marker.position.set(22.55,side*37,10.25);
+      var ring=new THREE.Mesh(ringGeometry,ringMaterial);
+      var leader=new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(0,-side*1.25,0),
+        new THREE.Vector3(0,-side*3.6,0)
+      ]),lineMaterial);
+      marker.add(ring,leader);
       snapMarkers.add(marker);
     });
     grp.add(snapMarkers);
@@ -942,7 +949,9 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     // Opaque parts occlude via the depth buffer. Check clear parts separately
     // because their materials do not write to that buffer.
     var clearParts=[meshes['2'],meshes['4']].filter(function(mesh){return mesh&&mesh.visible});
+    markerFacing.copy(grp.quaternion).invert().multiply(camera.quaternion);
     snapMarkers.children.forEach(function(marker){
+      marker.children[0].quaternion.copy(markerFacing);
       marker.getWorldPosition(markerTarget);
       markerDirection.subVectors(markerTarget,camera.position);
       markerRay.far=markerDirection.length();

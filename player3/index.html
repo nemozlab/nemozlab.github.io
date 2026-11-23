@@ -163,9 +163,12 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 .grid[data-view="m"] .product-panel{display:none!important}
 .product-panel h2,.mold-guide h2{font-size:1rem;margin:0}
 .product-panel #artw{margin:4px 0}
-.skin-guide{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);font:inherit;font-size:.8rem;font-weight:600;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:8px 14px;white-space:nowrap;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.12)}
-.skin-guide:hover{border-color:var(--muted)}
-.skin-guide:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
+.skin-guide{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px);box-sizing:border-box;text-align:center;font-size:.8rem;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.skin-guide p{margin:0;padding:9px 12px 0;line-height:1.45;word-break:keep-all;overflow-wrap:break-word}
+.skin-guide p + p{padding-top:3px;color:var(--muted)}
+.skin-guide button{font:inherit;font-weight:700;color:inherit;background:transparent;border:0;border-radius:16px;min-height:36px;padding:6px 14px;cursor:pointer}
+.skin-guide button:hover{text-decoration:underline}
+.skin-guide button:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
 .grid[data-view="m"] .skin-guide{display:none}
 .panel-dismiss,.sheet-close{display:none}
 .mold-guide{
@@ -322,7 +325,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
           <button class="btn ib txt mo-only" id="lt" type="button"><span>中文</span></button><button class="btn ib mo-only" id="fs" type="button" data-kt="fs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button><button class="fold" id="fold" type="button" data-kt="fold" aria-expanded="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span class="fl" data-k="skinPanel">스킨</span></button>
         </div>
       </div>
-      <div class="cvwrap"><canvas id="cv"></canvas><button class="panel-dismiss" type="button" data-kt="closeSkin" aria-label="스킨 옵션 닫기"></button><button class="skin-guide" id="sk" type="button"><span data-k="sk1">상단 스킨을 누르면 분리돼요</span></button><div class="tip" id="tip"></div><div class="legend"><p class="foot prices"><b data-k="mc">금형비</b><span class="pp" style="--c:var(--m1)"><i class="dot"></i>① <span data-k="pr1">¥11,000 · 220만원</span></span><span class="pp" style="--c:var(--m2)"><i class="dot"></i>② <span data-k="pr2">¥8,000 · 160만원</span></span><span class="pp" style="--c:var(--m3)"><i class="dot"></i>③ <span data-k="pr3">¥9,350 · 187만원</span></span><span class="pp" style="--c:var(--m4)"><i class="dot lt"></i>④ <span data-k="pr4">¥5,000 · 100만원</span></span></p></div></div>
+      <div class="cvwrap"><canvas id="cv"></canvas><button class="panel-dismiss" type="button" data-kt="closeSkin" aria-label="스킨 옵션 닫기"></button><div class="skin-guide"><div id="snap-note" hidden><p data-k="snapFit">양쪽 돌기를 본체 홈에 맞춰 누르면 딸깍 고정돼요.</p><p data-k="snapDrag">스킨을 드래그하면 안쪽도 볼 수 있어요.</p></div><button id="sk" type="button"><span data-k="sk1">스킨 분리 · 결합부 보기</span></button></div><div class="tip" id="tip"></div><div class="legend"><p class="foot prices"><b data-k="mc">금형비</b><span class="pp" style="--c:var(--m1)"><i class="dot"></i>① <span data-k="pr1">US$1,650</span></span><span class="pp" style="--c:var(--m2)"><i class="dot"></i>② <span data-k="pr2">US$1,200</span></span><span class="pp" style="--c:var(--m3)"><i class="dot"></i>③ <span data-k="pr3">US$1,400</span></span><span class="pp" style="--c:var(--m4)"><i class="dot lt"></i>④ <span data-k="pr4">US$750</span></span></p></div></div>
     </div>
     </div>
     <div class="panel" id="panel">
@@ -375,7 +378,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
         </section>
       </div>
       </div>
-      <div class="legend-side"><p class="foot prices"><b data-k="mc">금형비</b><span class="pp" style="--c:var(--m1)"><i class="dot"></i>① <span data-k="pr1">¥11,000 · 220만원</span></span><span class="pp" style="--c:var(--m2)"><i class="dot"></i>② <span data-k="pr2">¥8,000 · 160만원</span></span><span class="pp" style="--c:var(--m3)"><i class="dot"></i>③ <span data-k="pr3">¥9,350 · 187만원</span></span><span class="pp" style="--c:var(--m4)"><i class="dot lt"></i>④ <span data-k="pr4">¥5,000 · 100만원</span></span></p></div>
+      <div class="legend-side"><p class="foot prices"><b data-k="mc">금형비</b><span class="pp" style="--c:var(--m1)"><i class="dot"></i>① <span data-k="pr1">US$1,650</span></span><span class="pp" style="--c:var(--m2)"><i class="dot"></i>② <span data-k="pr2">US$1,200</span></span><span class="pp" style="--c:var(--m3)"><i class="dot"></i>③ <span data-k="pr3">US$1,400</span></span><span class="pp" style="--c:var(--m4)"><i class="dot lt"></i>④ <span data-k="pr4">US$750</span></span></p></div>
       </div>
     </div>
   </div>
@@ -411,9 +414,9 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     reset:['각도 초기화','重置角度'],resetall:['초기화','全部重置'],spin:['자동 회전','自动旋转'],
     fold:['접기 / 펼치기','折叠 / 展开'],closeSkin:['스킨 옵션 닫기','关闭换肤选项'],closePanel:['팝업 닫기','关闭面板'],
     m1:['커버 세트','外盖套组'],m2:['스피커 후면 + 버튼','喇叭后盖 + 按键'],m3:['투명 도어','透明门'],m4:['LED 투명 캡','LED 透明帽'],
-    pr1:['¥11,000 · 220만원','¥11,000 · 220万韩元'],pr2:['¥8,000 · 160만원','¥8,000 · 160万韩元'],pr3:['¥9,350 · 187만원','¥9,350 · 187万韩元'],pr4:['¥5,000 · 100만원','¥5,000 · 100万韩元'],
+    pr1:['US$1,650','US$1,650'],pr2:['US$1,200','US$1,200'],pr3:['US$1,400','US$1,400'],pr4:['US$750','US$750'],
     mo:['원안','原方案'],ms:['수정안','修改方案'],
-    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dTotal:['총두께','总厚度'],dBody:['본체','主体'],dSkin:['스킨','换肤件'],dU:['상단 기준 단면','顶部参考截面'],dFront:['전면 벽','前侧壁'],dRear:['후면 벽','后侧壁'],dN:['* STEP 기준 단면 실측. 총두께는 조립 틈을 제외한 본체와 스킨의 합입니다.','* STEP 参考截面测量值。总厚度为主体与换肤件的厚度之和，不含装配间隙。'],skl:['스킨 색 · 데이지는 끼움 부품(공통)','换肤件颜色 · 雏菊为通用插接件'],dz0:['기본형','基础款'],dz1:['데이지','雏菊款'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['상단 스킨을 누르면 분리돼요','点击顶部外壳即可拆下'],sk0:['분리된 스킨을 누르면 다시 끼워져요','点击已拆下的外壳即可装回'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
+    mc:['금형비','模具费用'],mold:['금형','模具'],tt:['두께 (mm)','厚度 (mm)'],dTotal:['총두께','总厚度'],dBody:['본체','主体'],dSkin:['스킨','换肤件'],dU:['상단 기준 단면','顶部参考截面'],dFront:['전면 벽','前侧壁'],dRear:['후면 벽','后侧壁'],dN:['* STEP 기준 단면 실측. 총두께는 조립 틈을 제외한 본체와 스킨의 합입니다.','* STEP 参考截面测量值。总厚度为主体与换肤件的厚度之和，不含装配间隙。'],skl:['스킨 색 · 데이지는 끼움 부품(공통)','换肤件颜色 · 雏菊为通用插接件'],dz0:['기본형','基础款'],dz1:['데이지','雏菊款'],vp:['완제품','成品'],vm:['금형별 분해','按模具分解'],sk1:['스킨 분리 · 결합부 보기','拆下换肤件 · 查看卡扣'],sk0:['스킨 다시 끼우기','装回换肤件'],snapFit:['양쪽 돌기를 본체 홈에 맞춰 누르면 딸깍 고정돼요.','将换肤件两侧的卡扣对准机身卡槽，按下即可卡紧。'],snapDrag:['스킨을 드래그하면 안쪽도 볼 수 있어요.','拖动换肤件可查看内侧。'],cm:['금형 색','模具配色'],cr:['완제품 색','成品配色'],fs:['전체 화면','全屏'],
     err:['3D 데이터를 불러오지 못했습니다','无法加载 3D 数据']
   };
   var lang=0;try{var sv=localStorage.getItem('nemo-lang');lang=sv==='zh'?1:sv==='ko'?0:(/^zh/i.test(navigator.language||'')?1:0)}catch(e){lang=/^zh/i.test(navigator.language||'')?1:0}
@@ -495,7 +498,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
       var me=new THREE.Mesh(g,mat);me.userData.id=id;me.userData.c=cc;meshes[id]=me;grp.add(me);
     });
     var sharedView=new URLSearchParams(location.search).get('view');
-    buildDaisies();buildSwatches();
+    buildDaisies();buildSnapMarkers();buildSwatches();
     setDesign(sharedView==='basic'?0:1);
     setView(sharedView==='exploded'?'m':'p');
   }).catch(function(){hint.textContent=T('err')});
@@ -503,42 +506,59 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   function canManipulateParts(){return view==='m'&&explode>0}
 
   // picking
-  var ray=new THREE.Raycaster(),mv=new THREE.Vector2(),downAt=null;
+  var ray=new THREE.Raycaster(),mv=new THREE.Vector2(),downAt=null,gesturePointer=null;
   function pick(e){
     var r=cv.getBoundingClientRect();
     mv.x=((e.clientX-r.left)/r.width)*2-1;mv.y=-((e.clientY-r.top)/r.height)*2+1;
     ray.setFromCamera(mv,camera);
     var vis=Object.keys(meshes).map(function(k){return meshes[k]}).filter(function(m){return m.visible});
-    var h=ray.intersectObjects(vis,false);return h.length?h[0].object.userData.id:null;
+    var hits=ray.intersectObjects(vis,false);
+    if(view==='p'&&daisyG&&daisyG.visible){
+      var flowerHit=ray.intersectObject(daisyG,true)[0];
+      if(flowerHit&&(!hits.length||flowerHit.distance<hits[0].distance))return '16';
+    }
+    return hits.length?hits[0].object.userData.id:null;
   }
   // 부품을 잡고 드래그하면 그 부품만 회전, 빈 곳을 드래그하면 전체 시점 회전
   var dragId=null,last=null,stage=cv.parentNode;
   stage.addEventListener('pointerdown',function(e){
-    if(e.target.closest&&e.target.closest('.dock,#sk,.panel-dismiss'))return;
-    downAt=[e.clientX,e.clientY];last=[e.clientX,e.clientY];
-    dragId=canManipulateParts()?pick(e):null;
+    if(!e.isPrimary||(e.target.closest&&e.target.closest('.dock,.skin-guide,.panel-dismiss')))return;
+    gesturePointer=e.pointerId;
+    downAt=[e.clientX,e.clientY];last=downAt;
+    var hit=canManipulateParts()||canRotateSkin()?pick(e):null;
+    dragId=canManipulateParts()||hit==='16'?hit:null;
     controls.enabled=!dragId;
     controls.autoRotate=false;spin.setAttribute('aria-pressed','false');
-    if(dragId){selected=dragId;style();hint.innerHTML='<b>'+label(dragId)+'</b>';cv.setPointerCapture&&cv.setPointerCapture(e.pointerId)}
+    if(dragId){
+      if(view==='m'){selected=dragId;style();hint.innerHTML='<b>'+label(dragId)+'</b>'}
+      if(cv.setPointerCapture)cv.setPointerCapture(e.pointerId);
+    }
   },true);
   window.addEventListener('pointermove',function(e){
-    if(!canManipulateParts()||!dragId||!last)return;
+    if(e.pointerId!==gesturePointer||!dragId||!last)return;
+    if(Math.hypot(e.clientX-downAt[0],e.clientY-downAt[1])<=5&&last===downAt)return;
     var dx=e.clientX-last[0],dy=e.clientY-last[1];last=[e.clientX,e.clientY];
     var me=meshes[dragId],k=0.01;
     var up=new THREE.Vector3(0,1,0).applyQuaternion(camera.quaternion),rt=new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion);
+    if(view==='p'){
+      var local=grp.quaternion.clone().invert();
+      up.applyQuaternion(local);
+      rt.applyQuaternion(local);
+    }
     var q1=new THREE.Quaternion().setFromAxisAngle(up,dx*k),q2=new THREE.Quaternion().setFromAxisAngle(rt,dy*k);
     me.quaternion.premultiply(q1).premultiply(q2);
   });
   function endPartGesture(){
     downAt=null;
+    gesturePointer=null;
     dragId=null;
     last=null;
     controls.enabled=true;
   }
-  window.addEventListener('pointercancel',endPartGesture);
+  window.addEventListener('pointercancel',function(e){if(e.pointerId===gesturePointer)endPartGesture()});
   window.addEventListener('pointerup',function(e){
-    if(!downAt)return;
-    var moved=Math.hypot(e.clientX-downAt[0],e.clientY-downAt[1])>5;
+    if(!downAt||e.pointerId!==gesturePointer)return;
+    var moved=(dragId&&last!==downAt)||Math.hypot(e.clientX-downAt[0],e.clientY-downAt[1])>5;
     endPartGesture();
     if(moved||(view==='m'&&!canManipulateParts()))return;
     selected=pick(e);
@@ -557,7 +577,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     hint.textContent='';
   });
   document.getElementById('reset').addEventListener('click',function(){
-    if(canManipulateParts())resetPartRotations();
+    if(canManipulateParts()||canRotateSkin())resetPartRotations();
     homeCam();
     controls.target.copy(view==='p'?T1:TM);
     place();
@@ -643,6 +663,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     hint.textContent='';
     skMotion++;
     skBusy=false;
+    document.getElementById('sk').disabled=false;
     grp.quaternion.setFromRotationMatrix(RM);real=(v==='p');explode=(v==='p'?0:1);skOut=0;skLabel();ex.value=explode*100;exv.textContent=ex.value;
     document.querySelector('.ex').classList.toggle('dis',v==='p');ex.disabled=(v==='p');
     var currentMenu=document.getElementById(v==='p'?'vp':'vm');
@@ -887,14 +908,60 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     [].forEach.call(document.querySelectorAll('#sw9 .swb'),function(b){b.setAttribute('aria-pressed',String(parseInt(b.getAttribute('data-i'),10)===i))});
 
     style()}
-  function skLabel(){var k=skOut>0.5?'sk0':'sk1',e=document.querySelector('#sk span');e.setAttribute('data-k',k);e.textContent=T(k)}
+  var snapMarkers=new THREE.Group(), skinSnapMarkers=new THREE.Group();
+  function buildSnapMarkers(){
+    var skin=meshes['16'], center=skin.userData.c;
+    var geometry=new THREE.SphereGeometry(0.8,16,12);
+    var material=new THREE.MeshBasicMaterial({color:0x007e7c,depthTest:false,depthWrite:false});
+    [-1,1].forEach(function(side){
+      var groove=new THREE.Mesh(geometry,material), tab=new THREE.Mesh(geometry,material);
+      groove.position.set(22.55,side*31.05,10.25);
+      tab.position.set(22.63-center.x,side*31.1-center.y,10.25-center.z);
+      groove.renderOrder=tab.renderOrder=5;
+      snapMarkers.add(groove);
+      skinSnapMarkers.add(tab);
+    });
+    grp.add(snapMarkers);
+    skin.add(skinSnapMarkers);
+  }
+  function canRotateSkin(){return view==='p'&&skOut===1&&!skBusy}
+  function skLabel(){
+    var detached=canRotateSkin(), k=detached?'sk0':'sk1', e=document.querySelector('#sk span');
+    e.setAttribute('data-k',k);
+    e.textContent=T(k);
+    document.getElementById('snap-note').hidden=!detached;
+    snapMarkers.visible=skinSnapMarkers.visible=detached;
+  }
   var skMotion=0;
-  function skAnim(to,ms,cb){var f=skOut,t0=performance.now(),motion=++skMotion;skBusy=true;(function st(n){if(motion!==skMotion)return;var u=Math.min(1,(n-t0)/ms),e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;skOut=f+(to-f)*e;place();if(u<1)requestAnimationFrame(st);else{skOut=to;place();skBusy=false;skLabel();if(cb)cb()}})(t0)}
-  function skReady(){if(explode>0)setEx(0);controls.autoRotate=false;spin.setAttribute('aria-pressed','false')}
+  function skAnim(to,ms){
+    var from=skOut, started=performance.now(), motion=++skMotion;
+    var skin=meshes['16'], startRotation=skin.quaternion.clone(), seatedRotation=new THREE.Quaternion();
+    skBusy=true;
+    document.getElementById('sk').disabled=true;
+    snapMarkers.visible=skinSnapMarkers.visible=false;
+    function step(now){
+      if(motion!==skMotion)return;
+      var u=ms?Math.min(1,(now-started)/ms):1;
+      // While reattaching, align the cap before lowering it onto the body.
+      var travel=to===0?Math.max(0,(u-0.35)/0.65):u;
+      var eased=travel*travel*(3-2*travel);
+      if(to===0)skin.quaternion.copy(startRotation).slerp(seatedRotation,Math.min(1,u/0.35));
+      skOut=from+(to-from)*eased;
+      place();
+      if(u<1){requestAnimationFrame(step);return}
+      skBusy=false;
+      document.getElementById('sk').disabled=false;
+      skLabel();
+    }
+    step(started);
+  }
   function toggleSkin(){
-    if(skBusy||view!=='p')return;
-    skReady();
-    skAnim(skOut<0.5?1:0,700);
+    if(skBusy||view!=='p'||!meshes['16'])return;
+    if(explode>0)setEx(0);
+    endPartGesture();
+    controls.autoRotate=false;
+    spin.setAttribute('aria-pressed','false');
+    skAnim(skOut===0?1:0,reduce?0:700);
   }
   document.getElementById('sk').addEventListener('click',toggleSkin);
   function setReal(v){real=v;document.getElementById('cm').setAttribute('aria-pressed',String(!v));document.getElementById('cr').setAttribute('aria-pressed',String(v));style()}

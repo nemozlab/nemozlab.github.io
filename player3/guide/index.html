@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css">
-  <link rel="stylesheet" href="guide.css?v=compact-guide">
+  <link rel="stylesheet" href="guide.css?v=balanced-layout">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -57,6 +57,9 @@
         <button type="button" data-view="top" aria-pressed="false">윗면</button>
       </div>
       <div class="demo-viewer">
+        <label class="demo-angle" hidden>보기 각도
+          <select id="demo-angle"><option value="" disabled>자유 각도</option></select>
+        </label>
         <button class="demo-stage" type="button" id="demo-stage" aria-label="플레이어에서 커버 열기" disabled>
           <span class="demo-preview" hidden>
             <img class="demo-product" src="images/cad-home-45.webp" alt="">
@@ -181,7 +184,7 @@
         </div>
         <dl class="top-labels">
           <div><dt><span class="button-number" aria-hidden="true">1</span>이전</dt><dd>이전 곡으로 이동해요.</dd></div>
-          <div><dt><span class="button-number" aria-hidden="true">2</span>재생 / 일시정지</dt><dd>짧게 눌러 재생하거나 멈춰요. 길게 눌러 랜덤 재생을 켜거나 꺼요.</dd></div>
+          <div><dt><span class="button-number" aria-hidden="true">2</span>재생·일시정지</dt><dd>짧게 눌러 재생하거나 멈춰요. 길게 눌러 랜덤 재생을 켜거나 꺼요.</dd></div>
           <div><dt><span class="button-number" aria-hidden="true">3</span>다음</dt><dd>다음 곡으로 이동해요.</dd></div>
           <div><dt><span class="button-number" aria-hidden="true">4</span>상태 LED</dt><dd><a href="#status">LED 색상별 의미 보기</a></dd></div>
           <div><dt><span class="button-number" aria-hidden="true">5</span>볼륨 휠</dt><dd>휠을 돌려 음량을 조절하세요. 가장 작게 돌리면 무음이에요.</dd></div>
@@ -265,6 +268,6 @@
   </dialog>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="guide.js?v=card-demo"></script>
-  <script defer src="card-demo.js?v=compact-guide"></script>
+  <script defer src="card-demo.js?v=balanced-layout"></script>
 </body>
 </html>

@@ -49,16 +49,13 @@ p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
 .primary-link, .demo-reset, #demo-skin-toggle, .back-to-top { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 12px 32px; border: 1px solid #848484; border-radius: 8px; background: var(--paper); color: var(--ink); font: 600 14px/1 Pretendard,system-ui,sans-serif; cursor: pointer; }
 .demo-viewer-toolbar button, .demo-controls #demo-skin-toggle { min-height: 40px; padding: 8px 11px; }
 #demo-next { inline-size: 132px; white-space: nowrap; }
-#demo-next[data-complete] { opacity: 1; border-color: #a8d8d7; background: var(--mist); color: var(--green); }
 #demo-skin-toggle { inline-size: 90px; }
 .demo-actions .demo-reset { inline-size: 44px; padding-inline: 0; }
 .demo-icon { width: 21px; height: 21px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .demo-icon .icon-fill { fill: currentColor; stroke: none; }
-#demo-next:not([data-complete]) .demo-icon,
-#demo-next[data-complete] .step-label,
 #demo-playback:not([data-playing]) .pause-icon,
 #demo-playback[data-playing] .play-icon { display: none; }
-#demo-next[aria-disabled="true"]:not([data-complete]), #demo-skin-toggle[aria-disabled="true"] { opacity: .55; cursor: default; }
+#demo-next[aria-disabled="true"], #demo-skin-toggle[aria-disabled="true"] { opacity: .55; cursor: default; }
 .demo-reset[aria-pressed="true"] { border-color: var(--green); color: var(--green); background: var(--mist); }
 .primary-link { color: var(--white); background: var(--ink); border-color: var(--ink); }
 .back-to-top { border-color: #04b7be; color: var(--green); text-decoration: none; }
@@ -69,6 +66,7 @@ p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
 .demo-stage:disabled { cursor: default; }
 .demo-stage:focus-visible { outline-offset: -3px; }
 .demo-stage [hidden], .demo-actions [hidden], #demo-next[hidden] { display: none; }
+.demo-completion { position: absolute; z-index: 1; inset: 68% max(15%, calc(50% - 116px)) auto auto; display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid #a8d8d7; border-radius: 50%; background: var(--mist); color: var(--green); pointer-events: none; }
 .demo-stage.is-dragging { cursor: grabbing; }
 .demo-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .demo-preview { position: absolute; inset: 0; display: grid; place-items: center; }

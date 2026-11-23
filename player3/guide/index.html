@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css?v=section-menu">
-  <link rel="stylesheet" href="guide.css?v=viewer-toolbar">
+  <link rel="stylesheet" href="guide.css?v=viewer-completion">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -54,6 +54,9 @@
             <img class="demo-loose-card" src="images/card.webp?v=mymy" alt="" hidden>
           </span>
           <canvas class="demo-canvas" aria-hidden="true" hidden></canvas>
+          <span class="demo-completion" aria-hidden="true" hidden>
+            <svg class="demo-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+          </span>
         </button>
         <div class="demo-viewer-toolbar">
           <div class="demo-actions" role="group" aria-label="재생 조작">
@@ -72,7 +75,6 @@
           </div>
           <button class="primary-link" type="button" id="demo-next" hidden>
             <span class="step-label">1) 커버 열기</span>
-            <svg class="demo-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
           </button>
         </div>
         <div class="demo-controls">
@@ -267,6 +269,6 @@
   </dialog>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="guide.js?v=section-menu"></script>
-  <script defer src="card-demo.js?v=viewer-controls"></script>
+  <script defer src="card-demo.js?v=viewer-completion"></script>
 </body>
 </html>

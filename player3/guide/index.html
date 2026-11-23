@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css">
-  <link rel="stylesheet" href="guide.css?v=sound-duration">
+  <link rel="stylesheet" href="guide.css?v=wifi-voices">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -205,7 +205,30 @@
         <li><div><h3>다운로드 중 두 번째 안내 <time class="sound-duration" datetime="PT17.0S">17.0초</time></h3><p>설계 문서에는 다운로드가 끝나지 않은 채 30초가 지났을 때로 기록되어 있어요.</p><p class="voice-line">“다운로드 중입니다. 잠시만 기다려 주세요.”</p></div><audio controls preload="none" src="audio/11_voice_downloading_2.mp3" aria-label="다운로드 중 두 번째 안내 미리 듣기"></audio></li>
         <li><div><h3>랜덤 재생 켜기 <time class="sound-duration" datetime="PT1.8S">1.8초</time></h3><p>재생·일시정지 버튼을 3초간 눌러 랜덤 재생을 켤 때</p></div><audio controls preload="none" src="audio/12_sfx_shuffle_mode_enter.mp3" aria-label="랜덤 재생 켜기 미리 듣기"></audio></li>
         <li><div><h3>랜덤 재생 끄기 <time class="sound-duration" datetime="PT1.7S">1.7초</time></h3><p>재생·일시정지 버튼을 다시 3초간 눌러 랜덤 재생을 끌 때</p></div><audio controls preload="none" src="audio/13_sfx_shuffle_mode_exit.mp3" aria-label="랜덤 재생 끄기 미리 듣기"></audio></li>
-        <li><div><h3>Wi-Fi에 이미 연결됨</h3><p class="voice-line">“Wi-Fi에 이미 연결되어 있습니다.”</p></div></li>
+        <li class="sound-multilingual">
+          <div>
+            <h3 id="wifi-voice-heading">Wi-Fi에 이미 연결됨</h3>
+            <p class="voice-line">“Wi-Fi에 이미 연결되어 있습니다.”</p>
+          </div>
+          <div class="sound-language-list">
+            <div>
+              <p id="wifi-voice-ko-KR">한국어 <time class="sound-duration" datetime="PT2.5S">2.5초</time></p>
+              <audio controls preload="none" src="audio/14_voice_wifi_already_connected_ko-KR.mp3" aria-labelledby="wifi-voice-heading wifi-voice-ko-KR"></audio>
+            </div>
+            <div>
+              <p id="wifi-voice-zh-CN">중국어 <time class="sound-duration" datetime="PT1.2S">1.2초</time></p>
+              <audio controls preload="none" src="audio/14_voice_wifi_already_connected_zh-CN.mp3" aria-labelledby="wifi-voice-heading wifi-voice-zh-CN"></audio>
+            </div>
+            <div>
+              <p id="wifi-voice-en-US">영어 <time class="sound-duration" datetime="PT2.2S">2.2초</time></p>
+              <audio controls preload="none" src="audio/14_voice_wifi_already_connected_en-US.mp3" aria-labelledby="wifi-voice-heading wifi-voice-en-US"></audio>
+            </div>
+            <div>
+              <p id="wifi-voice-ja-JP">일본어 <time class="sound-duration" datetime="PT3.0S">3.0초</time></p>
+              <audio controls preload="none" src="audio/14_voice_wifi_already_connected_ja-JP.mp3" aria-labelledby="wifi-voice-heading wifi-voice-ja-JP"></audio>
+            </div>
+          </div>
+        </li>
       </ol>
     </section>
   </main>

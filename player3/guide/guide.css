@@ -175,6 +175,9 @@ details p { color: var(--muted); padding-bottom: 14px; }
 .sound-list p{font-size:13px;color:var(--muted)}
 .sound-list .voice-line{margin-top:4px;color:var(--ink)}
 .sound-list audio{display:block;width:100%;height:40px}
+.sound-list .sound-multilingual{align-items:start}
+.sound-language-list{display:grid;gap:10px;min-width:0}
+.sound-language-list p{margin-bottom:3px;color:var(--ink);font-weight:600}
 @media(max-width:560px){
   .sound-list li{grid-template-columns:1fr;gap:7px}
   .sound-list audio{max-width:285px}

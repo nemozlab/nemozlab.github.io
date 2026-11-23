@@ -6,9 +6,10 @@
   const looseCard = stage.querySelector('.demo-loose-card');
   const next = document.querySelector('#demo-next');
   const reset = document.querySelector('#demo-reset');
+  const auto = document.querySelector('#demo-auto');
+  const manual = document.querySelector('#demo-manual');
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
-  const rotateHint = document.querySelector('.demo-rotate-hint');
   const viewMenu = document.querySelector('.demo-views');
   const viewButtons = [...viewMenu.querySelectorAll('button')];
   const skinPanel = document.querySelector('.demo-skin');
@@ -18,13 +19,14 @@
     front: 'cad-face.webp', top: 'cad-top.webp?v=button-icons', left: 'cad-left.webp?v=contrast',
     right: 'cad-right.webp?v=contrast', back: 'cad-back.webp',
   };
-  const swipeViews = ['home', 'right', 'back', 'left', 'front'];
+  const swipeViews = ['front', 'right', 'back', 'left'];
   let activeView = 'home';
   let selectModelView;
   let toggleModelSkin;
   let resetSkin;
   let rotateWithKeys;
   let pickSkin;
+  let cardNeedsStowing;
   const zoomControls = document.querySelector('.demo-zoom');
   const zoomOut = document.querySelector('#demo-zoom-out');
   const zoomIn = document.querySelector('#demo-zoom-in');
@@ -43,6 +45,41 @@
   let drawModel;
   let playbackError = false;
   let playAttempt = 0;
+  let transitioning = false;
+  let automatic = false;
+  let autoTimer;
+
+  function syncControls() {
+    next.setAttribute('aria-disabled', String(transitioning || automatic));
+    skinToggle.setAttribute('aria-disabled', String(transitioning || automatic));
+    auto.setAttribute('aria-pressed', String(automatic));
+    manual.setAttribute('aria-pressed', String(!automatic));
+  }
+
+  function stopAutomatic() {
+    clearTimeout(autoTimer);
+    automatic = false;
+    syncControls();
+  }
+
+  function queueStep(delay) {
+    clearTimeout(autoTimer);
+    if (automatic) autoTimer = setTimeout(advance, delay);
+  }
+
+  function moveModel(onComplete) {
+    if (!drawModel) {
+      onComplete?.();
+      return;
+    }
+    transitioning = true;
+    syncControls();
+    drawModel(step, () => {
+      transitioning = false;
+      syncControls();
+      onComplete?.();
+    });
+  }
 
   function show() {
     const playing = !audio.paused && !audio.ended;
@@ -51,12 +88,11 @@
       playing ? '일시정지' : '앨범 재생',
     ];
     instruction.textContent = message;
+    instruction.toggleAttribute('data-error', playbackError);
     next.textContent = action;
     stage.setAttribute('aria-label', action);
     stage.dataset.step = step;
-    if (drawModel) {
-      drawModel(step);
-    } else {
+    if (!drawModel) {
       const image = step === 2 ? 'cad-demo-open-empty.webp?v=rounded-card' :
         step === 1 || step === 3 ? 'cad-cover-open.webp?v=rounded-card' : 'cad-front.webp?v=rounded-card';
       photo.src = 'images/' + (photoViews[activeView] || image);
@@ -76,10 +112,18 @@
   }
 
   function advance() {
+    if (transitioning) return;
     if (step < steps.length) {
-      if (!drawModel) selectView('home');
+      if (activeView !== 'home' && !drawModel) selectView('home');
       step += 1;
-      if (step === steps.length) play();
+      moveModel(() => {
+        if (step === steps.length) {
+          stopAutomatic();
+          play();
+        } else {
+          queueStep(430);
+        }
+      });
     } else if (audio.paused || audio.ended) {
       play();
     } else {
@@ -94,9 +138,9 @@
     for (const button of viewButtons) button.setAttribute('aria-pressed', String(button.dataset.view === name));
   }
 
-  function selectView(name) {
+  function selectView(name, resetZoom = false) {
     markView(name);
-    if (selectModelView) selectModelView(name);
+    if (selectModelView) selectModelView(name, resetZoom);
     else show();
   }
 
@@ -117,11 +161,15 @@
   zoomControls.hidden = viewMenu.hidden = false;
 
   for (const button of viewButtons) button.addEventListener('click', () => selectView(button.dataset.view));
-  skinToggle.addEventListener('click', () => toggleModelSkin?.());
+  function toggleSkin() {
+    if (!transitioning && !automatic) toggleModelSkin?.();
+  }
+
+  skinToggle.addEventListener('click', toggleSkin);
   stage.addEventListener('click', event => {
     if (!dragged || event.detail === 0) {
-      if (event.detail > 0 && pickSkin?.(event)) toggleModelSkin();
-      else advance();
+      if (event.detail > 0 && pickSkin?.(event)) toggleSkin();
+      else if (!automatic) advance();
     }
     dragged = false;
   });
@@ -150,7 +198,7 @@
     const dx = event.clientX - pointer.x;
     const dy = event.clientY - pointer.y;
     if (!drawModel && Math.abs(dx) > 22 && Math.abs(dx) > Math.abs(dy)) {
-      const index = Math.max(0, swipeViews.indexOf(activeView));
+      const index = swipeViews.indexOf(activeView === 'home' || activeView === 'top' ? 'front' : activeView);
       selectView(swipeViews[(index + (dx < 0 ? 1 : swipeViews.length - 1)) % swipeViews.length]);
     }
     pointer = null;
@@ -174,23 +222,45 @@
     event.preventDefault();
     rotateWithKeys(...movement[event.key]);
   });
-  next.addEventListener('click', advance);
-  reset.addEventListener('click', () => {
+  next.addEventListener('click', () => {
+    if (!automatic) advance();
+  });
+
+  function restart(onComplete) {
     playAttempt += 1;
     audio.pause();
     audio.currentTime = 0;
     playbackError = false;
-    step = 0;
-    selectView('home');
+    const cardIsOut = cardNeedsStowing?.();
+    selectView('home', true);
     resetSkin?.();
-    setZoom(zoomLevels[0]);
+    if (!drawModel) setZoom(zoomLevels[0]);
+    step = 0;
+    if (cardIsOut && drawModel) {
+      transitioning = true;
+      syncControls();
+      drawModel(3, () => moveModel(onComplete));
+    } else {
+      moveModel(onComplete);
+    }
     show();
-    next.focus();
+  }
+
+  reset.addEventListener('click', () => {
+    stopAutomatic();
+    restart();
   });
+  auto.addEventListener('click', () => {
+    if (automatic) return;
+    automatic = true;
+    syncControls();
+    restart(() => queueStep(250));
+  });
+  manual.addEventListener('click', stopAutomatic);
 
   for (const event of ['playing', 'pause', 'ended']) audio.addEventListener(event, show);
   stage.disabled = false;
-  next.hidden = reset.hidden = false;
+  next.hidden = reset.hidden = auto.hidden = manual.hidden = false;
   show();
 
   async function loadModel(THREE) {
@@ -368,13 +438,46 @@
     });
     const cameraDirection = new THREE.Vector3();
     const target = new THREE.Vector3();
-    function setCameraView(name) {
-      const [yaw, pitch] = views[name];
+    let cameraFrame;
+    function placeCamera(yaw, pitch) {
       const radius = 170;
       const horizontal = radius * Math.cos(pitch);
-      camera.position.set(viewShift + horizontal * Math.sin(yaw), -2 - horizontal * Math.cos(yaw), viewHeight + radius * Math.sin(pitch));
-      orbit.update();
+      camera.position.set(horizontal * Math.sin(yaw), -horizontal * Math.cos(yaw), radius * Math.sin(pitch)).add(orbit.target);
     }
+
+    function setCameraView(name, resetZoom = false) {
+      cancelAnimationFrame(cameraFrame);
+      const [yaw, pitch] = views[name];
+      cameraDirection.copy(camera.position).sub(orbit.target);
+      const length = cameraDirection.length();
+      if (reducedMotion.matches || length < 1 || !stage.classList.contains('has-model')) {
+        placeCamera(yaw, pitch);
+        if (resetZoom) zoomModel(1);
+        else orbit.update();
+        return;
+      }
+
+      const startYaw = Math.atan2(cameraDirection.x, -cameraDirection.y);
+      const startPitch = Math.asin(THREE.MathUtils.clamp(cameraDirection.z / length, -1, 1));
+      const deltaYaw = Math.atan2(Math.sin(yaw - startYaw), Math.cos(yaw - startYaw));
+      const startZoom = camera.zoom;
+      const start = performance.now();
+      function tick(now) {
+        const t = Math.min((now - start) / 460, 1);
+        const ease = t * t * (3 - 2 * t);
+        placeCamera(startYaw + deltaYaw * ease, startPitch + (pitch - startPitch) * ease);
+        if (resetZoom) {
+          camera.zoom = startZoom + (1 - startZoom) * ease;
+          camera.updateProjectionMatrix();
+          updateZoom(camera.zoom);
+        }
+        orbit.update();
+        if (resetZoom) renderer.render(scene, camera);
+        if (t < 1) cameraFrame = requestAnimationFrame(tick);
+      }
+      cameraFrame = requestAnimationFrame(tick);
+    }
+    orbit.addEventListener('start', () => cancelAnimationFrame(cameraFrame));
     const slot = new THREE.Vector3(0, 2.6, -.85).sub(hinge.position);
     const stowedPosition = new THREE.Vector3(65, -19, 6);
     const axis = new THREE.Vector3(1, 0, 0);
@@ -393,13 +496,14 @@
       orbit.update();
       renderer.render(scene, camera);
     }
-    function update(state) {
+    function update(state, onComplete) {
       cancelAnimationFrame(frame);
       const from = [coverAngle, cardOffset, viewShift, skinLift, viewHeight];
       const targets = [state > 0 && state < 4 ? coverOpening : 0, state === 2 ? 1 : 0, state === 2 ? 25 : 0, skinDetached ? 36 : 0, skinDetached ? 13 : 0];
       if (reducedMotion.matches || from.every((n, i) => n === targets[i])) {
         [coverAngle, cardOffset, viewShift, skinLift, viewHeight] = targets;
         render();
+        onComplete?.();
         return;
       }
       const start = performance.now();
@@ -409,6 +513,7 @@
         [coverAngle, cardOffset, viewShift, skinLift, viewHeight] = from.map((value, i) => value + (targets[i] - value) * ease);
         render();
         if (t < 1) frame = requestAnimationFrame(tick);
+        else onComplete?.();
       }
       frame = requestAnimationFrame(tick);
     }
@@ -428,6 +533,7 @@
 
     selectModelView = setCameraView;
     rotateWithKeys = (dx, dy) => {
+      cancelAnimationFrame(cameraFrame);
       cameraDirection.copy(camera.position).sub(orbit.target);
       const yaw = Math.atan2(cameraDirection.x, -cameraDirection.y) - dx * .14;
       const pitch = Math.max(-1.42, Math.min(1.42, Math.asin(cameraDirection.z / cameraDirection.length()) + dy * .14));
@@ -439,8 +545,7 @@
       skinDetached = value;
       skinToggle.setAttribute('aria-pressed', String(value));
       skinToggle.textContent = value ? '스킨 끼우기' : '스킨 분리';
-      if (value && activeView === 'top') selectView('home');
-      update(step);
+
     }
     function setSkinColor(selected) {
       const color = Number.parseInt(selected.dataset.color, 16);
@@ -449,7 +554,11 @@
       for (const swatch of skinSwatches) swatch.setAttribute('aria-pressed', String(swatch === selected));
       render();
     }
-    toggleModelSkin = () => setSkinDetached(!skinDetached);
+    toggleModelSkin = () => {
+      setSkinDetached(!skinDetached);
+      if (skinDetached && activeView === 'top') selectView('home');
+      update(step);
+    };
     resetSkin = () => {
       setSkinDetached(false);
       setSkinColor(skinSwatches[0]);
@@ -463,18 +572,21 @@
       ray.setFromCamera(mouse, camera);
       return ray.intersectObjects(scene.children, true)[0]?.object === skin;
     };
+    cardNeedsStowing = () => cardOffset > .001;
     skinPanel.hidden = false;
-    rotateHint.hidden = false;
     stage.classList.add('has-model');
     const observer = new ResizeObserver(resize);
     observer.observe(stage);
     canvas.addEventListener('webglcontextlost', () => {
       observer.disconnect();
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(cameraFrame);
       orbit.dispose();
-      selectModelView = toggleModelSkin = resetSkin = rotateWithKeys = pickSkin = null;
+      transitioning = false;
+      stopAutomatic();
+      selectModelView = toggleModelSkin = resetSkin = rotateWithKeys = pickSkin = cardNeedsStowing = null;
       stage.classList.remove('has-model');
-      rotateHint.hidden = skinPanel.hidden = true;
+      skinPanel.hidden = true;
       zoomModel = null;
       drawModel = null;
       canvas.hidden = true;
@@ -485,17 +597,22 @@
     canvas.hidden = false;
     preview.hidden = true;
     zoomModel = scale => {
+      cancelAnimationFrame(cameraFrame);
       camera.zoom = scale;
       camera.updateProjectionMatrix();
       render();
     };
     camera.zoom = scale;
+    placeCamera(homeYaw, homePitch);
     setCameraView(views[activeView] ? activeView : 'home');
     resize();
     update(step);
   }
 
-  if (window.THREE?.OrbitControls) loadModel(window.THREE).catch(() => {
-    // The same controls stay available on devices using the photo preview.
-  });
+  function showPhotoPreview() {
+    preview.hidden = false;
+  }
+
+  if (window.THREE?.OrbitControls) loadModel(window.THREE).catch(showPhotoPreview);
+  else showPhotoPreview();
 })();

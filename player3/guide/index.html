@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css">
-  <link rel="stylesheet" href="guide.css?v=rounded-card">
+  <link rel="stylesheet" href="guide.css?v=viewer-flow">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -39,43 +39,45 @@
       <div class="demo-views" role="group" aria-label="플레이어 보는 방향" hidden>
         <button type="button" data-view="home" aria-pressed="true">기본</button>
         <button type="button" data-view="front" aria-pressed="false">전면</button>
-        <button type="button" data-view="top" aria-pressed="false">윗면</button>
-        <button type="button" data-view="left" aria-pressed="false">왼쪽</button>
-        <button type="button" data-view="right" aria-pressed="false">오른쪽</button>
+        <button type="button" data-view="right" aria-pressed="false">오른쪽 측면</button>
         <button type="button" data-view="back" aria-pressed="false" aria-label="뒷면 스피커">뒷면</button>
+        <button type="button" data-view="left" aria-pressed="false">왼쪽 측면</button>
+        <button type="button" data-view="top" aria-pressed="false">윗면</button>
       </div>
       <div class="demo-viewer">
         <button class="demo-stage" type="button" id="demo-stage" aria-label="플레이어에서 커버 열기" disabled>
-          <span class="demo-preview">
+          <span class="demo-preview" hidden>
             <img class="demo-product" src="images/cad-front.webp?v=rounded-card" alt="">
             <img class="demo-loose-card" src="images/card.webp?v=mymy" alt="" hidden>
           </span>
           <canvas class="demo-canvas" aria-hidden="true" hidden></canvas>
         </button>
+      </div>
+      <div class="demo-controls">
+        <div class="demo-actions" role="group" aria-label="피스와 재생 조작">
+          <button class="primary-link" type="button" id="demo-next" hidden>커버 열기</button>
+          <button class="demo-reset" type="button" id="demo-reset" hidden>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7M5 9v12h5v-6h4v6h5V9"/></svg>
+            처음부터
+          </button>
+          <button class="demo-reset" type="button" id="demo-auto" aria-pressed="false" hidden>자동재생</button>
+          <button class="demo-reset" type="button" id="demo-manual" aria-pressed="true" hidden>단계별 재생</button>
+        </div>
         <div class="demo-zoom" role="group" aria-label="모델 확대·축소" hidden>
           <button type="button" id="demo-zoom-out" aria-label="축소" disabled>−</button>
           <button type="button" id="demo-zoom-in" aria-label="확대">+</button>
         </div>
-        <p class="demo-rotate-hint" hidden>드래그해서 돌려보세요.</p>
-      </div>
-      <div class="demo-skin" hidden>
-        <button type="button" id="demo-skin-toggle" aria-pressed="false">스킨 분리</button>
-        <div class="demo-swatches" role="group" aria-label="스킨 색상">
-          <button type="button" data-color="c5cad0" style="--swatch:#f2f2ef" aria-label="화이트" aria-pressed="true"></button>
-          <button type="button" data-color="16161a" style="--swatch:#16161a" aria-label="블랙" aria-pressed="false"></button>
-          <button type="button" data-color="4fd8c4" style="--swatch:#4fd8c4" aria-label="네모즈 민트" aria-pressed="false"></button>
+        <div class="demo-skin" hidden>
+          <button type="button" id="demo-skin-toggle" aria-pressed="false">스킨 분리</button>
+          <div class="demo-swatches" role="group" aria-label="스킨 색상">
+            <button type="button" data-color="c5cad0" style="--swatch:#f2f2ef" aria-label="화이트" aria-pressed="true"></button>
+            <button type="button" data-color="16161a" style="--swatch:#16161a" aria-label="블랙" aria-pressed="false"></button>
+            <button type="button" data-color="4fd8c4" style="--swatch:#4fd8c4" aria-label="네모즈 민트" aria-pressed="false"></button>
+          </div>
         </div>
       </div>
-      <div class="demo-controls">
-        <div>
-          <p id="demo-instruction" class="demo-instruction" aria-live="polite">투명 전면 커버를 열어보세요.</p>
-          <p class="demo-track">용용 · 새벽 끝의 소나타 remix (feat. 빈첸 (VINXEN), Kimos) · 30초</p>
-        </div>
-        <div class="demo-actions">
-          <button class="primary-link" type="button" id="demo-next" hidden>커버 열기</button>
-          <button class="demo-reset" type="button" id="demo-reset" hidden>처음부터</button>
-        </div>
-      </div>
+      <p id="demo-instruction" class="demo-instruction" aria-live="polite"></p>
+      <p class="demo-track">용용 · 새벽 끝의 소나타 remix (feat. 빈첸 (VINXEN), Kimos) · 30초</p>
       <audio id="demo-audio" src="audio/card-demo.mp3?v=sonata-remix" preload="none"></audio>
     </section>
 
@@ -256,6 +258,6 @@
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="guide.js?v=card-demo"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-  <script defer src="card-demo.js?v=rounded-card"></script>
+  <script defer src="card-demo.js?v=viewer-flow"></script>
 </body>
 </html>

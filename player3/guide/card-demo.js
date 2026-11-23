@@ -224,13 +224,18 @@
       else if (part === 'model') advance();
       return;
     }
-    if ([photo, looseCard].some(image => {
+    if (isOverPreview(event)) advance();
+  });
+
+  function isOverPreview(event) {
+    if (preview.hidden) return false;
+    return [photo, looseCard].some(image => {
       if (image.hidden) return false;
       const bounds = image.getBoundingClientRect();
       return event.clientX >= bounds.left && event.clientX <= bounds.right &&
         event.clientY >= bounds.top && event.clientY <= bounds.bottom;
-    })) advance();
-  });
+    });
+  }
 
   function distanceBetweenTouches() {
     const [first, second] = touches.values();
@@ -310,7 +315,9 @@
   });
 
   stage.addEventListener('wheel', event => {
-    if ((!event.ctrlKey && !event.metaKey) || event.deltaY === 0) return;
+    if (event.deltaY === 0 || !event.cancelable) return;
+    const overPlayer = pickModelPart ? Boolean(pickModelPart(event)) : isOverPreview(event);
+    if (!overPlayer && !event.ctrlKey && !event.metaKey) return;
     event.preventDefault();
     setZoom(scale * (event.deltaY < 0 ? zoomFactor : 1 / zoomFactor));
   }, {passive: false});
@@ -553,6 +560,7 @@
     const viewMatrix = new THREE.Matrix4();
     const homeViewMatrix = new THREE.Matrix4();
     let aspect = 1;
+    let desktopHeightRatio = 1;
 
     function findFrameBounds(cameraView) {
       frameBounds.makeEmpty();
@@ -569,8 +577,8 @@
       // Use the default angle for scale and the current angle for centering.
       findFrameBounds(homeViewMatrix);
       frameBounds.getSize(frameSize);
-      const fitHeight = Math.max(62, frameSize.y / .88, frameSize.x / (.9 * aspect));
-      const height = mobileViewer.matches ? fitHeight / .68 : fitHeight;
+      const fitHeight = Math.max(62, frameSize.y / .88, frameSize.x / (.9 * aspect * desktopHeightRatio));
+      const height = mobileViewer.matches ? fitHeight / .68 : fitHeight * desktopHeightRatio;
 
       findFrameBounds(camera.matrixWorldInverse);
       const {x: centerX, y: centerY} = frameBounds.getCenter(frameCenter);
@@ -663,6 +671,8 @@
       const {width, height} = stage.getBoundingClientRect();
       if (!width || !height) return;
       aspect = width / height;
+      const extraHeight = Number.parseFloat(getComputedStyle(stage).getPropertyValue('--viewer-extra-height')) || 0;
+      desktopHeightRatio = height / Math.max(1, height - extraHeight);
       renderer.setSize(width, height, false);
       render();
     }

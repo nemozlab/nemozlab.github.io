@@ -72,7 +72,7 @@ p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
 .demo-stage.is-dragging { cursor: grabbing; }
 .demo-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 .demo-preview { position: absolute; inset: 0; display: grid; place-items: center; }
-.demo-product { width: auto; height: 86%; max-width: 86%; object-fit: contain; }
+.demo-product { width: auto; height: calc((100% - var(--viewer-extra-height, 0px)) * .86); max-width: 86%; object-fit: contain; }
 .demo-stage[data-step="2"] .demo-product { transform: translateX(-19%); }
 .demo-loose-card { position: absolute; left: 66%; top: 36%; width: 23%; max-width: 130px; border-radius: 3.33% / 5%; }
 .contents { min-height: 44px; padding: 7px 10px 0; align-items: flex-start; overflow-x: auto; border: 1px solid var(--nav-line); border-bottom: 0; border-radius: 14px 14px 0 0; background: var(--paper); scrollbar-width: thin; }
@@ -133,8 +133,22 @@ details p { color: var(--muted); padding-bottom: 14px; }
 .fine-print { margin-top: 10px; color: var(--muted); font-size: .86rem; }
 .troubleshoot { margin-top: 14px; }
 .footer { border-top: 1px solid var(--line); margin-top: 44px; padding-block: 16px 30px; display: flex; justify-content: flex-end; }
+@media (min-width: 731px), (max-width: 560px) {
+  .demo-controls {
+    position: absolute;
+    inset-block-start: 12px;
+    inset-inline-end: 12px;
+    z-index: 1;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+}
 @media (min-width: 731px) {
-  .demo-stage { margin-block: 24px; }
+  .demo-stage {
+    --viewer-extra-height: 156px;
+    height: calc(clamp(260px, 39vw, 360px) + var(--viewer-extra-height));
+  }
 }
 @media (max-width: 730px) {
   .shell { width: calc(100% - 20px); }
@@ -176,15 +190,6 @@ details p { color: var(--muted); padding-bottom: 14px; }
   }
   .demo-viewer:has(.demo-skin:not([hidden])) .demo-stage { padding-block: 52px; }
   .demo-product { max-width: 61%; }
-  .demo-controls {
-    position: absolute;
-    inset-block-start: 12px;
-    inset-inline-end: 12px;
-    z-index: 1;
-    padding: 0;
-    border: 0;
-    background: transparent;
-  }
   .demo-viewer-toolbar button, .demo-controls #demo-skin-toggle { min-height: 44px; font-size: 14px; }
   .demo-viewer-toolbar { padding-inline: 8px; }
   .demo-actions { gap: 4px; }

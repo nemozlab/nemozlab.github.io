@@ -15,3 +15,10 @@
   .player-nav{gap:7px;font-size:clamp(11px,3.6vw,14px)}
   .player-nav .guide-link{padding-inline-start:7px}
 }
+
+.view-menu{display:flex;align-items:center;gap:14px;font-family:var(--font,"Noto Sans KR","Noto Sans SC","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif)}
+.view-menu :is(button, a){font:inherit;font-size:13.2px;font-weight:650;flex:none;white-space:nowrap;color:var(--nav-muted,var(--muted));text-decoration:none;background:none;border:0;border-bottom:2px solid transparent;padding:5px 2px;cursor:pointer}
+.view-menu :is(button, a):hover{color:var(--nav-fg,var(--fg))}
+.view-menu :is(button, a)[aria-current]{border-bottom-color:var(--nav-fg,var(--fg));color:var(--nav-fg,var(--fg))}
+.view-menu :is(button, a):focus-visible{outline:2px solid var(--nav-fg,var(--fg));outline-offset:2px}
+@media(max-width:820px){.view-menu{gap:10px}}

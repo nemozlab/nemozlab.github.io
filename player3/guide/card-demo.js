@@ -11,6 +11,8 @@
   const playback = document.querySelector('#demo-playback');
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
+  const zoomOut = document.querySelector('#demo-zoom-out');
+  const zoomIn = document.querySelector('#demo-zoom-in');
   const viewMenu = document.querySelector('.demo-views');
   const viewButtons = [...viewMenu.querySelectorAll('button')];
   const skinPanel = document.querySelector('.demo-skin');
@@ -30,7 +32,9 @@
   let rotateModel;
   let pickSkin;
   let cardNeedsStowing;
+  const minZoom = .55;
   const maxZoom = 1.75;
+  const zoomFactor = 1.12;
   let scale = 1;
   let pointer;
   let zoomModel;
@@ -155,6 +159,8 @@
   function updateZoom(value) {
     scale = value;
     preview.style.transform = `scale(${scale})`;
+    zoomOut.disabled = scale <= minZoom;
+    zoomIn.disabled = scale >= maxZoom;
   }
 
   viewMenu.hidden = false;
@@ -179,15 +185,19 @@
   }
 
   function setZoom(value) {
-    const zoom = Math.max(1, Math.min(maxZoom, value));
+    const zoom = Math.max(minZoom, Math.min(maxZoom, value));
     updateZoom(zoom);
     zoomModel?.(zoom);
   }
 
+  zoomOut.addEventListener('click', () => setZoom(scale / zoomFactor));
+  zoomIn.addEventListener('click', () => setZoom(scale * zoomFactor));
+  zoomOut.parentElement.hidden = false;
+
   stage.addEventListener('pointerdown', event => {
     if (event.button !== 0) return;
     stage.setPointerCapture(event.pointerId);
-    if (event.pointerType === 'touch' && rotateModel) {
+    if (event.pointerType === 'touch') {
       touches.set(event.pointerId, {x: event.clientX, y: event.clientY});
       if (touches.size >= 2) {
         pointer = null;
@@ -257,7 +267,7 @@
   stage.addEventListener('wheel', event => {
     if ((!event.ctrlKey && !event.metaKey) || event.deltaY === 0) return;
     event.preventDefault();
-    setZoom(scale * (event.deltaY < 0 ? 1.12 : 1 / 1.12));
+    setZoom(scale * (event.deltaY < 0 ? zoomFactor : 1 / zoomFactor));
   }, {passive: false});
 
   stage.addEventListener('keydown', event => {

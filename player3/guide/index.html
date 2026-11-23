@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css?v=section-menu">
-  <link rel="stylesheet" href="guide.css?v=yongyong-local">
+  <link rel="stylesheet" href="guide.css?v=five-tracks">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -61,11 +61,17 @@
               <svg class="demo-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-7 9 7M5 9v12h5v-6h4v6h5V9"/></svg>
             </button>
             <button class="demo-reset" type="button" id="demo-auto" aria-label="자동 시연" title="자동 시연" aria-pressed="false" hidden>AUTO</button>
+            <button class="demo-reset" type="button" data-track-direction="-1" aria-label="이전 곡" title="이전 곡" disabled hidden>
+              <svg class="demo-icon" viewBox="0 0 24 24" aria-hidden="true"><path class="icon-fill" d="M6 5h2v14H6zm12 0v14L9 12z"/></svg>
+            </button>
             <button class="demo-reset" type="button" id="demo-playback" aria-label="앨범 재생" title="앨범 재생" hidden>
               <svg class="demo-icon" viewBox="0 0 24 24" aria-hidden="true">
                 <path class="icon-fill play-icon" d="M7 3.8v16.4L20 12z"/>
                 <path class="icon-fill pause-icon" d="M7 4h3.5v16H7zm6.5 0H17v16h-3.5z"/>
               </svg>
+            </button>
+            <button class="demo-reset" type="button" data-track-direction="1" aria-label="다음 곡" title="다음 곡" disabled hidden>
+              <svg class="demo-icon" viewBox="0 0 24 24" aria-hidden="true"><path class="icon-fill" d="M16 5h2v14h-2zM6 5l9 7-9 7z"/></svg>
             </button>
           </div>
           <button class="primary-link" type="button" id="demo-next" hidden>
@@ -83,15 +89,7 @@
           </div>
         </div>
         <p id="demo-instruction" class="demo-instruction" aria-live="polite"></p>
-        <div class="demo-track-row">
-          <p class="demo-track" aria-live="polite">용용 · 새벽 끝의 소나타 remix (feat. 빈첸 (VINXEN), Kimos) · 30초</p>
-          <button type="button" data-track-direction="-1" aria-label="이전 곡" title="이전 곡" disabled>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h2v14H6zm12 0v14L9 12z"/></svg>
-          </button>
-          <button type="button" data-track-direction="1" aria-label="다음 곡" title="다음 곡" disabled>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 5h2v14h-2zM6 5l9 7-9 7z"/></svg>
-          </button>
-        </div>
+        <p class="demo-track" aria-live="polite">용용 · 새벽 끝의 소나타 remix (feat. 빈첸 (VINXEN), Kimos) · 30초</p>
       </div>
       <audio id="demo-audio" src="audio/card-demo.mp3?v=sonata-remix" preload="none"></audio>
     </section>
@@ -273,6 +271,6 @@
   </dialog>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="guide.js?v=section-menu"></script>
-  <script defer src="card-demo.js?v=yongyong-local"></script>
+  <script defer src="card-demo.js?v=five-tracks"></script>
 </body>
 </html>

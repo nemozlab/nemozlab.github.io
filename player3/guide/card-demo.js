@@ -54,7 +54,7 @@
   let autoTimer;
 
   function syncControls() {
-    next.setAttribute('aria-disabled', String(transitioning || automatic || step === steps.length));
+    next.setAttribute('aria-disabled', String(transitioning || automatic));
     skinToggle.setAttribute('aria-disabled', String(transitioning || automatic));
     auto.setAttribute('aria-pressed', String(automatic));
   }
@@ -87,7 +87,7 @@
   function show() {
     const playing = !audio.paused && !audio.ended;
     const complete = step === steps.length;
-    const [message, action] = steps[step] || ['커버가 닫혔어요.', '완료'];
+    const [message, action] = steps[step] || ['커버가 닫혔어요.', playing ? '음악 멈추기' : '처음부터 재생'];
     instruction.textContent = playbackError ? '앨범을 재생할 수 없어요.' : message;
     playback.toggleAttribute('data-playing', playing);
     playback.title = playing ? '일시정지' : '앨범 재생';
@@ -108,10 +108,10 @@
     }
   }
 
-  function play() {
+  function play({fromStart = false} = {}) {
     const attempt = ++playAttempt;
     playbackError = false;
-    if (audio.ended) audio.currentTime = 0;
+    if (fromStart || audio.ended) audio.currentTime = 0;
     audio.play().catch(() => {
       if (attempt !== playAttempt) return;
       playbackError = true;
@@ -279,7 +279,19 @@
     rotateModel(...movement[event.key]);
   });
   next.addEventListener('click', () => {
-    if (!automatic) advance();
+    if (automatic || transitioning) return;
+    if (step < steps.length) {
+      advance();
+      return;
+    }
+    if (audio.paused || audio.ended) {
+      play({fromStart: true});
+    } else {
+      playAttempt += 1;
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    show();
   });
 
   function restart(onComplete) {

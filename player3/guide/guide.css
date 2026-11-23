@@ -105,11 +105,6 @@ p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
 .power-photo > img { width: auto; height: 118px; flex: none; }
 .power-caption{color:var(--green);font-size:.82rem;font-weight:750;white-space:nowrap}
 .power-caption span { font-size: 16px; }
-.download { margin-top: 12px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--white); }
-.download h3 { font-size: 16px; }
-.download p { margin-top: 6px; color: var(--muted); font-size: .94rem; }
-.download strong { color: var(--ink); }
-.download .piece-types { margin-top: 10px; font-size: .91rem; }
 dt { font-weight: 750; }
 dd { color: var(--muted); font-size: .91rem; }
 .device-map { border: 1px solid var(--line); border-radius: 16px; background: var(--white); padding: 17px 20px; }
@@ -227,7 +222,6 @@ details p { color: var(--muted); padding-bottom: 14px; }
   .cover-frame { width: 100%; }
   .cover-frame img { height: calc(var(--photo-height) - 46px); object-fit: contain; }
   .cover-caption { font-size: 14px; }
-  .download { padding: 14px; }
 }
 
 .sound-list{max-width:600px;list-style:none;counter-reset:audio-row;margin:0;padding:0;border-top:1px solid var(--line)}

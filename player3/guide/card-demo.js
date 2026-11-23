@@ -1,0 +1,327 @@
+(() => {
+  const stage = document.querySelector('#demo-stage');
+  const canvas = stage.querySelector('canvas');
+  const photo = stage.querySelector('.demo-product');
+  const looseCard = stage.querySelector('.demo-loose-card');
+  const next = document.querySelector('#demo-next');
+  const reset = document.querySelector('#demo-reset');
+  const instruction = document.querySelector('#demo-instruction');
+  const audio = document.querySelector('#demo-audio');
+  const rotateHint = document.querySelector('.demo-rotate-hint');
+  const arrows = stage.querySelector('.demo-arrows');
+  const labels = [...stage.querySelectorAll('.demo-callout')];
+  const paths = [...arrows.querySelectorAll('path')];
+  let rotateModel;
+  let resetView;
+  let pointer;
+  let dragged = false;
+  const steps = [
+    ['투명 전면 커버를 열어보세요.', '커버 열기'],
+    ['열린 커버에서 NFC 피스를 위로 빼보세요.', '피스 빼기'],
+    ['NFC 피스를 커버 안쪽 거치부에 넣어보세요.', '피스 넣기'],
+    ['커버를 닫으면 예시 음원이 재생돼요.', '커버 닫고 재생'],
+  ];
+  let step = 0;
+  let drawModel;
+  let playbackError = false;
+  let playAttempt = 0;
+
+  function show() {
+    const playing = !audio.paused && !audio.ended;
+    const [message, action] = steps[step] || [
+      playbackError ? '예시 음원을 불러오지 못했어요.' : playing ? '예시 음원 재생 중' : '커버가 닫혔어요. 예시 음원을 들을 수 있어요.',
+      playing ? '재생 멈추기' : '예시 음원 재생',
+    ];
+    instruction.textContent = message;
+    next.textContent = action;
+    stage.setAttribute('aria-label', action);
+    stage.dataset.step = step;
+    if (drawModel) {
+      drawModel(step);
+    } else {
+      photo.src = step === 2 ? 'images/cad-demo-open-empty.webp' :
+        step === 1 || step === 3 ? 'images/cad-cover-open.webp' : 'images/cad-front.webp';
+      looseCard.hidden = step !== 2;
+    }
+  }
+
+  function play() {
+    const attempt = ++playAttempt;
+    playbackError = false;
+    if (audio.ended) audio.currentTime = 0;
+    audio.play().catch(() => {
+      if (attempt !== playAttempt) return;
+      playbackError = true;
+      show();
+    });
+  }
+
+  function advance() {
+    if (step < steps.length) {
+      step += 1;
+      if (step === steps.length) play();
+    } else if (audio.paused || audio.ended) {
+      play();
+    } else {
+      playAttempt += 1;
+      audio.pause();
+    }
+    show();
+  }
+
+  stage.addEventListener('click', event => {
+    if (!dragged || event.detail === 0) advance();
+    dragged = false;
+  });
+  stage.addEventListener('pointerdown', event => {
+    if (event.button !== 0 || !event.isPrimary) return;
+    dragged = false;
+    if (!rotateModel) return;
+    pointer = {id: event.pointerId, x: event.clientX, y: event.clientY};
+    stage.setPointerCapture(pointer.id);
+  });
+  stage.addEventListener('pointermove', event => {
+    if (event.pointerId !== pointer?.id) return;
+    const dx = event.clientX - pointer.x;
+    const dy = event.clientY - pointer.y;
+    if (!dragged && Math.hypot(dx, dy) < 5) return;
+    dragged = true;
+    stage.classList.add('is-dragging');
+    rotateModel(dx, dy);
+    pointer.x = event.clientX;
+    pointer.y = event.clientY;
+  });
+  stage.addEventListener('lostpointercapture', () => {
+    pointer = null;
+    stage.classList.remove('is-dragging');
+  });
+  stage.addEventListener('keydown', event => {
+    const movement = {ArrowLeft: [-20, 0], ArrowRight: [20, 0], ArrowUp: [0, -20], ArrowDown: [0, 20]};
+    if (!rotateModel || !movement[event.key]) return;
+    event.preventDefault();
+    rotateModel(...movement[event.key]);
+  });
+  next.addEventListener('click', advance);
+  reset.addEventListener('click', () => {
+    playAttempt += 1;
+    audio.pause();
+    audio.currentTime = 0;
+    playbackError = false;
+    step = 0;
+    resetView?.();
+    show();
+    next.focus();
+  });
+
+  for (const event of ['playing', 'pause', 'ended']) audio.addEventListener(event, show);
+  stage.disabled = false;
+  next.hidden = reset.hidden = false;
+  show();
+
+  async function loadModel(THREE) {
+    async function readParts(url) {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Could not load the model');
+      return response.json();
+    }
+    const [parts, controls, artwork] = await Promise.all([
+      readParts('../parts.json'),
+      readParts('control-parts.json'),
+      new THREE.TextureLoader().loadAsync('images/card.webp'),
+    ]);
+    const renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true});
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    artwork.encoding = THREE.sRGBEncoding;
+    artwork.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-58, 58, 43, -43, 1, 400);
+    camera.up.set(0, 0, 1);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x9bafbc, .8));
+    const key = new THREE.DirectionalLight(0xffffff, .75);
+    key.position.set(-75, -80, 135);
+    scene.add(key);
+
+    const shell = new THREE.MeshStandardMaterial({color: 0xcbd0d5, roughness: .68, side: THREE.DoubleSide});
+    const glass = new THREE.MeshPhysicalMaterial({
+      color: 0x829ba8, roughness: .22, metalness: .12,
+      transparent: true, opacity: .33, depthWrite: false,
+    });
+    const rotation = new THREE.Matrix4().makeBasis(
+      new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(1, 0, 0),
+      new THREE.Vector3(0, 1, 0),
+    );
+    const decode = (base64, ArrayType) => new ArrayType(Uint8Array.from(atob(base64), c => c.charCodeAt(0)).buffer);
+    function mesh(id, material) {
+      const part = parts[id];
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.BufferAttribute(decode(part.v, Float32Array), 3));
+      geometry.setIndex(new THREE.BufferAttribute(decode(part.f, part.wide ? Uint32Array : Uint16Array), 1));
+      if (part.n) geometry.setAttribute('normal', new THREE.BufferAttribute(decode(part.n, Float32Array), 3));
+      else geometry.computeVertexNormals();
+      geometry.applyMatrix4(rotation);
+      return new THREE.Mesh(geometry, material);
+    }
+    function controlMesh(name, material) {
+      const part = controls[name];
+      const geometry = new THREE.BufferGeometry();
+      const positions = Float32Array.from(decode(part.v, Int16Array), value => value / 512);
+      const normals = Float32Array.from(decode(part.n, Int16Array), value => value / 32767);
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3));
+      geometry.setIndex(new THREE.BufferAttribute(decode(part.f, Uint16Array), 1));
+      return new THREE.Mesh(geometry, material);
+    }
+    const wheelMaterial = new THREE.MeshStandardMaterial({color: 0xa5a9ae, roughness: .78, side: THREE.DoubleSide});
+    const portMaterial = new THREE.MeshStandardMaterial({color: 0x4b5058, roughness: .64, side: THREE.DoubleSide});
+    const ledMaterial = new THREE.MeshStandardMaterial({color: 0x9cc6ca, roughness: .36, side: THREE.DoubleSide});
+    for (const id of ['0', '1', '13', '16']) scene.add(mesh(id, shell));
+    for (const id of ['buttons', 'power']) scene.add(controlMesh(id, shell));
+    scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial), controlMesh('led', ledMaterial));
+
+    // The front door swings around the lower horizontal edge of the CAD mesh.
+    const hinge = new THREE.Group();
+    hinge.position.set(0, 2.2, -24);
+    scene.add(hinge);
+    const door = controlMesh('door', glass);
+    door.position.copy(hinge.position).negate();
+    door.renderOrder = 1;
+    hinge.add(door);
+
+    const card = new THREE.Mesh(
+      new THREE.PlaneGeometry(60, 40),
+      new THREE.MeshBasicMaterial({map: artwork, transparent: true, alphaTest: .1, side: THREE.DoubleSide}),
+    );
+    scene.add(card);
+
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+    let frame;
+    let coverAngle = 0;
+    let cardOffset = 0;
+    let viewShift = 0;
+    const coverOpening = THREE.MathUtils.degToRad(35);
+    const homeYaw = -.362;
+    const homePitch = .326;
+    let yaw = homeYaw;
+    let pitch = homePitch;
+    let width, height;
+    const slot = new THREE.Vector3(0, 2.1, -.85).sub(hinge.position);
+    const stowedPosition = new THREE.Vector3(65, -19, 6);
+    const axis = new THREE.Vector3(1, 0, 0);
+    const cardPosition = new THREE.Vector3();
+    const slide = new THREE.Vector3();
+    const point = new THREE.Vector3();
+    const callouts = [
+      {anchor: [0, 7, 27], offset: [-45, -26]},
+      {anchor: [21.7, 7, 25.9], offset: [34, -28]},
+      {anchor: [24, .4, -14], offset: [41, 31]},
+    ];
+    function annotate() {
+      const visible = step === 0 && Math.abs(yaw - homeYaw) < .43 && pitch > .08 && pitch < .83;
+      arrows.toggleAttribute('hidden', !visible);
+      for (const label of labels) label.hidden = !visible;
+      if (!visible) return;
+      callouts.forEach(({anchor, offset}, i) => {
+        point.set(...anchor).project(camera);
+        const x = (point.x + 1) * width / 2;
+        const y = (1 - point.y) * height / 2;
+        const label = labels[i];
+        const w = label.offsetWidth;
+        const h = label.offsetHeight;
+        const lx = Math.max(4, Math.min(width - w - 4, x + offset[0] - w / 2));
+        const ly = Math.max(3, Math.min(height - h - 3, y + offset[1] - h / 2));
+        label.style.transform = `translate(${lx}px,${ly}px)`;
+        const startX = lx + w / 2;
+        const startY = ly + h / 2;
+        const angle = Math.atan2(y - startY, x - startX);
+        const tipX = x - Math.cos(angle) * 3;
+        const tipY = y - Math.sin(angle) * 3;
+        const edge = side => [tipX - 5 * Math.cos(angle + side), tipY - 5 * Math.sin(angle + side)].join(' ');
+        paths[i].setAttribute('d', `M ${startX} ${startY} L ${tipX} ${tipY} M ${edge(.58)} L ${tipX} ${tipY} L ${edge(-.58)}`);
+      });
+    }
+    function render() {
+      hinge.rotation.x = coverAngle;
+      cardPosition.copy(slot).applyAxisAngle(axis, coverAngle).add(hinge.position);
+      slide.set(0, 0, 23 * Math.sin(Math.PI * cardOffset)).applyAxisAngle(axis, coverAngle);
+      card.position.copy(cardPosition).lerp(stowedPosition, cardOffset).add(slide);
+      card.rotation.x = Math.PI / 2 + coverAngle * (1 - cardOffset);
+      const radius = 170;
+      const horizontal = radius * Math.cos(pitch);
+      camera.position.set(viewShift + horizontal * Math.sin(yaw), -2 - horizontal * Math.cos(yaw), radius * Math.sin(pitch));
+      camera.lookAt(viewShift, -2, 0);
+      renderer.render(scene, camera);
+      annotate();
+    }
+    function update(state) {
+      cancelAnimationFrame(frame);
+      const from = [coverAngle, cardOffset, viewShift];
+      const targets = [state > 0 && state < 4 ? coverOpening : 0, state === 2 ? 1 : 0, state === 2 ? 25 : 0];
+      if (reducedMotion.matches || from.every((n, i) => n === targets[i])) {
+        [coverAngle, cardOffset, viewShift] = targets;
+        render();
+        return;
+      }
+      const start = performance.now();
+      function tick(now) {
+        const t = Math.min((now - start) / 460, 1);
+        const ease = t * t * (3 - 2 * t);
+        [coverAngle, cardOffset, viewShift] = from.map((value, i) => value + (targets[i] - value) * ease);
+        render();
+        if (t < 1) frame = requestAnimationFrame(tick);
+      }
+      frame = requestAnimationFrame(tick);
+    }
+
+    function resize() {
+      ({width, height} = stage.getBoundingClientRect());
+      const aspect = width / height;
+      const span = Math.max(104, 150 / aspect);
+      camera.left = -span * aspect / 2;
+      camera.right = span * aspect / 2;
+      camera.top = span / 2;
+      camera.bottom = -span / 2;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height, false);
+      render();
+    }
+
+    rotateModel = (dx, dy) => {
+      yaw -= dx * .012;
+      pitch = Math.max(-1.42, Math.min(1.42, pitch + dy * .012));
+      render();
+    };
+    resetView = () => {
+      yaw = homeYaw;
+      pitch = homePitch;
+    };
+    rotateHint.hidden = false;
+    stage.classList.add('has-model');
+    const observer = new ResizeObserver(resize);
+    observer.observe(stage);
+    canvas.addEventListener('webglcontextlost', () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+      rotateModel = resetView = null;
+      stage.classList.remove('has-model');
+      rotateHint.hidden = true;
+      arrows.setAttribute('hidden', '');
+      for (const label of labels) label.hidden = true;
+      drawModel = null;
+      canvas.hidden = true;
+      photo.hidden = false;
+      show();
+    });
+    drawModel = update;
+    canvas.hidden = false;
+    photo.hidden = looseCard.hidden = true;
+    resize();
+    update(step);
+  }
+
+  if (window.THREE) loadModel(window.THREE).catch(() => {
+    // The same controls stay available on devices using the photo preview.
+  });
+})();

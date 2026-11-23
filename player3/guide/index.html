@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css">
-  <link rel="stylesheet" href="guide.css">
+  <link rel="stylesheet" href="guide.css?v=card-demo">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -38,12 +38,23 @@
     <section class="hero" aria-labelledby="title">
       <div class="hero-copy">
         <h1 id="title">네모 플레이어 사용법</h1>
-        <a class="primary-link" href="#setup">사용 순서 보기 <span aria-hidden="true">↓</span></a>
+        <p id="demo-instruction" class="demo-instruction" aria-live="polite">투명 전면 커버를 열어보세요.</p>
+        <div class="demo-actions">
+          <button class="primary-link" type="button" id="demo-next" hidden>커버 열기</button>
+          <button class="demo-reset" type="button" id="demo-reset" hidden>처음부터</button>
+        </div>
+        <p class="demo-rotate-hint" hidden>드래그해서 돌려보세요.</p>
       </div>
-      <a class="hero-photo" href="images/front.webp" data-zoom aria-label="네모 플레이어 제품 사진 확대">
-        <img src="images/front.webp" alt="투명 전면 커버에 NFC 피스를 넣은 네모 플레이어">
-        <span>제품 사진 확대 <span aria-hidden="true">↗</span></span>
-      </a>
+      <button class="demo-stage" type="button" id="demo-stage" aria-label="플레이어에서 커버 열기" disabled>
+        <img class="demo-product" src="images/cad-front.webp" alt="">
+        <img class="demo-loose-card" src="images/card.webp" alt="" hidden>
+        <canvas class="demo-canvas" aria-hidden="true" hidden></canvas>
+        <span class="demo-callout" aria-hidden="true" hidden>재생 버튼</span>
+        <span class="demo-callout" aria-hidden="true" hidden>상태 LED</span>
+        <span class="demo-callout" aria-hidden="true" hidden>투명 전면 커버</span>
+        <svg class="demo-arrows" aria-hidden="true" hidden><path/><path/><path/></svg>
+      </button>
+      <audio id="demo-audio" src="audio/card-demo.mp3" preload="none"></audio>
     </section>
 
 
@@ -62,41 +73,34 @@
               <li>앱이 입력한 설정을 플레이어에 전달해요. 연결 성공이 표시되면 설정이 끝나요.</li>
             </ul>
           </div>
-          <a class="step-photo power-photo" href="images/right.webp" data-zoom="power" aria-label="오른쪽 전원 버튼 위치 확대">
-            <div class="power-device">
-              <img src="images/right.webp" alt="오른쪽 측면 아래의 전원 버튼" loading="lazy">
-              <span class="power-indicator" aria-hidden="true"></span>
-            </div>
-            <span class="power-caption">전원 버튼</span>
+          <a class="step-photo power-photo" href="images/cad-right.webp" data-zoom="side" aria-label="오른쪽 전원 버튼 위치 확대">
+            <img src="images/cad-right.webp" alt="오른쪽 측면 아래의 전원 버튼" loading="lazy">
+            <span class="power-caption"><span aria-hidden="true">←</span> 전원 버튼</span>
           </a>
         </li>
         <li id="play">
-          <div class="step-copy"><h3>전면 커버 열기</h3><p>앞쪽의 투명 커버를 앞으로 여세요.</p></div>
-          <a class="step-photo cover-photo" href="images/cover-open.webp" data-zoom="cover" aria-label="투명 전면 커버를 앞으로 연 상태 확대">
-            <span class="cover-frame"><img src="images/cover-open.webp" alt="투명 전면 커버를 앞으로 연 상태" loading="lazy"><span class="cover-outline" aria-hidden="true"></span></span>
+          <div class="step-copy"><h3>전면 커버 열기</h3><p>앞쪽의 투명 커버를 앞으로 여세요. 커버는 35°까지 열려요.</p></div>
+          <a class="step-photo cover-photo" href="images/cad-cover-open.webp" data-zoom="cover" aria-label="투명 전면 커버를 앞으로 연 상태 확대">
+            <span class="cover-frame"><img src="images/cad-cover-open.webp" alt="투명 전면 커버를 앞으로 연 상태" loading="lazy"></span>
             <span class="cover-caption">투명 전면 커버</span>
           </a>
         </li>
         <li>
           <div class="step-copy"><h3>NFC 피스 넣기</h3><p>피스를 열린 커버 안쪽의 카드 거치부에 넣으세요.</p></div>
-          <a class="step-photo card-photo" href="images/card.webp" data-zoom aria-label="플레이어에 넣는 NFC 뮤직 카드 예시 확대"><img src="images/card.webp" alt="플레이어에 넣는 NFC 뮤직 카드 예시" loading="lazy"></a>
+          <a class="step-photo card-photo" href="images/cad-card-insert.webp" data-zoom aria-label="플레이어 커버 안쪽 거치부에 NFC 피스를 넣는 모습 확대"><img src="images/cad-card-insert.webp" alt="플레이어 커버 안쪽 거치부에 NFC 피스를 넣는 모습" loading="lazy"></a>
         </li>
         <li>
           <div class="step-copy"><h3>커버 닫고 재생</h3><p>음원이 저장되어 있으면 피스를 인식한 뒤 바로 재생돼요. 처음 듣는 피스는 Wi-Fi로 음원을 내려받아요.</p></div>
-          <a class="step-photo" href="images/front.webp" data-zoom aria-label="피스를 넣고 전면 커버를 닫은 플레이어 확대"><img src="images/front.webp" alt="피스를 넣고 전면 커버를 닫은 플레이어" loading="lazy"></a>
+          <a class="step-photo" href="images/cad-front.webp" data-zoom aria-label="피스를 넣고 전면 커버를 닫은 플레이어 확대"><img src="images/cad-front.webp" alt="피스를 넣고 전면 커버를 닫은 플레이어" loading="lazy"></a>
         </li>
         <li>
           <div class="step-copy"><h3>버튼과 볼륨 휠로 조작</h3><p>윗면 버튼으로 곡을 바꾸거나 재생을 멈출 수 있어요. 왼쪽 휠을 돌리면 음량이 조절돼요.</p><a href="#controls">버튼 위치 자세히 보기</a></div>
-          <a class="step-photo" href="images/top.webp" data-zoom aria-label="왼쪽부터 이전, 재생·일시정지, 다음 버튼과 상태 LED 확대"><img src="images/top.webp" alt="왼쪽부터 이전, 재생·일시정지, 다음 버튼과 상태 LED" loading="lazy"></a>
+          <a class="step-photo buttons-photo" href="images/cad-top.webp" data-zoom aria-label="왼쪽부터 이전, 재생·일시정지, 다음 버튼과 상태 LED 확대"><img src="images/cad-top.webp" alt="왼쪽부터 이전, 재생·일시정지, 다음 버튼과 상태 LED" loading="lazy"></a>
         </li>
       </ol>
       <div class="download">
         <h3>처음 듣는 피스라면</h3>
         <p>저장된 음원이 없으면 Wi-Fi에 연결하고 NEMOZ 앱에서 다운로드를 시작하세요. 저장이 끝나면 재생되고, 이후에는 오프라인에서도 들을 수 있어요.</p>
-        <dl>
-          <div><dt>시리즈 피스</dt><dd>시리즈 음원을 미리 받아 두고, 꽂은 피스에 해당하는 한 곡을 재생해요.</dd></div>
-          <div><dt>앨범 피스</dt><dd>앨범 단위로 다운로드하고 앨범 전체를 재생해요.</dd></div>
-        </dl>
       </div>
     </section>
 
@@ -109,31 +113,31 @@
         <figure class="top-map">
           <figcaption>윗면 <span>전면 커버가 나를 향한 상태</span></figcaption>
           <div class="top-photo">
-            <img src="images/top.webp" alt="왼쪽부터 이전 버튼, 재생·일시정지 버튼, 다음 버튼, 상태 LED" loading="lazy">
-            <span class="pin" style="--x:36%;--y:59%" aria-hidden="true">1</span>
-            <span class="pin" style="--x:51%;--y:59%" aria-hidden="true">2</span>
-            <span class="pin" style="--x:66%;--y:59%" aria-hidden="true">3</span>
-            <span class="pin" style="--x:84%;--y:59%" aria-hidden="true">4</span>
+            <img src="images/cad-top.webp" alt="왼쪽부터 이전 버튼, 재생·일시정지 버튼, 다음 버튼, 상태 LED" loading="lazy">
+            <span class="button-callout" style="--x:33%" aria-hidden="true">이전</span>
+            <span class="button-callout" style="--x:49%" aria-hidden="true">재생</span>
+            <span class="button-callout" style="--x:64%" aria-hidden="true">다음</span>
+            <span class="button-callout" style="--x:83%" aria-hidden="true">LED</span>
           </div>
           <dl class="top-labels">
-            <div><dt><b>1</b> 이전</dt><dd>이전 곡</dd></div>
-            <div><dt><b>2</b> 재생 / 일시정지</dt><dd>짧게 누르면 재생 또는 일시정지, 길게 누르면 랜덤 재생 켜기 또는 끄기</dd></div>
-            <div><dt><b>3</b> 다음</dt><dd>다음 곡</dd></div>
-            <div><dt><b>4</b> 상태 LED</dt><dd><a href="#status">색으로 상태 확인</a></dd></div>
+            <div><dt>이전</dt><dd>이전 곡</dd></div>
+            <div><dt>재생 / 일시정지</dt><dd>짧게 누르면 재생 또는 일시정지, 길게 누르면 랜덤 재생 켜기 또는 끄기</dd></div>
+            <div><dt>다음</dt><dd>다음 곡</dd></div>
+            <div><dt>상태 LED</dt><dd><a href="#status">색으로 상태 확인</a></dd></div>
           </dl>
         </figure>
         <div class="side-maps">
           <figure>
             <figcaption>왼쪽 측면</figcaption>
             <div class="side-body">
-              <img src="images/left.webp" alt="왼쪽 측면 가운데에 있는 볼륨 휠" loading="lazy">
+              <img src="images/cad-left.webp" alt="왼쪽 측면 가운데에 있는 볼륨 휠" loading="lazy">
               <div><strong>볼륨 휠</strong><p>휠을 돌려 음량을 조절하세요. 가장 작게 돌리면 무음이에요.</p></div>
             </div>
           </figure>
           <figure>
             <figcaption>오른쪽 측면</figcaption>
             <div class="side-body">
-              <img src="images/right.webp" alt="오른쪽 측면 위에 있는 USB-C 포트와 아래에 있는 전원 버튼" loading="lazy">
+              <img src="images/cad-right.webp" alt="오른쪽 측면 위에 있는 USB-C 포트와 아래에 있는 전원 버튼" loading="lazy">
               <dl>
                 <div><dt>위 · USB-C</dt><dd>충전 케이블 연결</dd></div>
                 <div><dt>아래 · 전원 버튼</dt><dd>플레이어 켜기와 끄기</dd></div>
@@ -168,15 +172,15 @@
       <p class="fine-print">저전력·앱 설정·Wi-Fi 미연결·다운로드 상태가 겹치면 표에서 위에 있는 상태가 우선 표시돼요.</p>
       <details class="troubleshoot">
         <summary>피스를 넣었는데 음악이 바로 나오지 않아요.</summary>
-        <p>처음 듣는 피스는 Wi-Fi로 음원을 내려받아요. 다운로드가 오래 걸리면 Wi-Fi 연결을 확인하세요. 다운로드 중 나오는 <a href="#sounds">음성 안내를 미리 들어볼 수 있어요</a>.</p>
+        <p>처음 듣는 피스는 Wi-Fi로 음원을 내려받아요. 다운로드가 오래 걸리면 Wi-Fi 연결을 확인하세요.</p>
       </details>
     </section>
     <section id="sounds" class="guide-section" aria-labelledby="sounds-heading">
       <div class="section-head">
         <h2 id="sounds-heading">음성 안내와 효과음</h2>
-        <p>아래에서 제작 검토용 음원 13개를 미리 들을 수 있어요. 음원 길이와 언어 구성, 다운로드 LED와 30초 이후 안내는 양산 사양을 확인 중이에요.</p>
+        <p>제작 검토용 음원을 미리 들을 수 있어요. 음원 길이와 언어 구성, 다운로드 LED와 30초 이후 안내는 양산 사양을 확인 중이에요.</p>
       </div>
-      <ul class="sound-list">
+      <ol class="sound-list">
         <li><div><h3>전원 켜짐</h3><p>플레이어 전원을 켤 때</p></div><audio controls preload="none" src="audio/01_sfx_power_on.mp3" aria-label="전원 켜짐 미리 듣기"></audio></li>
         <li><div><h3>전원 꺼짐</h3><p>플레이어를 끄거나 전원이 자동으로 꺼질 때</p></div><audio controls preload="none" src="audio/02_sfx_power_off.mp3" aria-label="전원 꺼짐 미리 듣기"></audio></li>
         <li><div><h3>배터리 부족</h3><p>배터리가 부족할 때</p></div><audio controls preload="none" src="audio/03_sfx_low_battery.mp3" aria-label="배터리 부족 미리 듣기"></audio></li>
@@ -190,8 +194,8 @@
         <li><div><h3>다운로드 중 두 번째 안내</h3><p>설계 문서에는 다운로드가 끝나지 않은 채 30초가 지났을 때로 기록되어 있어요.</p><p class="voice-line">“다운로드 중입니다. 잠시만 기다려 주세요.”</p></div><audio controls preload="none" src="audio/11_voice_downloading_2.mp3" aria-label="다운로드 중 두 번째 안내 미리 듣기"></audio></li>
         <li><div><h3>랜덤 재생 켜기</h3><p>재생·일시정지 버튼을 3초간 눌러 랜덤 재생을 켤 때</p></div><audio controls preload="none" src="audio/12_sfx_shuffle_mode_enter.mp3" aria-label="랜덤 재생 켜기 미리 듣기"></audio></li>
         <li><div><h3>랜덤 재생 끄기</h3><p>재생·일시정지 버튼을 다시 3초간 눌러 랜덤 재생을 끌 때</p></div><audio controls preload="none" src="audio/13_sfx_shuffle_mode_exit.mp3" aria-label="랜덤 재생 끄기 미리 듣기"></audio></li>
-        <li><div><h3>Wi-Fi에 이미 연결됨</h3><p>추가 안내음의 재생 조건은 확인 중이에요.</p><p class="voice-line">“Wi-Fi에 이미 연결되어 있습니다.”</p></div></li>
-      </ul>
+        <li><div><h3>Wi-Fi에 이미 연결됨</h3><p class="voice-line">“Wi-Fi에 이미 연결되어 있습니다.”</p></div></li>
+      </ol>
     </section>
   </main>
   <footer class="shell footer">
@@ -206,11 +210,12 @@
     <div class="photo-dialog-visual">
       <div class="dialog-photo-frame">
         <img alt="">
-        <span class="cover-outline" hidden aria-hidden="true"></span>
-        <span class="power-indicator" hidden aria-hidden="true"></span>
+        <span class="power-caption" hidden><span aria-hidden="true">←</span> 전원 버튼</span>
       </div>
     </div>
   </dialog>
-  <script src="guide.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script defer src="guide.js?v=card-demo"></script>
+  <script defer src="card-demo.js"></script>
 </body>
 </html>

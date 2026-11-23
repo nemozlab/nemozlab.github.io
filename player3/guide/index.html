@@ -4,68 +4,86 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="네모 플레이어 첫 설정, NFC 피스 삽입, 버튼 조작과 상태 LED 안내">
-  <meta name="theme-color" content="#f5f8f5">
+  <meta name="theme-color" content="#ffffff">
   <title>네모 플레이어 사용법</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link rel="stylesheet" href="../player-header.css">
   <link rel="stylesheet" href="guide.css">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
   <header class="site-head">
-    <div class="shell head-inner">
-      <nav class="player-nav" aria-label="네모 플레이어 메뉴">
-        <a href="../">네모 플레이어 스킨</a>
-        <a href="./" aria-current="page">네모 플레이어 사용법</a>
-      </nav>
+    <div class="player-header">
+      <div class="page-heading">
+        <a class="home-link" href="/player3/" aria-label="홈" title="홈"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></a>
+        <nav class="player-nav" aria-label="네모 플레이어 메뉴">
+          <a href="../">네모 플레이어 스킨</a>
+          <a class="guide-link" href="./" aria-current="page">네모 플레이어 사용법</a>
+        </nav>
+      </div>
     </div>
-  </header>
-
-  <main id="main" class="shell">
-    <section class="hero" aria-labelledby="title">
-      <div class="hero-copy">
-        <h1 id="title">네모 플레이어<br>사용법</h1>
-        <p>처음 한 번 Wi-Fi를 설정하세요.<br>저장된 음악은 NFC 피스를 꽂으면 오프라인에서도 재생돼요.</p>
-        <a class="primary-link" href="#setup">처음 설정하기 <span aria-hidden="true">↓</span></a>
-      </div>
-      <div class="hero-photo">
-        <img src="images/front.webp" alt="투명 전면 커버에 NFC 피스를 넣은 네모 플레이어">
-      </div>
-    </section>
-
     <nav class="contents" aria-label="목차">
       <a href="#setup">처음 설정</a>
       <a href="#play">피스 넣기</a>
       <a href="#controls">버튼 조작</a>
       <a href="#status">LED와 충전</a>
     </nav>
+  </header>
 
-    <section id="setup" class="guide-section" aria-labelledby="setup-heading">
-      <div class="section-head">
-        <h2 id="setup-heading">처음 한 번, Wi-Fi 설정</h2>
-        <p>플레이어를 켠 뒤 NEMOZ 앱에서 연결하세요.</p>
+  <main id="main" class="shell">
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-copy">
+        <h1 id="title">네모 플레이어<br>사용법</h1>
+        <p>Wi-Fi를 처음 한 번 설정한 뒤, NFC 피스를 넣어 음악을 들어보세요.</p>
+        <a class="primary-link" href="#setup">사용 순서 보기 <span aria-hidden="true">↓</span></a>
       </div>
-      <ol class="setup-list">
-        <li><strong>플레이어 켜기</strong><span>오른쪽 측면에서 USB-C 아래에 있는 전원 버튼을 누르세요.</span></li>
-        <li><strong>NEMOZ 앱에서 연결</strong><span>앱에서 플레이어를 검색해 블루투스(BLE)로 연결하세요.</span></li>
-        <li><strong>Wi-Fi 선택</strong><span>앱에 표시된 Wi-Fi를 선택하고 비밀번호를 입력하세요. 연결 성공이 표시되면 설정이 끝나요.</span></li>
-      </ol>
+      <div class="hero-photo">
+        <img src="images/front.webp" alt="투명 전면 커버에 NFC 피스를 넣은 네모 플레이어">
+      </div>
     </section>
 
-    <section id="play" class="guide-section" aria-labelledby="play-heading">
+
+    <section id="setup" class="guide-section" aria-labelledby="steps-heading">
       <div class="section-head">
-        <h2 id="play-heading">피스 넣고 음악 듣기</h2>
+        <h2 id="steps-heading">사용 순서</h2>
       </div>
-      <ol class="play-list">
+      <ol class="usage-steps">
         <li>
-          <div class="step-photo"><img src="images/cover-open.webp" alt="투명 전면 커버를 앞으로 연 상태" loading="lazy"></div>
+          <div class="step-copy">
+            <h3>처음 한 번, Wi-Fi 연결</h3>
+            <ul class="wifi-steps">
+              <li>오른쪽 측면의 전원 버튼을 눌러 플레이어를 켜세요.</li>
+              <li>NEMOZ 앱에서 플레이어를 검색해 블루투스(BLE)로 연결하세요.</li>
+              <li>플레이어가 찾은 Wi-Fi 목록이 앱에 표시되면 사용할 네트워크를 고르고 비밀번호를 입력하세요.</li>
+              <li>앱이 입력한 설정을 플레이어에 전달해요. 연결 성공이 표시되면 설정이 끝나요.</li>
+            </ul>
+          </div>
+          <div class="step-photo power-photo">
+            <div class="power-device">
+              <img src="images/right.webp" alt="오른쪽 측면 아래의 전원 버튼" loading="lazy">
+              <span class="power-indicator" aria-hidden="true"></span>
+            </div>
+            <span class="power-caption">전원 버튼</span>
+          </div>
+        </li>
+        <li id="play">
           <div class="step-copy"><h3>전면 커버 열기</h3><p>앞쪽의 투명 커버를 앞으로 여세요.</p></div>
+          <div class="step-photo"><img src="images/cover-open.webp" alt="투명 전면 커버를 앞으로 연 상태" loading="lazy"></div>
         </li>
         <li>
-          <div class="step-photo card-photo"><img src="images/card.webp" alt="플레이어에 넣는 NFC 뮤직 카드 예시" loading="lazy"></div>
           <div class="step-copy"><h3>NFC 피스 넣기</h3><p>피스를 열린 커버 안쪽의 카드 거치부에 넣으세요.</p></div>
+          <div class="step-photo card-photo"><img src="images/card.webp" alt="플레이어에 넣는 NFC 뮤직 카드 예시" loading="lazy"></div>
         </li>
         <li>
+          <div class="step-copy"><h3>커버 닫고 재생</h3><p>음원이 저장되어 있으면 피스를 인식한 뒤 바로 재생돼요. 처음 듣는 피스는 Wi-Fi로 음원을 내려받아요.</p></div>
           <div class="step-photo"><img src="images/front.webp" alt="피스를 넣고 전면 커버를 닫은 플레이어" loading="lazy"></div>
-          <div class="step-copy"><h3>커버 닫고 재생</h3><p>음원이 저장되어 있으면 피스를 인식한 뒤 바로 재생돼요.</p></div>
+        </li>
+        <li>
+          <div class="step-copy"><h3>버튼과 볼륨 휠로 조작</h3><p>윗면 버튼으로 곡을 바꾸거나 재생을 멈출 수 있어요. 왼쪽 휠을 돌리면 음량이 조절돼요.</p><a href="#controls">버튼 위치 자세히 보기</a></div>
+          <div class="step-photo"><img src="images/top.webp" alt="왼쪽부터 이전, 재생·일시정지, 다음 버튼과 상태 LED" loading="lazy"></div>
         </li>
       </ol>
       <div class="download">

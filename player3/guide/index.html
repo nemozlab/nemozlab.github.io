@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="네모 플레이어 첫 설정, NFC 피스 삽입, 버튼 조작과 상태 LED 안내">
+  <meta name="theme-color" content="#f5f8f5">
+  <title>네모 플레이어 사용법</title>
+  <link rel="stylesheet" href="guide.css">
+</head>
+<body>
+  <a class="skip" href="#main">본문으로 건너뛰기</a>
+  <header class="site-head">
+    <div class="shell head-inner">
+      <nav class="player-nav" aria-label="네모 플레이어 메뉴">
+        <a href="../">네모 플레이어 스킨</a>
+        <a href="./" aria-current="page">네모 플레이어 사용법</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="shell">
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-copy">
+        <h1 id="title">네모 플레이어<br>사용법</h1>
+        <p>처음 한 번 Wi-Fi를 설정하세요.<br>저장된 음악은 NFC 피스를 꽂으면 오프라인에서도 재생돼요.</p>
+        <a class="primary-link" href="#setup">처음 설정하기 <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-photo">
+        <img src="images/front.webp" alt="투명 전면 커버에 NFC 피스를 넣은 네모 플레이어">
+      </div>
+    </section>
+
+    <nav class="contents" aria-label="목차">
+      <a href="#setup">처음 설정</a>
+      <a href="#play">피스 넣기</a>
+      <a href="#controls">버튼 조작</a>
+      <a href="#status">LED와 충전</a>
+    </nav>
+
+    <section id="setup" class="guide-section" aria-labelledby="setup-heading">
+      <div class="section-head">
+        <h2 id="setup-heading">처음 한 번, Wi-Fi 설정</h2>
+        <p>플레이어를 켠 뒤 NEMOZ 앱에서 연결하세요.</p>
+      </div>
+      <ol class="setup-list">
+        <li><strong>플레이어 켜기</strong><span>오른쪽 측면에서 USB-C 아래에 있는 전원 버튼을 누르세요.</span></li>
+        <li><strong>NEMOZ 앱에서 연결</strong><span>앱에서 플레이어를 검색해 블루투스(BLE)로 연결하세요.</span></li>
+        <li><strong>Wi-Fi 선택</strong><span>앱에 표시된 Wi-Fi를 선택하고 비밀번호를 입력하세요. 연결 성공이 표시되면 설정이 끝나요.</span></li>
+      </ol>
+    </section>
+
+    <section id="play" class="guide-section" aria-labelledby="play-heading">
+      <div class="section-head">
+        <h2 id="play-heading">피스 넣고 음악 듣기</h2>
+      </div>
+      <ol class="play-list">
+        <li>
+          <div class="step-photo"><img src="images/cover-open.webp" alt="투명 전면 커버를 앞으로 연 상태" loading="lazy"></div>
+          <div class="step-copy"><h3>전면 커버 열기</h3><p>앞쪽의 투명 커버를 앞으로 여세요.</p></div>
+        </li>
+        <li>
+          <div class="step-photo card-photo"><img src="images/card.webp" alt="플레이어에 넣는 NFC 뮤직 카드 예시" loading="lazy"></div>
+          <div class="step-copy"><h3>NFC 피스 넣기</h3><p>피스를 열린 커버 안쪽의 카드 거치부에 넣으세요.</p></div>
+        </li>
+        <li>
+          <div class="step-photo"><img src="images/front.webp" alt="피스를 넣고 전면 커버를 닫은 플레이어" loading="lazy"></div>
+          <div class="step-copy"><h3>커버 닫고 재생</h3><p>음원이 저장되어 있으면 피스를 인식한 뒤 바로 재생돼요.</p></div>
+        </li>
+      </ol>
+      <div class="download">
+        <h3>처음 듣는 피스라면</h3>
+        <p>저장된 음원이 없으면 Wi-Fi에 연결하고 NEMOZ 앱에서 다운로드를 시작하세요. 다운로드 중에는 윗면 오른쪽 LED가 <strong>흰색으로 깜빡여요</strong>. 저장이 끝나면 재생되고, 이후에는 오프라인에서도 들을 수 있어요.</p>
+        <dl>
+          <div><dt>시리즈 피스</dt><dd>시리즈 음원을 미리 받아 두고, 꽂은 피스에 해당하는 한 곡을 재생해요.</dd></div>
+          <div><dt>앨범 피스</dt><dd>앨범 단위로 다운로드하고 앨범 전체를 재생해요.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section id="controls" class="guide-section" aria-labelledby="controls-heading">
+      <div class="section-head">
+        <h2 id="controls-heading">버튼과 볼륨 휠</h2>
+        <p>재생과 볼륨은 플레이어 본체에서 조작해요.</p>
+      </div>
+      <div class="device-map">
+        <figure class="top-map">
+          <figcaption>윗면 <span>전면 커버가 나를 향한 상태</span></figcaption>
+          <div class="top-photo">
+            <img src="images/top.webp" alt="왼쪽부터 이전 버튼, 재생·일시정지 버튼, 다음 버튼, 상태 LED" loading="lazy">
+            <span class="pin" style="--x:36%;--y:59%" aria-hidden="true">1</span>
+            <span class="pin" style="--x:51%;--y:59%" aria-hidden="true">2</span>
+            <span class="pin" style="--x:66%;--y:59%" aria-hidden="true">3</span>
+            <span class="pin" style="--x:84%;--y:59%" aria-hidden="true">4</span>
+          </div>
+          <dl class="top-labels">
+            <div><dt><b>1</b> 이전</dt><dd>이전 곡</dd></div>
+            <div><dt><b>2</b> 재생 / 일시정지</dt><dd>짧게 누르면 재생 또는 일시정지, 길게 누르면 랜덤 재생 켜기 또는 끄기</dd></div>
+            <div><dt><b>3</b> 다음</dt><dd>다음 곡</dd></div>
+            <div><dt><b>4</b> 상태 LED</dt><dd><a href="#status">색으로 상태 확인</a></dd></div>
+          </dl>
+        </figure>
+        <div class="side-maps">
+          <figure>
+            <figcaption>왼쪽 측면</figcaption>
+            <div class="side-body">
+              <img src="images/left.webp" alt="왼쪽 측면 가운데에 있는 볼륨 휠" loading="lazy">
+              <div><strong>볼륨 휠</strong><p>휠을 돌려 음량을 조절하세요. 가장 작게 돌리면 무음이에요.</p></div>
+            </div>
+          </figure>
+          <figure>
+            <figcaption>오른쪽 측면</figcaption>
+            <div class="side-body">
+              <img src="images/right.webp" alt="오른쪽 측면 위에 있는 USB-C 포트와 아래에 있는 전원 버튼" loading="lazy">
+              <dl>
+                <div><dt>위 · USB-C</dt><dd>충전 케이블 연결</dd></div>
+                <div><dt>아래 · 전원 버튼</dt><dd>플레이어 켜기와 끄기</dd></div>
+              </dl>
+            </div>
+          </figure>
+        </div>
+      </div>
+      <div class="questions">
+        <details><summary>피스를 빼거나 바꾸면 어떻게 되나요?</summary><p>피스를 빼면 재생이 멈춰요. 같은 피스를 다시 넣으면 이어서 재생되고, 다른 피스를 넣으면 처음부터 재생돼요.</p></details>
+        <details><summary>첫 곡이나 마지막 곡에서 버튼을 누르면 어떻게 되나요?</summary><p>첫 곡에서 이전 버튼을 누르면 마지막 곡으로, 마지막 곡에서 다음 버튼을 누르면 첫 곡으로 이동해요. 마지막 곡이 끝나면 재생이 멈춰요.</p></details>
+        <details><summary>전원이 자동으로 꺼지는 조건은 무엇인가요?</summary><p>재생이 멈춘 채 5분이 지나거나 피스를 뺀 뒤 5분이 지나면 전원이 꺼져요. 두 조건 중 먼저 충족되는 조건이 적용돼요.</p></details>
+      </div>
+    </section>
+
+    <section id="status" class="guide-section" aria-labelledby="status-heading">
+      <div class="section-head">
+        <h2 id="status-heading">상태 LED와 충전</h2>
+        <p>윗면 맨 오른쪽 LED의 색과 깜빡임으로 상태를 확인할 수 있어요.</p>
+      </div>
+      <table class="led-table">
+        <thead><tr><th scope="col">LED 표시</th><th scope="col">플레이어 상태</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><i class="led red"></i>빨강</th><td>배터리 15% 이하</td></tr>
+          <tr><th scope="row"><i class="led blue"></i>파랑 점멸</th><td>앱 연결 또는 Wi-Fi 설정 중</td></tr>
+          <tr><th scope="row"><i class="led yellow"></i>노랑 점멸</th><td>Wi-Fi 미연결</td></tr>
+          <tr><th scope="row"><i class="led white"></i>흰색 점멸</th><td>음원 다운로드 중</td></tr>
+          <tr><th scope="row"><i class="led orange"></i>주황</th><td>USB-C 충전 중</td></tr>
+          <tr><th scope="row"><i class="led green"></i>초록</th><td>충전 완료</td></tr>
+        </tbody>
+      </table>
+      <p class="fine-print">저전력·앱 설정·Wi-Fi 미연결·다운로드 상태가 겹치면 표에서 위에 있는 상태가 우선 표시돼요.</p>
+      <details class="troubleshoot">
+        <summary>피스를 넣었는데 음악이 바로 나오지 않아요.</summary>
+        <p>LED가 흰색으로 깜빡이면 다운로드 중이에요. 3초 안에 재생이 시작되지 않으면 다운로드 중이라는 음성 안내가 나와요. 30초 안에 다운로드가 끝나지 않으면 Wi-Fi 연결을 확인하고 다시 시도하세요.</p>
+      </details>
+    </section>
+  </main>
+  <footer class="shell footer">
+    <p>개발 기준으로 작성한 가이드입니다. 앱 연결과 피스 삽입 시 자동 재생은 양산 펌웨어에서 확인 중입니다.</p>
+    <a href="#main">맨 위로 ↑</a>
+  </footer>
+</body>
+</html>

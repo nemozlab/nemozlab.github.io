@@ -40,6 +40,12 @@ h1{font-size:1.15rem;margin:0;text-wrap:balance}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px}
 .top .seg{margin-left:0}
 .page-heading{display:flex;align-items:center;gap:8px}
+.player-nav{display:flex;align-items:center;gap:10px;font-size:.9rem;font-weight:700;white-space:nowrap}
+.player-nav h1{font-size:inherit}
+.player-nav a{color:var(--muted);text-decoration:none}
+.player-nav a[aria-current="page"]{color:var(--fg)}
+.player-nav a:hover{text-decoration:underline}
+.player-nav .guide-link{border-inline-start:1px solid var(--line);padding-inline-start:10px}
 .home-link{display:grid;place-items:center;flex:none;width:36px;height:36px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg)}
 .home-link:hover{border-color:var(--muted)}
 .home-link:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
@@ -205,7 +211,8 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 @media (max-width:820px){
   .top{display:flex;height:44px;margin:0;padding:0 10px}
   .top .seg{display:none}
-  .top h1{font-size:.95rem}
+  .player-nav{gap:7px;font-size:clamp(.7rem,3.25vw,.95rem)}
+  .player-nav .guide-link{padding-inline-start:7px}
   .stage{height:calc(100vh - 44px);height:calc(100dvh - 44px)}
   .grid:has(.panel:not(.shut)) .skin-guide{visibility:hidden}
   .grid[data-view="p"]:has(.panel:not(.shut)) .panel-dismiss{
@@ -316,7 +323,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div class="page-heading"><a class="home-link" href="/player3/" data-kt="home" aria-label="홈"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></a><h1 data-k="title">네모 플레이어 스킨</h1></div><div class="seg" role="group" aria-label="언어 / 语言"><button type="button" id="lko" lang="ko" aria-pressed="true">한국어</button><button type="button" id="lzh" lang="zh" aria-pressed="false">中文</button></div></div>
+  <div class="top"><div class="page-heading"><a class="home-link" href="/player3/" data-kt="home" aria-label="홈"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></a><nav class="player-nav" aria-label="네모 플레이어 메뉴"><h1><a href="/player3/" aria-current="page" data-k="title">네모 플레이어 스킨</a></h1><a class="guide-link" href="./guide/" data-k="usageGuide">네모 플레이어 사용법</a></nav></div><div class="seg" role="group" aria-label="언어 / 语言"><button type="button" id="lko" lang="ko" aria-pressed="true">한국어</button><button type="button" id="lzh" lang="zh" aria-pressed="false">中文</button></div></div>
   <div class="grid" id="viewer" data-view="p">
     <div class="view">
     <div class="stage">
@@ -425,7 +432,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   var MNAME={1:'금형 ①',2:'금형 ②',3:'금형 ③',4:'금형 ④',5:'스킨'};
   var MZ={1:'模具 ①',2:'模具 ②',3:'模具 ③',4:'模具 ④',5:'Skin Parts'};
   var I18N={
-    title:['네모 플레이어 스킨','Nemo Player Skin'],
+    title:['네모 플레이어 스킨','Nemo Player Skin'],usageGuide:['네모 플레이어 사용법','使用指南'],
     skinPanel:['스킨','换肤'],skinTitle:['교체형 스킨','可换外壳'],
     moldTitle:['금형 세트','模具套组'],allMolds:['전체 세트','全部套组'],
     asm:['합쳐진 모양','组装状态'],sep:['분리된 모양','分解状态'],

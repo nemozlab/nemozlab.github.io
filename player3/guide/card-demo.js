@@ -233,12 +233,7 @@
     if (!dragged && Math.hypot(dx, dy) < 5) return;
     dragged = true;
     if (!rotateModel) return;
-    const isTouch = event.pointerType === 'touch';
-    if (isTouch) {
-      pointer.horizontal ??= Math.abs(dx) > Math.abs(dy);
-      if (!pointer.horizontal) return;
-    }
-    rotateModel((event.clientX - pointer.lastX) / 18, isTouch ? 0 : (event.clientY - pointer.lastY) / 18);
+    rotateModel((event.clientX - pointer.lastX) / 18, (event.clientY - pointer.lastY) / 18);
     pointer.lastX = event.clientX;
     pointer.lastY = event.clientY;
     stage.classList.add('is-dragging');
@@ -353,7 +348,6 @@
 
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-58, 58, 43, -43, 1, 400);
-    camera.up.set(0, 0, 1);
     scene.add(new THREE.HemisphereLight(0xffffff, 0x9bafbc, .62));
     const key = new THREE.DirectionalLight(0xffffff, .49);
     key.position.set(-75, -80, 135);
@@ -494,9 +488,9 @@
     const views = Object.fromEntries(horizontalViews.map(({dataset: {view, yaw}}) => [
       view, [THREE.MathUtils.degToRad(Number(yaw)), Number(yaw) % 90 === 0 ? 0 : .35],
     ]));
-    views.top = [0, Math.PI / 2 - .001];
+    views.top = [0, Math.PI / 2];
     const viewTarget = new THREE.Vector3(0, -2, 0);
-    const cameraDirection = new THREE.Vector3();
+    const viewAngles = new THREE.Euler();
     const modelMeshes = [];
     scene.traverse(object => {
       if (!object.isMesh) return;
@@ -539,19 +533,21 @@
       camera.updateProjectionMatrix();
     }
     let cameraFrame;
-    function placeCamera(yaw, pitch) {
-      const radius = 170;
-      const horizontal = radius * Math.cos(pitch);
-      camera.position.set(horizontal * Math.sin(yaw), -horizontal * Math.cos(yaw), radius * Math.sin(pitch)).add(viewTarget);
+    function viewOrientation(name) {
+      const [yaw, pitch] = views[name];
+      return new THREE.Quaternion().setFromEuler(viewAngles.set(Math.PI / 2 - pitch, 0, yaw, 'ZXY'));
+    }
+
+    function placeCamera() {
+      // The camera's local +Z points away from the model.
+      camera.position.set(0, 0, 170).applyQuaternion(camera.quaternion).add(viewTarget);
     }
 
     function setCameraView(name, resetZoom = false) {
       cancelAnimationFrame(cameraFrame);
-      const [yaw, pitch] = views[name];
-      cameraDirection.copy(camera.position).sub(viewTarget);
-      const length = cameraDirection.length();
-      if (reducedMotion.matches || length < 1 || !stage.classList.contains('has-model')) {
-        placeCamera(yaw, pitch);
+      const orientation = viewOrientation(name);
+      if (reducedMotion.matches || !stage.classList.contains('has-model')) {
+        camera.quaternion.copy(orientation);
         if (resetZoom) {
           camera.zoom = 1;
           updateZoom(1);
@@ -560,15 +556,13 @@
         return;
       }
 
-      const startYaw = Math.atan2(cameraDirection.x, -cameraDirection.y);
-      const startPitch = Math.asin(THREE.MathUtils.clamp(cameraDirection.z / length, -1, 1));
-      const deltaYaw = Math.atan2(Math.sin(yaw - startYaw), Math.cos(yaw - startYaw));
+      const startOrientation = camera.quaternion.clone();
       const startZoom = camera.zoom;
       const start = performance.now();
       function tick(now) {
         const t = Math.min((now - start) / 460, 1);
         const ease = t * t * (3 - 2 * t);
-        placeCamera(startYaw + deltaYaw * ease, startPitch + (pitch - startPitch) * ease);
+        camera.quaternion.slerpQuaternions(startOrientation, orientation, ease);
         if (resetZoom) {
           camera.zoom = startZoom + (1 - startZoom) * ease;
           updateZoom(camera.zoom);
@@ -590,7 +584,7 @@
       card.position.copy(cardPosition).lerp(stowedPosition, cardOffset).add(slide);
       card.rotation.x = Math.PI / 2 + coverAngle * (1 - cardOffset);
       skin.position.z = skinLift;
-      camera.lookAt(viewTarget);
+      placeCamera();
       frameModel();
       renderer.render(scene, camera);
     }
@@ -627,10 +621,9 @@
     selectModelView = setCameraView;
     rotateModel = (dx, dy) => {
       cancelAnimationFrame(cameraFrame);
-      cameraDirection.copy(camera.position).sub(viewTarget);
-      const yaw = Math.atan2(cameraDirection.x, -cameraDirection.y) - dx * .14;
-      const pitch = Math.max(-1.42, Math.min(1.42, Math.asin(cameraDirection.z / cameraDirection.length()) + dy * .14));
-      placeCamera(yaw, pitch);
+      camera.rotateY(-dx * .14);
+      camera.rotateX(-dy * .14);
+      camera.quaternion.normalize();
       markView(null);
       render();
     };
@@ -694,8 +687,8 @@
       render();
     };
     camera.zoom = scale;
-    placeCamera(...views.home);
-    camera.lookAt(viewTarget);
+    camera.quaternion.copy(viewOrientation('home'));
+    placeCamera();
     camera.updateMatrixWorld(true);
     homeViewMatrix.copy(camera.matrixWorldInverse);
     setCameraView(views[activeView] ? activeView : 'home');

@@ -64,6 +64,7 @@ p, h1, h2, h3, figure, ol, dl, dd { margin: 0; }
 .back-to-top span { font-size: 20px; }
 .demo-views button:focus-visible, .demo-skin button:focus-visible, .demo-actions button:focus-visible, #demo-next:focus-visible, .back-to-top:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 .demo-stage { display: grid; place-items: center; position: relative; width: 100%; height: clamp(260px, 39vw, 360px); padding: 0; border: 0; background: transparent; overflow: clip; cursor: pointer; touch-action: pan-y; }
+.demo-stage.has-model { touch-action: none; }
 .demo-stage:disabled { cursor: default; }
 .demo-stage:focus-visible { outline-offset: -3px; }
 .demo-stage [hidden], .demo-actions [hidden], #demo-next[hidden] { display: none; }

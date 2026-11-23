@@ -39,8 +39,8 @@
     if (drawModel) {
       drawModel(step);
     } else {
-      photo.src = step === 2 ? 'images/cad-demo-open-empty.webp' :
-        step === 1 || step === 3 ? 'images/cad-cover-open.webp' : 'images/cad-front.webp';
+      photo.src = step === 2 ? 'images/cad-demo-open-empty.webp?v=contrast' :
+        step === 1 || step === 3 ? 'images/cad-cover-open.webp?v=contrast' : 'images/cad-front.webp?v=contrast';
       looseCard.hidden = step !== 2;
     }
   }

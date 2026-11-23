@@ -11,19 +11,6 @@
   const playback = document.querySelector('#demo-playback');
   const instruction = document.querySelector('#demo-instruction');
   const audio = document.querySelector('#demo-audio');
-  const trackLabel = document.querySelector('.demo-track');
-  const trackButtons = document.querySelectorAll('[data-track-direction]');
-  const streamPanel = document.querySelector('.demo-stream');
-  const streamMount = document.querySelector('#demo-stream-player');
-  const streamLink = streamPanel.querySelector('a');
-  const tracks = [
-    {label: trackLabel.textContent},
-    {label: '용용 · Lost Ember’', spotifyId: '0iX6X2sGT8hRBGMSx75IUp'},
-    {label: '용용 · BALENCIA (feat. ASH ISLAND)', spotifyId: '402pmJrmv11wWDbkWKWWao'},
-  ];
-  let trackIndex = 0;
-  let spotifyApi;
-  let stream;
   const viewMenu = document.querySelector('.demo-views');
   const viewButtons = [...viewMenu.querySelectorAll('button')];
   const skinPanel = document.querySelector('.demo-skin');
@@ -70,17 +57,11 @@
     return !transitioning && (step === 0 || step === steps.length);
   }
 
-  function isPlaying() {
-    return tracks[trackIndex].spotifyId ? stream?.playing === true : !audio.paused && !audio.ended;
-  }
-
   function syncControls() {
     next.setAttribute('aria-disabled', String(transitioning || automatic));
     skinToggle.setAttribute('aria-disabled', String(transitioning || automatic));
     auto.setAttribute('aria-pressed', String(automatic));
-    const playbackDisabled = !canPlay();
-    playback.disabled = playbackDisabled;
-    for (const button of trackButtons) button.disabled = playbackDisabled;
+    playback.disabled = !canPlay();
   }
 
   function stopAutomatic() {
@@ -109,8 +90,7 @@
   }
 
   function show() {
-    const spotifyId = tracks[trackIndex].spotifyId;
-    const playing = isPlaying();
+    const playing = !audio.paused && !audio.ended;
     const complete = step === steps.length;
     const [message, action] = steps[step] || ['커버가 닫혔어요.', '커버 다시 열기'];
     instruction.textContent = playbackError ? '앨범을 재생할 수 없어요.' : message;
@@ -118,7 +98,6 @@
     playback.title = playing ? '일시정지' : '앨범 재생';
     playback.setAttribute('aria-label', playback.title);
     syncControls();
-    streamPanel.hidden = !spotifyId || !canPlay();
     instruction.toggleAttribute('data-error', playbackError);
     if (!complete || !transitioning) {
       stepLabel.textContent = `${step + 1}. ${action}`;
@@ -136,13 +115,8 @@
 
   function play() {
     if (!canPlay()) return;
-    playbackError = false;
-    const spotifyId = tracks[trackIndex].spotifyId;
-    if (spotifyId) {
-      playStream(spotifyId);
-      return;
-    }
     const attempt = ++playAttempt;
+    playbackError = false;
     if (audio.ended) audio.currentTime = 0;
     audio.play().catch(() => {
       if (attempt !== playAttempt) return;
@@ -154,79 +128,18 @@
   function pausePlayback() {
     playAttempt += 1;
     audio.pause();
-    if (stream) {
-      stream.wantsPlay = false;
-      stream.playing = false;
-      stream.controller?.pause();
-    }
-  }
-
-  function resetPlayback() {
-    pausePlayback();
-    audio.currentTime = 0;
-    const previousStream = stream;
-    stream = null;
-    previousStream?.controller?.destroy();
-    streamMount.replaceChildren();
-    playbackError = false;
-  }
-
-  function loadSpotifyApi() {
-    if (!spotifyApi) {
-      spotifyApi = new Promise((resolve, reject) => {
-        window.onSpotifyIframeApiReady = resolve;
-        const script = document.createElement('script');
-        script.src = 'https://open.spotify.com/embed/iframe-api/v1';
-        script.onerror = () => reject(new Error('Spotify is unavailable'));
-        document.head.append(script);
-      });
-    }
-    return spotifyApi;
-  }
-
-  function playStream(spotifyId) {
-    if (stream) {
-      stream.wantsPlay = true;
-      if (stream.ready) stream.controller.resume();
-      return;
-    }
-    const session = {wantsPlay: true, playing: false, ready: false, controller: null};
-    stream = session;
-    const placeholder = document.createElement('div');
-    streamMount.replaceChildren(placeholder);
-    loadSpotifyApi().then(api => {
-      if (stream !== session) return;
-      api.createController(placeholder, {uri: `spotify:track:${spotifyId}`, width: '100%', height: 152}, controller => {
-        if (stream !== session) {
-          controller.destroy();
-          return;
-        }
-        session.controller = controller;
-        controller.addListener('ready', () => {
-          if (stream !== session) return;
-          session.ready = true;
-          if (session.wantsPlay && canPlay()) controller.play();
-        });
-        controller.addListener('playback_update', ({data}) => {
-          if (stream !== session) return;
-          if (session.playing === !data.isPaused) return;
-          session.playing = !data.isPaused;
-          show();
-        });
-      });
-    }).catch(() => {
-      if (stream !== session) return;
-      stream = null;
-      playbackError = true;
-      show();
-    });
   }
 
   function advance() {
     if (transitioning) return;
     if (activeView !== 'home' && !drawModel) selectView('home');
-    step = step === steps.length ? 1 : step + 1;
-    if (step === 1) resetPlayback();
+    if (step === steps.length) {
+      pausePlayback();
+      audio.currentTime = 0;
+      step = 0;
+    }
+    step += 1;
+    if (step === 1) pausePlayback();
     moveModel(() => {
       if (step === steps.length) {
         stopAutomatic();
@@ -240,20 +153,18 @@
   }
 
   function togglePlayback() {
-    if (isPlaying()) pausePlayback();
-    else play();
+    if (audio.paused || audio.ended) {
+      play();
+    } else {
+      pausePlayback();
+    }
     show();
   }
 
-  function changeTrack(direction) {
+  function replayTrack() {
     if (!canPlay()) return;
-    resetPlayback();
-    trackIndex = (trackIndex + direction + tracks.length) % tracks.length;
-    const track = tracks[trackIndex];
-    trackLabel.textContent = track.label;
-    if (track.spotifyId) streamLink.href = `https://open.spotify.com/track/${track.spotifyId}`;
+    audio.currentTime = 0;
     play();
-    show();
   }
 
   function markView(name) {
@@ -293,7 +204,7 @@
     if (pickModelPart) {
       const part = pickModelPart(event);
       if (part === 'play') togglePlayback();
-      else if (part === 'previous' || part === 'next') changeTrack(part === 'previous' ? -1 : 1);
+      else if (part === 'previous' || part === 'next') replayTrack();
       else if (part === 'model') advance();
       return;
     }
@@ -406,7 +317,9 @@
   });
 
   function restart(onComplete) {
-    resetPlayback();
+    pausePlayback();
+    audio.currentTime = 0;
+    playbackError = false;
     const cardIsOut = cardNeedsStowing?.();
     selectView('home', true);
     resetSkin?.();
@@ -436,9 +349,6 @@
     restart(() => queueStep(250));
   });
   playback.addEventListener('click', togglePlayback);
-  for (const button of trackButtons) {
-    button.addEventListener('click', () => changeTrack(Number(button.dataset.trackDirection)));
-  }
 
   for (const event of ['playing', 'pause', 'ended']) audio.addEventListener(event, show);
   stage.disabled = false;
@@ -511,8 +421,8 @@
     scene.add(skin);
     scene.add(mesh('13', portMaterial));
     const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
-    const buttonMesh = controlMesh('buttons', buttons);
-    scene.add(buttonMesh, controlMesh('power', buttons));
+    const trackButtons = controlMesh('buttons', buttons);
+    scene.add(trackButtons, controlMesh('power', buttons));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial), controlMesh('led', ledMaterial));
 
     function buttonIcon(type) {
@@ -777,7 +687,7 @@
       ray.setFromCamera(mouse, camera);
       const hit = ray.intersectObjects(modelMeshes, false)[0];
       if (!hit) return;
-      if (hit.object === buttonMesh) {
+      if (hit.object === trackButtons) {
         return trackActions[THREE.MathUtils.clamp(Math.round(hit.point.x / 10.2) + 1, 0, 2)];
       }
       return hit.object.userData.trackAction || 'model';

@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css?v=section-menu">
-  <link rel="stylesheet" href="guide.css?v=viewer-controls">
+  <link rel="stylesheet" href="guide.css?v=viewer-toolbar">
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -55,14 +55,8 @@
           </span>
           <canvas class="demo-canvas" aria-hidden="true" hidden></canvas>
         </button>
-        <div class="demo-viewer-step">
-          <button class="primary-link" type="button" id="demo-next" hidden>
-            <span class="step-label">1) 커버 열기</span>
-            <svg class="demo-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
-          </button>
-        </div>
-        <div class="demo-controls">
-          <div class="demo-actions" role="group" aria-label="피스와 재생 조작">
+        <div class="demo-viewer-toolbar">
+          <div class="demo-actions" role="group" aria-label="재생 조작">
             <button class="demo-reset" type="button" id="demo-reset" aria-label="홈, 처음부터" title="처음부터" hidden>
               <svg class="demo-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-7 9 7M5 9v12h5v-6h4v6h5V9"/></svg>
             </button>
@@ -76,6 +70,12 @@
               </svg>
             </button>
           </div>
+          <button class="primary-link" type="button" id="demo-next" hidden>
+            <span class="step-label">1) 커버 열기</span>
+            <svg class="demo-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
+          </button>
+        </div>
+        <div class="demo-controls">
           <div class="demo-skin" hidden>
             <button type="button" id="demo-skin-toggle" aria-pressed="false">스킨 분리</button>
             <div class="demo-swatches" role="group" aria-label="스킨 색상">

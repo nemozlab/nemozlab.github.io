@@ -87,7 +87,7 @@
   function show() {
     const playing = !audio.paused && !audio.ended;
     const complete = step === steps.length;
-    const [message, action] = steps[step] || ['커버가 닫혔어요.', playing ? '음악 멈추기' : '처음부터 재생'];
+    const [message, action] = steps[step] || ['커버가 닫혔어요.', playing ? '음악 멈추기' : '처음으로'];
     instruction.textContent = playbackError ? '앨범을 재생할 수 없어요.' : message;
     playback.toggleAttribute('data-playing', playing);
     playback.title = playing ? '일시정지' : '앨범 재생';
@@ -95,7 +95,7 @@
     syncControls();
     instruction.toggleAttribute('data-error', playbackError);
     if (!complete || !transitioning) {
-      stepLabel.textContent = complete ? action : `${step + 1}) ${action}`;
+      stepLabel.textContent = `${step + 1}. ${action}`;
       next.setAttribute('aria-label', stepLabel.textContent);
     }
     stage.setAttribute('aria-label', complete ? '네모 플레이어 3D 모델' : action);
@@ -108,10 +108,10 @@
     }
   }
 
-  function play({fromStart = false} = {}) {
+  function play() {
     const attempt = ++playAttempt;
     playbackError = false;
-    if (fromStart || audio.ended) audio.currentTime = 0;
+    if (audio.ended) audio.currentTime = 0;
     audio.play().catch(() => {
       if (attempt !== playAttempt) return;
       playbackError = true;
@@ -280,18 +280,8 @@
   });
   next.addEventListener('click', () => {
     if (automatic || transitioning) return;
-    if (step < steps.length) {
-      advance();
-      return;
-    }
-    if (audio.paused || audio.ended) {
-      play({fromStart: true});
-    } else {
-      playAttempt += 1;
-      audio.pause();
-      audio.currentTime = 0;
-    }
-    show();
+    if (step === steps.length) restart();
+    else advance();
   });
 
   function restart(onComplete) {

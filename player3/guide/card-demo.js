@@ -552,6 +552,18 @@
         context.font = '600 1.8px Arial, sans-serif';
         context.textAlign = 'right';
         context.fillText('NFC', 25.8, .12);
+
+        const antennaX = 25.8 - context.measureText('NFC').width - 2.65;
+        context.strokeStyle = context.fillStyle;
+        context.lineWidth = .21;
+        context.beginPath();
+        context.arc(antennaX, 0, .19, 0, 2 * Math.PI);
+        context.fill();
+        for (const radius of [.68, 1.19, 1.7]) {
+          context.beginPath();
+          context.arc(antennaX, 0, radius, -Math.PI / 4.5, Math.PI / 4.5);
+          context.stroke();
+        }
       });
 
       // The PDF places the volume marks next to the wheel and power on its button.

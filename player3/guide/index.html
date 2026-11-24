@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css?v=section-menu">
-  <link rel="stylesheet" href="guide.css?v=led-audio">
+  <link rel="stylesheet" href="guide.css?v=led-columns">
   <script>
     if (new URLSearchParams(location.search).get('view') === 'design') {
       document.documentElement.classList.add('player-design');
@@ -233,16 +233,16 @@
         <p>윗면 맨 오른쪽 LED의 색과 깜빡임으로 상태를 확인할 수 있어요.</p>
       </div>
       <table class="led-table">
-        <thead><tr><th scope="col">LED 표시</th><th scope="col">플레이어 상태</th></tr></thead>
+        <thead><tr><th scope="col">LED 표시</th><th scope="col">플레이어 상태</th><th scope="col">안내음</th></tr></thead>
         <tbody>
-          <tr><th scope="row"><i class="led green led-fast led-four" aria-hidden="true"></i>초록 빠르게 4회 점멸</th><td><div class="led-state"><span>전원 켜짐</span><div class="led-sounds"><div><span>전원 켜짐</span><audio controls preload="none" src="audio/01_sfx_power_on.mp3" aria-label="전원 켜짐 듣기"></audio></div></div></div></td></tr>
-          <tr><th scope="row"><i class="led red led-fast led-four" aria-hidden="true"></i>빨강 빠르게 4회 점멸</th><td><div class="led-state"><span>전원 꺼짐</span><div class="led-sounds"><div><span>전원 꺼짐</span><audio controls preload="none" src="audio/02_sfx_power_off.mp3" aria-label="전원 꺼짐 듣기"></audio></div></div></div></td></tr>
-          <tr><th scope="row"><i class="led red led-fast" aria-hidden="true"></i>빨강 빠른 점멸</th><td><div class="led-state"><span>배터리 15% 이하</span><div class="led-sounds"><div><span>배터리 부족</span><audio controls preload="none" src="audio/03_sfx_low_battery.mp3" aria-label="배터리 부족 듣기"></audio></div></div></div></td></tr>
-          <tr><th scope="row"><i class="led blue led-slow" aria-hidden="true"></i>파랑 느린 점멸 (초당 1회)</th><td><div class="led-state"><span>앱 연결 또는 Wi-Fi 설정 중</span><div class="led-sounds"><div><span>Wi-Fi 설정 시작</span><audio controls preload="none" src="audio/04_voice_wifi_setup_enter.mp3" aria-label="Wi-Fi 설정 시작 듣기"></audio></div></div></div></td></tr>
-          <tr><th scope="row"><i class="led yellow"></i>노랑 점멸</th><td><div class="led-state"><span>Wi-Fi 미연결</span><div class="led-sounds"><div><span>음원 다운로드에 연결이 필요할 때</span><audio controls preload="none" src="audio/09_voice_wifi_connect_request.mp3" aria-label="음원 다운로드에 연결이 필요할 때 듣기"></audio></div></div></div></td></tr>
-          <tr><th scope="row"><i class="led white"></i>흰색 깜빡임</th><td><div class="led-state"><span>음원 다운로드 중</span><div class="led-sounds"><div><span>3초 경과 후 안내</span><audio controls preload="none" src="audio/10_voice_downloading_1.mp3" aria-label="3초 경과 후 안내 듣기"></audio></div><div><span>30초 경과 후 안내</span><audio controls preload="none" src="audio/11_voice_downloading_2.mp3" aria-label="30초 경과 후 안내 듣기"></audio></div></div></div></td></tr>
-          <tr><th scope="row"><i class="led orange"></i>주황</th><td>USB-C 충전 중</td></tr>
-          <tr><th scope="row"><i class="led green"></i>초록</th><td>충전 완료</td></tr>
+          <tr><th scope="row"><i class="led green led-fast led-four" aria-hidden="true"></i>초록 빠르게 4회 점멸</th><td>전원 켜짐</td><td><div class="led-sounds"><div><audio controls preload="none" src="audio/01_sfx_power_on.mp3" aria-label="전원 켜짐 듣기"></audio></div></div></td></tr>
+          <tr><th scope="row"><i class="led red led-fast led-four" aria-hidden="true"></i>빨강 빠르게 4회 점멸</th><td>전원 꺼짐</td><td><div class="led-sounds"><div><audio controls preload="none" src="audio/02_sfx_power_off.mp3" aria-label="전원 꺼짐 듣기"></audio></div></div></td></tr>
+          <tr><th scope="row"><i class="led red led-fast" aria-hidden="true"></i>빨강 빠른 점멸</th><td>배터리 15% 이하</td><td><div class="led-sounds"><div><audio controls preload="none" src="audio/03_sfx_low_battery.mp3" aria-label="배터리 부족 듣기"></audio></div></div></td></tr>
+          <tr><th scope="row"><i class="led blue led-slow" aria-hidden="true"></i>파랑 느린 점멸 (초당 1회)</th><td>앱 연결 또는 Wi-Fi 설정 중</td><td><div class="led-sounds"><div><span>Wi-Fi 설정 시작</span><audio controls preload="none" src="audio/04_voice_wifi_setup_enter.mp3" aria-label="Wi-Fi 설정 시작 듣기"></audio></div></div></td></tr>
+          <tr><th scope="row"><i class="led yellow"></i>노랑 점멸</th><td>Wi-Fi 미연결</td><td><div class="led-sounds"><div><span>음원 다운로드에 연결이 필요할 때</span><audio controls preload="none" src="audio/09_voice_wifi_connect_request.mp3" aria-label="음원 다운로드에 연결이 필요할 때 듣기"></audio></div></div></td></tr>
+          <tr><th scope="row"><i class="led white"></i>흰색 깜빡임</th><td>음원 다운로드 중</td><td><div class="led-sounds"><div><span>3초 경과 후 안내</span><audio controls preload="none" src="audio/10_voice_downloading_1.mp3" aria-label="3초 경과 후 안내 듣기"></audio></div><div><span>30초 경과 후 안내</span><audio controls preload="none" src="audio/11_voice_downloading_2.mp3" aria-label="30초 경과 후 안내 듣기"></audio></div></div></td></tr>
+          <tr><th scope="row"><i class="led orange"></i>주황</th><td>USB-C 충전 중</td><td>—</td></tr>
+          <tr><th scope="row"><i class="led green"></i>초록</th><td>충전 완료</td><td>—</td></tr>
         </tbody>
       </table>
       <button type="button" id="led-preview">LED 점멸 다시 보기</button>

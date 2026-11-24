@@ -116,10 +116,10 @@
           <div class="step-copy">
             <h3>처음 한 번, Wi-Fi 연결</h3>
             <ul class="wifi-steps">
-              <li>오른쪽 측면의 전원 버튼을 눌러 플레이어를 켜세요.</li>
+              <li>오른쪽 측면의 전원 버튼을 눌러 플레이어를 켜세요. 처음 켜면 Wi-Fi 설정 모드가 자동으로 시작되고 윗면 LED가 파란색으로 천천히 깜빡여요.</li>
               <li>NEMOZ 앱에서 플레이어를 검색해 블루투스(BLE)로 연결하세요.</li>
               <li>플레이어가 찾은 Wi-Fi 목록이 앱에 표시되면 사용할 네트워크를 고르고 비밀번호를 입력하세요.</li>
-              <li>앱이 입력한 설정을 플레이어에 전달해요. 연결 성공이 표시되면 설정이 끝나요.</li>
+              <li>앱이 네트워크 정보를 플레이어에 전달해요. “Wi-Fi 설정에 성공했습니다”라는 안내가 나오면 연결이 끝나요.</li>
             </ul>
           </div>
           <a class="step-photo power-photo" href="images/cad-right.webp?v=contrast" data-zoom="side" aria-label="오른쪽 전원 버튼 위치 확대">
@@ -148,6 +148,11 @@
         </li>
       </ol>
       <div class="questions">
+        <details>
+          <summary>Wi-Fi 변경 및 연결 실패 시 다시 설정하기</summary>
+          <p>제품 사양에서 ‘설정 버튼’으로 표기된 버튼을 3초간 눌러 Wi-Fi 설정 모드로 들어가세요. 실제 제품에서 어느 버튼인지는 확인 중이에요.</p>
+          <p>파란 LED가 깜빡이면 NEMOZ 앱에서 플레이어에 연결한 뒤 Wi-Fi를 선택하고 비밀번호를 입력하세요. 5분 안에 설정을 마치지 못하면 설정 모드가 종료되고 실패 안내가 나와요.</p>
+        </details>
         <details>
           <summary>처음 듣는 피스라면</summary>
           <p>저장된 음원이 없으면 Wi-Fi에 연결하고 NEMOZ 앱에서 다운로드를 시작하세요. 저장이 끝나면 재생되고, 이후에는 오프라인에서도 들을 수 있어요.</p>
@@ -199,7 +204,7 @@
         </div>
         <dl class="top-labels">
           <div><dt><span class="button-number" aria-hidden="true">1</span>이전</dt><dd>이전 곡으로 이동해요.</dd></div>
-          <div><dt><span class="button-number" aria-hidden="true">2</span>재생·일시정지</dt><dd>짧게 눌러 재생하거나 멈춰요. 길게 눌러 랜덤 재생을 켜거나 꺼요.</dd></div>
+          <div><dt><span class="button-number" aria-hidden="true">2</span>재생·일시정지</dt><dd>짧게 눌러 재생하거나 멈춰요. 3초간 눌러 랜덤 재생을 켜거나 꺼요.</dd></div>
           <div><dt><span class="button-number" aria-hidden="true">3</span>다음</dt><dd>다음 곡으로 이동해요.</dd></div>
           <div><dt><span class="button-number" aria-hidden="true">4</span>상태 LED</dt><dd><a href="#status">LED 색상별 의미 보기</a></dd></div>
           <div><dt><span class="button-number" aria-hidden="true">5</span>볼륨 휠</dt><dd>휠을 돌려 음량을 조절하세요. 가장 작게 돌리면 무음이에요.</dd></div>
@@ -208,6 +213,14 @@
         </dl>
       </div>
       <div class="questions">
+        <details id="shuffle">
+          <summary>랜덤 재생 켜기·끄기</summary>
+          <p>윗면 가운데의 재생·일시정지 버튼(2번)을 3초간 누르면 효과음과 함께 랜덤 재생이 켜져요. 수록곡이 여러 개인 앨범 피스의 곡을 섞어서 들을 수 있어요. 순서대로 듣고 싶으면 같은 버튼을 다시 3초간 누르세요.</p>
+        </details>
+        <details>
+          <summary>플레이어 초기화하기</summary>
+          <p>플레이어를 끈 뒤 윗면의 이전과 다음 버튼(1번과 3번)을 동시에 누른 상태에서 전원을 켜세요. 초기화가 끝나면 종료음이 나고 플레이어가 꺼져요.</p>
+        </details>
         <details><summary>피스를 빼거나 바꾸면 어떻게 되나요?</summary><p>피스를 빼면 재생이 멈춰요. 같은 피스를 다시 넣으면 이어서 재생되고, 다른 피스를 넣으면 처음부터 재생돼요.</p></details>
         <details><summary>첫 곡이나 마지막 곡에서 버튼을 누르면 어떻게 되나요?</summary><p>첫 곡에서 이전 버튼을 누르면 마지막 곡으로, 마지막 곡에서 다음 버튼을 누르면 첫 곡으로 이동해요. 마지막 곡이 끝나면 재생이 멈춰요.</p></details>
         <details><summary>전원이 자동으로 꺼지는 조건은 무엇인가요?</summary><p>재생이 멈춘 채 5분이 지나거나 피스를 뺀 뒤 5분이 지나면 전원이 꺼져요. 두 조건 중 먼저 충족되는 조건이 적용돼요.</p></details>
@@ -222,6 +235,8 @@
       <table class="led-table">
         <thead><tr><th scope="col">LED 표시</th><th scope="col">플레이어 상태</th></tr></thead>
         <tbody>
+          <tr><th scope="row">초록 빠르게 4회 점멸</th><td>전원 켜짐</td></tr>
+          <tr><th scope="row">빨강 빠르게 4회 점멸</th><td>전원 꺼짐</td></tr>
           <tr><th scope="row"><i class="led red"></i>빨강</th><td>배터리 15% 이하</td></tr>
           <tr><th scope="row"><i class="led blue"></i>파랑 점멸</th><td>앱 연결 또는 Wi-Fi 설정 중</td></tr>
           <tr><th scope="row"><i class="led yellow"></i>노랑 점멸</th><td>Wi-Fi 미연결</td></tr>

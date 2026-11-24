@@ -245,3 +245,11 @@ details p { color: var(--muted); padding-bottom: 14px; }
   .sound-list li{grid-template-columns:1fr;gap:7px}
   .sound-list audio{max-width:340px}
 }
+
+.design-options, .design-note { display: none; }
+.player-design :is(.contents, .guide-section, .footer, .demo-viewer-toolbar, .demo-controls, .demo-track) { display: none; }
+.player-design .design-options { display: flex; margin-top: 12px; }
+.player-design .design-options button { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); padding: 8px 14px; font: inherit; cursor: pointer; }
+.player-design .design-options button[aria-pressed="true"] { background: var(--mist); border-color: var(--green); color: var(--green); }
+.player-design .design-options button:disabled { opacity: .5; cursor: default; }
+.player-design .design-note { display: block; color: var(--muted); font-size: 13px; margin: 12px 0 20px; }

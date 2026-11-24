@@ -1,4 +1,20 @@
 (() => {
+  const designMode = document.documentElement.classList.contains('player-design');
+  const designCard = document.querySelector('#design-card');
+  let showDesignCard;
+  if (designMode) {
+    document.querySelector('#title').textContent = '네모 플레이어 디자인';
+    document.querySelector('.player-nav .guide-link').removeAttribute('aria-current');
+    document.querySelector('.player-nav .design-link').setAttribute('aria-current', 'page');
+    designCard.disabled = true;
+    designCard.addEventListener('click', () => {
+      const attached = designCard.getAttribute('aria-pressed') !== 'true';
+      designCard.setAttribute('aria-pressed', String(attached));
+      designCard.textContent = attached ? '카드 빼기' : '카드 장착';
+      showDesignCard(attached);
+    });
+  }
+
   const stage = document.querySelector('#demo-stage');
   const canvas = stage.querySelector('canvas');
   const preview = stage.querySelector('.demo-preview');
@@ -114,7 +130,7 @@
       stepLabel.textContent = `${step + 1}. ${action}`;
       next.setAttribute('aria-label', stepLabel.textContent);
     }
-    stage.setAttribute('aria-label', action);
+    stage.setAttribute('aria-label', designMode ? '네모 플레이어 디자인 3D 모델' : action);
     stage.dataset.step = step;
     if (!drawModel) {
       const image = step === 2 ? 'cad-demo-open-empty.webp?v=rounded-card' :
@@ -209,6 +225,7 @@
   skinToggle.addEventListener('click', toggleSkin);
   stage.addEventListener('dragstart', event => event.preventDefault());
   stage.addEventListener('click', event => {
+    if (designMode) return;
     const keyboard = event.detail === 0;
     const wasDragged = dragged;
     dragged = false;
@@ -492,6 +509,59 @@
     }
 
 
+    if (designMode) {
+      function printMark(parent, width, height, position, rotation, paint) {
+        const surface = document.createElement('canvas');
+        surface.width = 512;
+        surface.height = Math.round(512 * height / width);
+        const context = surface.getContext('2d');
+        context.scale(surface.width / width, surface.height / height);
+        context.translate(width / 2, height / 2);
+        context.fillStyle = context.strokeStyle = '#444b50';
+        context.lineWidth = .3;
+        context.lineCap = 'round';
+        paint(context);
+        const texture = new THREE.CanvasTexture(surface);
+        texture.encoding = THREE.sRGBEncoding;
+        const mark = new THREE.Mesh(
+          new THREE.PlaneGeometry(width, height),
+          new THREE.MeshBasicMaterial({map: texture, transparent: true, alphaTest: .25})
+        );
+        mark.position.set(...position);
+        mark.rotation.set(...rotation, 'ZXY');
+        mark.userData.printMark = true;
+        parent.add(mark);
+      }
+
+      printMark(skin, 29, 3.8, [0, .34, 21.2], [Math.PI / 2, 0, 0], context => {
+        context.font = '600 2.65px Arial, sans-serif';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText('N E M O   P L A Y E R', 0, 0);
+      });
+
+      // The PDF places the volume marks next to the wheel and power on its button.
+      for (const [z, plus] of [[9, true], [2, false]]) {
+        printMark(scene, 2.7, 2.7, [-32.58, 9, z], [Math.PI / 2, 0, -Math.PI / 2], context => {
+          context.beginPath();
+          context.moveTo(-.72, 0);
+          context.lineTo(.72, 0);
+          if (plus) {
+            context.moveTo(0, -.72);
+            context.lineTo(0, .72);
+          }
+          context.stroke();
+        });
+      }
+      printMark(scene, 3.4, 3.4, [32.7, 11.3, 1.76], [Math.PI / 2, 0, Math.PI / 2], context => {
+        context.beginPath();
+        context.arc(0, .1, .86, -Math.PI * .3, Math.PI * 1.3);
+        context.moveTo(0, -1.13);
+        context.lineTo(0, -.19);
+        context.stroke();
+      });
+    }
+
     // The front door swings around the lower horizontal edge of the CAD mesh.
     const hinge = new THREE.Group();
     hinge.position.set(0, 2.2, -24);
@@ -549,7 +619,7 @@
     const viewAngles = new THREE.Euler();
     const modelMeshes = [];
     scene.traverse(object => {
-      if (!object.isMesh) return;
+      if (!object.isMesh || object.userData.printMark) return;
       object.geometry.computeBoundingBox();
       modelMeshes.push(object);
     });
@@ -739,7 +809,7 @@
       skinPanel.hidden = true;
       drawModel = null;
       canvas.hidden = true;
-      preview.hidden = false;
+      showPhotoPreview();
       selectView('home');
     });
     drawModel = update;
@@ -758,9 +828,23 @@
     setCameraView(views[activeView] ? activeView : 'home');
     resize();
     update(step);
+    if (designMode) {
+      card.visible = false;
+      showDesignCard = attached => {
+        card.visible = attached;
+        render();
+      };
+      designCard.disabled = false;
+      render();
+    }
   }
 
   function showPhotoPreview() {
+    if (designMode) {
+      designCard.disabled = true;
+      document.querySelector('#design-unavailable').hidden = false;
+      return;
+    }
     preview.hidden = false;
   }
 

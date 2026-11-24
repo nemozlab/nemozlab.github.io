@@ -11,7 +11,13 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css?v=section-menu">
-  <link rel="stylesheet" href="guide.css?v=desktop-wheel">
+  <link rel="stylesheet" href="guide.css?v=uv-design">
+  <script>
+    if (new URLSearchParams(location.search).get('view') === 'design') {
+      document.documentElement.classList.add('player-design');
+      document.title = '네모 플레이어 디자인';
+    }
+  </script>
 </head>
 <body>
   <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -22,6 +28,7 @@
         <nav class="player-nav" aria-label="네모 플레이어 메뉴">
           <a href="../">네모 플레이어 스킨</a>
           <a class="guide-link" href="./" aria-current="page">네모 플레이어 사용법</a>
+          <a class="design-link" href="./?view=design">네모 플레이어 디자인</a>
         </nav>
       </div>
     </div>
@@ -36,6 +43,9 @@
   <main id="main" class="shell">
     <section class="hero" aria-labelledby="title">
       <h1 id="title">네모 플레이어 사용법</h1>
+      <div class="design-options" role="group" aria-label="카드 장착 상태">
+        <button type="button" id="design-card" aria-pressed="false">카드 장착</button>
+      </div>
       <div class="demo-views" role="group" aria-label="플레이어 보는 방향" hidden>
         <button type="button" data-view="home" data-yaw="45" aria-label="기본 각도, 오른쪽 앞 45도" aria-pressed="true">기본</button>
         <button type="button" data-view="right" data-yaw="90" aria-pressed="false">오른쪽 측면</button>
@@ -91,6 +101,8 @@
         <p id="demo-instruction" class="demo-instruction" aria-live="polite"></p>
         <p class="demo-track" aria-live="polite">용용 · 새벽 끝의 소나타 remix (feat. 빈첸 (VINXEN), Kimos) · 30초</p>
       </div>
+      <p class="design-note">UV 인쇄 1차 시안 · 전면 상단 워드마크, 윗면 재생 기호, 측면 전원 및 볼륨 기호</p>
+      <p id="design-unavailable" role="status" hidden>이 환경에서는 3D 인쇄 시안을 표시할 수 없어요.</p>
       <audio id="demo-audio" src="audio/card-demo.mp3?v=sonata-remix" preload="none"></audio>
     </section>
 
@@ -271,6 +283,6 @@
   </dialog>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="guide.js?v=section-menu"></script>
-  <script defer src="card-demo.js?v=desktop-wheel"></script>
+  <script defer src="card-demo.js?v=uv-design"></script>
 </body>
 </html>

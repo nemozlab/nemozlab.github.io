@@ -32,7 +32,7 @@ if (typeof photoDialog?.showModal === 'function') {
   });
 }
 
-const soundPreviews = [...document.querySelectorAll('.sound-list audio, #demo-audio')];
+const soundPreviews = [...document.querySelectorAll('.sound-list audio, .led-table audio, #demo-audio')];
 for (const preview of soundPreviews) {
   preview.addEventListener('play', () => {
     for (const other of soundPreviews) {

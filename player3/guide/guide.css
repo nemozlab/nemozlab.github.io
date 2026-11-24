@@ -275,3 +275,9 @@ details p { color: var(--muted); padding-bottom: 14px; }
   0%, 100% { opacity: 1; }
   50% { opacity: 0.18; }
 }
+
+.led-state { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; }
+.led-sounds { display: flex; flex-wrap: wrap; min-width: 0; gap: 8px 16px; }
+.led-sounds > div { min-width: 0; max-width: 100%; }
+.led-sounds span { display: block; font-size: 0.85em; }
+.led-sounds audio { display: block; width: 220px; max-width: 100%; height: 40px; }

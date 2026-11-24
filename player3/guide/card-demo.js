@@ -533,24 +533,25 @@
         parent.add(mark);
       }
 
-      printMark(skin, 59, 6.5, [0, .34, 21.2], [Math.PI / 2, 0, 0], context => {
-        context.fillStyle = '#343d45';
-        context.beginPath();
-        context.roundRect(-29, -2.85, 58, 5.7, 1);
-        context.fill();
+      printMark(skin, 57, 6.5, [0, .34, 21.2], [Math.PI / 2, 0, 0], context => {
+        context.textBaseline = 'middle';
 
-        context.fillStyle = '#65e0d4';
+        context.fillStyle = '#277f7a';
         context.beginPath();
-        context.moveTo(-25.6, -1.48);
-        context.lineTo(-25.6, 1.48);
-        context.lineTo(-23.1, 0);
+        context.moveTo(-26, -1.1);
+        context.lineTo(-26, 1.1);
+        context.lineTo(-24, 0);
         context.closePath();
         context.fill();
 
-        context.fillStyle = '#f7f9fa';
-        context.font = '700 2.85px Arial, sans-serif';
-        context.textBaseline = 'middle';
-        context.fillText('NEMO PLAYER', -21.2, .18);
+        context.fillStyle = '#27343c';
+        context.font = '600 2.9px Arial, sans-serif';
+        context.fillText('NEMO PLAYER', -22, .12);
+
+        context.fillStyle = '#536069';
+        context.font = '600 1.8px Arial, sans-serif';
+        context.textAlign = 'right';
+        context.fillText('NFC', 25.8, .12);
       });
 
       // The PDF places the volume marks next to the wheel and power on its button.

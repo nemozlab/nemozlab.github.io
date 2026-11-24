@@ -253,3 +253,25 @@ details p { color: var(--muted); padding-bottom: 14px; }
 .player-design .design-options button[aria-pressed="true"] { background: var(--mist); border-color: var(--green); color: var(--green); }
 .player-design .design-options button:disabled { opacity: .5; cursor: default; }
 .player-design .design-note { display: block; color: var(--muted); font-size: 13px; margin: 12px 0 20px; }
+
+#led-preview {
+  margin-block: 10px 0;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .led-preview-active .led-fast { animation: led-pulse 500ms steps(1, end) 8; }
+  .led-preview-active .led-slow { animation: led-pulse 1s steps(1, end) 4; }
+  .led-preview-active .led-four { animation-iteration-count: 4; }
+}
+
+@keyframes led-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.18; }
+}

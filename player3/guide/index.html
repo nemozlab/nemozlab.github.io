@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css?v=section-menu">
-  <link rel="stylesheet" href="guide.css?v=uv-design">
+  <link rel="stylesheet" href="guide.css?v=led-preview">
   <script>
     if (new URLSearchParams(location.search).get('view') === 'design') {
       document.documentElement.classList.add('player-design');
@@ -235,16 +235,36 @@
       <table class="led-table">
         <thead><tr><th scope="col">LED 표시</th><th scope="col">플레이어 상태</th></tr></thead>
         <tbody>
-          <tr><th scope="row">초록 빠르게 4회 점멸</th><td>전원 켜짐</td></tr>
-          <tr><th scope="row">빨강 빠르게 4회 점멸</th><td>전원 꺼짐</td></tr>
-          <tr><th scope="row"><i class="led red"></i>빨강</th><td>배터리 15% 이하</td></tr>
-          <tr><th scope="row"><i class="led blue"></i>파랑 점멸</th><td>앱 연결 또는 Wi-Fi 설정 중</td></tr>
+          <tr><th scope="row"><i class="led green led-fast led-four" aria-hidden="true"></i>초록 빠르게 4회 점멸</th><td>전원 켜짐</td></tr>
+          <tr><th scope="row"><i class="led red led-fast led-four" aria-hidden="true"></i>빨강 빠르게 4회 점멸</th><td>전원 꺼짐</td></tr>
+          <tr><th scope="row"><i class="led red led-fast" aria-hidden="true"></i>빨강 빠른 점멸</th><td>배터리 15% 이하</td></tr>
+          <tr><th scope="row"><i class="led blue led-slow" aria-hidden="true"></i>파랑 느린 점멸 (초당 1회)</th><td>앱 연결 또는 Wi-Fi 설정 중</td></tr>
           <tr><th scope="row"><i class="led yellow"></i>노랑 점멸</th><td>Wi-Fi 미연결</td></tr>
           <tr><th scope="row"><i class="led white"></i>흰색 깜빡임</th><td>음원 다운로드 중</td></tr>
           <tr><th scope="row"><i class="led orange"></i>주황</th><td>USB-C 충전 중</td></tr>
           <tr><th scope="row"><i class="led green"></i>초록</th><td>충전 완료</td></tr>
         </tbody>
       </table>
+      <button type="button" id="led-preview">LED 점멸 다시 보기</button>
+      <script>
+        const ledPreview = document.querySelector('#led-preview');
+        const ledTable = document.querySelector('.led-table');
+        function previewLedPatterns() {
+          ledTable.classList.remove('led-preview-active');
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            ledTable.classList.add('led-preview-active');
+          }));
+        }
+        ledPreview.addEventListener('click', previewLedPatterns);
+        if ('IntersectionObserver' in window) {
+          const ledObserver = new IntersectionObserver((entries, observer) => {
+            if (!entries[0].isIntersecting) return;
+            previewLedPatterns();
+            observer.disconnect();
+          });
+          ledObserver.observe(ledTable);
+        }
+      </script>
       <p class="fine-print">상태가 겹치면 저전력(빨강), 페어링(파랑), Wi-Fi 미연결(노랑), 음원 다운로드 중(흰색) 순으로 우선 표시돼요.</p>
       <details class="troubleshoot">
         <summary>피스를 넣었는데 음악이 바로 나오지 않아요.</summary>

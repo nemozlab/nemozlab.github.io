@@ -28,21 +28,56 @@
 .player-nav .nav-zh { display: none; }
 :is(:root[lang="zh"], :root[data-nav-lang="zh"]) .player-nav [lang="ko"] { display: none; }
 :is(:root[lang="zh"], :root[data-nav-lang="zh"]) .player-nav .nav-zh { display: inline; }
-.nav-language {
-  flex: none;
-  min-width: 48px;
+.language-picker { position: relative; flex: none; z-index: 5; margin-inline-start: auto; border: 0; background: transparent; }
+.language-picker summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 44px;
   min-height: 44px;
-  padding: 0 12px;
+  padding: 0 4px;
+  border-radius: 8px;
+  color: var(--nav-fg, var(--fg));
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  list-style: none;
+}
+.language-picker summary::-webkit-details-marker { display: none; }
+.language-picker summary svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.7; }
+.language-picker summary:hover, .language-options button:hover { background: #04c9cd1a; }
+.language-options {
+  position: absolute;
+  inset-inline-end: 0;
+  top: calc(100% + 4px);
+  min-width: 132px;
+  padding: 4px;
   border: 1px solid var(--nav-line, var(--line));
-  border-radius: 999px;
+  border-radius: 10px;
   background: var(--paper, var(--panel));
+  box-shadow: 0 6px 18px #172e2826;
+}
+.language-options button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
   color: var(--nav-fg, var(--fg));
   font: inherit;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
+  white-space: nowrap;
 }
-.nav-language:hover { background: #04c9cd1a; }
-.page-language-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.language-options button[aria-pressed="true"]::after { content: "✓" / ""; }
+.player-header .page-heading { min-width: 0; }
 @media (max-width: 820px) {
   .player-header .page-heading { width: 100%; }
   .player-header .player-nav { flex: 1; flex-wrap: nowrap; gap: 0; }

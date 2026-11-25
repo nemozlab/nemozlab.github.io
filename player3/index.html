@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="player-header.css?v=page-language">
+<link rel="stylesheet" href="player-header.css?v=language-picker">
 <style>
 /* Layout: 3D viewer left, mold list + controls right; stacks on phone.
    Color: mint and rose distinguish the main mold sets from the clear parts. */
@@ -63,8 +63,8 @@ h1{font-size:1.15rem;margin:0;text-wrap:balance}
 .hint{position:absolute;right:12px;bottom:12px;max-width:46%;text-align:right;line-height:1.35;font-size:.78rem;color:var(--muted);pointer-events:none}
 .tools .btn{padding:6px 12px;font-size:.8rem}
 .view{min-width:0}
-.wrap > .page-language-heading { padding: 4px 10px 8px; }
-.wrap > .page-language-heading h1 { font-size: 22px; line-height: 1.35; }
+.wrap > .skin-heading { padding: 4px 10px 8px; }
+.wrap > .skin-heading h1 { font-size: 22px; line-height: 1.35; }
 .dock{position:relative;z-index:2;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:7px 10px;background:var(--panel);border-bottom:1px solid var(--line)}
 .cvwrap{position:relative;flex:1;min-height:0}
 .dock{display:grid;gap:8px}
@@ -299,11 +299,19 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 </head>
 <body>
 <div class="wrap">
-  <header class="player-header"><div class="page-heading"><a class="home-link" href="/player3/" data-kt="home" aria-label="홈"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></a><nav class="player-nav" aria-label="네모 플레이어 메뉴"><a href="/player3/" aria-current="page"><span lang="ko">스킨</span> <span lang="zh-Hans" class="nav-zh">外壳</span></a><a class="guide-link" href="./guide/"><span lang="ko">사용법</span> <span lang="zh-Hans" class="nav-zh">使用指南</span></a><a class="design-link" href="./guide/?view=design"><span lang="ko">디자인</span> <span lang="zh-Hans" class="nav-zh">设计</span></a></nav></div></header>
-  <div class="page-language-heading">
-    <h1 data-k="title">네모 플레이어 스킨</h1>
-    <button type="button" class="nav-language" id="lt" lang="zh-Hans">中文</button>
-  </div>
+  <header class="player-header"><div class="page-heading"><a class="home-link" href="/player3/" data-kt="home" aria-label="홈"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></a><nav class="player-nav" aria-label="네모 플레이어 메뉴"><a href="/player3/" aria-current="page"><span lang="ko">스킨</span> <span lang="zh-Hans" class="nav-zh">外壳</span></a><a class="guide-link" href="./guide/"><span lang="ko">사용법</span> <span lang="zh-Hans" class="nav-zh">使用指南</span></a><a class="design-link" href="./guide/?view=design"><span lang="ko">디자인</span> <span lang="zh-Hans" class="nav-zh">设计</span></a></nav></div>
+    <details class="language-picker">
+      <summary aria-label="Language">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></svg>
+        <span class="language-code" aria-hidden="true">KO</span>
+      </summary>
+      <div class="language-options">
+        <button type="button" data-language="ko" lang="ko" aria-pressed="true">한국어</button>
+        <button type="button" data-language="zh" lang="zh-Hans" aria-pressed="false">简体中文</button>
+      </div>
+    </details>
+  </header>
+  <div class="skin-heading"><h1 data-k="title">네모 플레이어 스킨</h1></div>
   <div class="grid" id="viewer" data-view="p">
     <div class="view">
     <div class="stage">
@@ -389,6 +397,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   </div>
 </div>
 
+<script src="language-picker.js?v=1"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
@@ -1075,13 +1084,10 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
     [].forEach.call(document.querySelectorAll('[data-k]'),function(e){e.textContent=T(e.getAttribute('data-k'))});
     [].forEach.call(document.querySelectorAll('[data-kt]'),function(e){var t=T(e.getAttribute('data-kt'));e.title=t;e.setAttribute('aria-label',t)});
     Object.keys(pbtn).forEach(function(id){pbtn[id].textContent=cn(id)});
-    const languageButton = document.getElementById('lt');
-    languageButton.textContent = lang ? '한국어' : '中文';
-    languageButton.lang = lang ? 'ko' : 'zh-Hans';
     hint.innerHTML=selected?'<b>'+label(selected)+'</b>':'';
   }
   function setLang(v){lang=v;try{localStorage.setItem('nemo-lang',v?'zh':'ko')}catch(e){}applyLang()}
-  document.getElementById('lt').addEventListener('click',function(){setLang(lang?0:1)});
+  initPlayerLanguagePicker(lang ? 'zh' : 'ko', language => setLang(language === 'zh' ? 1 : 0));
   applyLang();
   var de=document.documentElement,fsBtn=document.getElementById('fs');
   function inFs(){return document.fullscreenElement||document.webkitFullscreenElement}

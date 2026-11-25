@@ -41,20 +41,9 @@ for (const preview of soundPreviews) {
   });
 }
 
-
-const navLanguageButton = document.querySelector('#nav-language');
 const playerNavigation = document.querySelector('.player-nav');
-function setNavLanguage(language) {
-  const chinese = language === 'zh';
+initPlayerLanguagePicker(document.documentElement.dataset.navLang === 'zh' ? 'zh' : 'ko', language => {
   document.documentElement.dataset.navLang = language;
-  navLanguageButton.textContent = chinese ? '한국어' : '中文';
-  navLanguageButton.lang = chinese ? 'ko' : 'zh-Hans';
-  playerNavigation.setAttribute('aria-label', chinese ? '播放器菜单' : '네모 플레이어 메뉴');
-}
-setNavLanguage(document.documentElement.dataset.navLang === 'zh' ? 'zh' : 'ko');
-navLanguageButton.hidden = false;
-navLanguageButton.addEventListener('click', () => {
-  const language = document.documentElement.dataset.navLang === 'zh' ? 'ko' : 'zh';
-  setNavLanguage(language);
+  playerNavigation.setAttribute('aria-label', language === 'zh' ? '播放器菜单' : '네모 플레이어 메뉴');
   try { localStorage.setItem('nemo-lang', language); } catch {}
 });

@@ -156,6 +156,36 @@ details p { color: var(--muted); padding-bottom: 14px; }
 @media (max-width: 730px) {
   .shell { width: calc(100% - 20px); }
   .site-head { position: relative; }
+  .site-head .player-header {
+    padding-inline: max(10px, env(safe-area-inset-left));
+    padding-inline-end: max(10px, env(safe-area-inset-right));
+  }
+  .site-head .page-heading { width: 100%; }
+  .site-head .home-link { width: 44px; height: 44px; }
+  .site-head .player-nav { flex: 1; flex-wrap: nowrap; gap: 0; font-size: 14px; }
+  .site-head .player-nav a {
+    display: grid;
+    flex: 1;
+    place-items: center;
+    min-height: 44px;
+    padding-inline: 0;
+  }
+  .site-head .nav-product { display: none; }
+  .contents {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 0;
+    padding: 0 8px;
+  }
+  .contents a {
+    display: grid;
+    place-items: center;
+    min-height: 44px;
+    padding-inline: 0;
+    white-space: normal;
+    text-align: center;
+  }
   .footer { display: none; }
   .hero { margin-top: 12px; }
   #main, .guide-section, .usage-steps > li { scroll-margin-top: 12px; }

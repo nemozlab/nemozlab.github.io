@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css?v=section-menu">
-  <link rel="stylesheet" href="guide.css?v=led-columns">
+  <link rel="stylesheet" href="guide.css?v=mobile-nav">
   <script>
     if (new URLSearchParams(location.search).get('view') === 'design') {
       document.documentElement.classList.add('player-design');
@@ -26,9 +26,9 @@
       <div class="page-heading">
         <a class="home-link" href="/player3/" aria-label="홈" title="홈"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></a>
         <nav class="player-nav" aria-label="네모 플레이어 메뉴">
-          <a href="../">네모 플레이어 스킨</a>
-          <a class="guide-link" href="./" aria-current="page">네모 플레이어 사용법</a>
-          <a class="design-link" href="./?view=design">네모 플레이어 디자인</a>
+          <a href="../" aria-label="네모 플레이어 스킨"><span class="nav-product">네모 플레이어 </span>스킨</a>
+          <a class="guide-link" href="./" aria-current="page" aria-label="네모 플레이어 사용법"><span class="nav-product">네모 플레이어 </span>사용법</a>
+          <a class="design-link" href="./?view=design" aria-label="네모 플레이어 디자인"><span class="nav-product">네모 플레이어 </span>디자인</a>
         </nav>
       </div>
     </div>

@@ -26,7 +26,23 @@
 .player-nav:has(.design-link){flex-wrap:wrap}
 
 .player-nav a { display: inline-flex; align-items: baseline; gap: 0.35em; }
-.player-nav .nav-zh { font-size: 0.85em; }
+.player-nav .nav-zh { display: none; }
+:is(:root[lang="zh"], :root[data-nav-lang="zh"]) .player-nav [lang="ko"] { display: none; }
+:is(:root[lang="zh"], :root[data-nav-lang="zh"]) .player-nav .nav-zh { display: inline; }
+.nav-language {
+  flex: none;
+  min-width: 48px;
+  min-height: 44px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--nav-fg, var(--fg));
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.nav-language:hover { background: #04c9cd1a; }
 @media (max-width: 820px) {
   .player-header .page-heading { width: 100%; }
   .player-header .player-nav { flex: 1; flex-wrap: nowrap; gap: 0; }
@@ -34,12 +50,10 @@
   .player-header .player-nav > a { flex: 1; }
   .player-header .player-nav a {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 44px;
     padding-inline: 0;
-    gap: 2px;
     line-height: 1.2;
   }
   .player-header .player-nav h1 a { width: 100%; }

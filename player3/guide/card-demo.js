@@ -1,15 +1,20 @@
 (() => {
   const designMode = document.documentElement.classList.contains('player-design');
+  const variant = document.documentElement.dataset.design;
+  const retroDesign = designMode && variant === 'retro';
   const designCard = document.querySelector('#design-card');
   let showDesignCard;
   if (designMode) {
     document.querySelector('#title').textContent = '네모 플레이어 디자인';
     document.querySelector('.player-nav .guide-link').removeAttribute('aria-current');
     document.querySelector('.player-nav .design-link').setAttribute('aria-current', 'page');
-    const variant = document.documentElement.dataset.design;
     const variantLink = document.querySelector(`[data-design-link="${variant}"]`);
     variantLink.setAttribute('aria-current', 'page');
-    if (variant !== 'basic') {
+    if (retroDesign) {
+      document.querySelector('#title').textContent = '네모 플레이어 디자인 · 레트로형';
+      document.querySelector('.design-note').textContent = 'UV 인쇄 시안 · 차콜 패널, 주황색 라인, NEMOZ / PLAYER 표기와 NFC 안테나';
+    }
+    if (variant === 'artist') {
       document.querySelector('#title').textContent = variantLink.textContent;
       document.querySelector('#design-pending').hidden = false;
       return;
@@ -433,7 +438,7 @@
     rearLight.position.set(65, 110, 100);
     scene.add(key, rearLight);
 
-    const shell = new THREE.MeshStandardMaterial({color: 0xc5cad0, roughness: .94, side: THREE.DoubleSide});
+    const shell = new THREE.MeshStandardMaterial({color: retroDesign ? 0xaeb2b7 : 0xc5cad0, roughness: .94, side: THREE.DoubleSide});
     const glass = new THREE.MeshPhysicalMaterial({
       color: 0x829ba8, roughness: .60, metalness: 0,
       transparent: true, opacity: .25, depthWrite: false,
@@ -544,19 +549,42 @@
       printMark(skin, 57, 6.5, [0, .34, 21.2], [Math.PI / 2, 0, 0], context => {
         context.textBaseline = 'middle';
 
-        context.fillStyle = '#277f7a';
-        context.beginPath();
-        context.moveTo(-26, -1.1);
-        context.lineTo(-26, 1.1);
-        context.lineTo(-24, 0);
-        context.closePath();
-        context.fill();
+        if (retroDesign) {
+          context.fillStyle = '#282b2d';
+          context.fillRect(-28.5, -3.25, 57, 6.5);
 
-        context.fillStyle = '#27343c';
-        context.font = '600 2.9px Arial, sans-serif';
-        context.fillText('NEMO PLAYER', -22, .12);
+          context.fillStyle = '#e88a43';
+          context.fillRect(-26.4, -1.85, .55, 3.7);
+          context.fillRect(-25.35, -1.85, .55, 3.7);
 
-        context.fillStyle = '#536069';
+          context.fillStyle = '#f2eee4';
+          context.font = 'bold 2.8px Arial, sans-serif';
+          context.fillText('NEMOZ', -23.3, -.15);
+
+          context.fillStyle = '#e88a43';
+          context.font = 'bold 1.6px monospace';
+          context.fillText('P L A Y E R', -10.3, -.15);
+          context.fillRect(2, -.22, 8.5, .4);
+
+          context.fillStyle = '#f2eee4';
+          context.font = 'bold 1.05px monospace';
+          context.fillText('DIGITAL AUDIO', -23.2, 1.95);
+          context.fillStyle = '#f2eee4';
+        } else {
+          context.fillStyle = '#277f7a';
+          context.beginPath();
+          context.moveTo(-26, -1.1);
+          context.lineTo(-26, 1.1);
+          context.lineTo(-24, 0);
+          context.closePath();
+          context.fill();
+
+          context.fillStyle = '#27343c';
+          context.font = '600 2.9px Arial, sans-serif';
+          context.fillText('NEMO PLAYER', -22, .12);
+
+          context.fillStyle = '#536069';
+        }
         context.font = '600 1.8px Arial, sans-serif';
         context.textAlign = 'right';
         context.fillText('NFC', 25.8, .12);

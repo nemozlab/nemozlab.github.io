@@ -124,6 +124,12 @@ dd { color: var(--muted); font-size: .91rem; }
 details { border-bottom: 1px solid var(--line); background: var(--paper); }
 summary { cursor: pointer; padding: 12px 0; font-weight: 700; }
 details p { color: var(--muted); padding-bottom: 14px; }
+.wifi-install { grid-column: 1 / -1; border-block: 1px solid var(--line) 0; }
+.wifi-install summary { padding-inline: 16px; }
+.wifi-install-body { padding: 0 16px 14px; }
+.wifi-install-body p { padding-bottom: 0; }
+.wifi-install-body p:last-child { margin-top: 10px; }
+
 .led-table { width: 100%; border-collapse: collapse; background: var(--white); border: 1px solid var(--line); }
 .led-table :is(th, td) { text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--line); }
 .led-table thead { background: var(--mist); }

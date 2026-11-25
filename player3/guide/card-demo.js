@@ -6,6 +6,14 @@
     document.querySelector('#title').textContent = '네모 플레이어 디자인';
     document.querySelector('.player-nav .guide-link').removeAttribute('aria-current');
     document.querySelector('.player-nav .design-link').setAttribute('aria-current', 'page');
+    const variant = document.documentElement.dataset.design;
+    const variantLink = document.querySelector(`[data-design-link="${variant}"]`);
+    variantLink.setAttribute('aria-current', 'page');
+    if (variant !== 'basic') {
+      document.querySelector('#title').textContent = variantLink.textContent;
+      document.querySelector('#design-pending').hidden = false;
+      return;
+    }
     designCard.disabled = true;
     designCard.addEventListener('click', () => {
       const attached = designCard.getAttribute('aria-pressed') !== 'true';

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="player-header.css?v=section-menu">
+<link rel="stylesheet" href="player-header.css?v=bilingual-nav">
 <style>
 /* Layout: 3D viewer left, mold list + controls right; stacks on phone.
    Color: mint and rose distinguish the main mold sets from the clear parts. */
@@ -299,7 +299,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
 </head>
 <body>
 <div class="wrap">
-  <header class="player-header"><div class="page-heading"><a class="home-link" href="/player3/" data-kt="home" aria-label="홈"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></a><nav class="player-nav" aria-label="네모 플레이어 메뉴"><h1><a href="/player3/" aria-current="page" data-k="skinNav">스킨</a></h1><a class="guide-link" href="./guide/" data-k="usageGuide">사용법</a><a class="design-link" href="./guide/?view=design" data-k="designGuide">디자인</a></nav></div><div class="seg" role="group" aria-label="언어 / 语言"><button type="button" id="lko" lang="ko" aria-pressed="true">한국어</button><button type="button" id="lzh" lang="zh" aria-pressed="false">中文</button></div></header>
+  <header class="player-header"><div class="page-heading"><a class="home-link" href="/player3/" data-kt="home" aria-label="홈"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></a><nav class="player-nav" aria-label="네모 플레이어 메뉴"><h1><a href="/player3/" aria-current="page"><span lang="ko">스킨</span> <span lang="zh-Hans" class="nav-zh">外壳</span></a></h1><a class="guide-link" href="./guide/"><span lang="ko">사용법</span> <span lang="zh-Hans" class="nav-zh">使用指南</span></a><a class="design-link" href="./guide/?view=design"><span lang="ko">디자인</span> <span lang="zh-Hans" class="nav-zh">设计</span></a></nav></div><div class="seg" role="group" aria-label="언어 / 语言"><button type="button" id="lko" lang="ko" aria-pressed="true">한국어</button><button type="button" id="lzh" lang="zh" aria-pressed="false">中文</button></div></header>
   <div class="grid" id="viewer" data-view="p">
     <div class="view">
     <div class="stage">
@@ -407,7 +407,7 @@ input[type=range]{flex:1;min-width:120px;accent-color:var(--fg)}
   var MNAME={1:'금형 ①',2:'금형 ②',3:'금형 ③',4:'금형 ④',5:'스킨'};
   var MZ={1:'模具 ①',2:'模具 ②',3:'模具 ③',4:'模具 ④',5:'Skin Parts'};
   var I18N={
-    title:['네모 플레이어 스킨','Nemo Player Skin'],skinNav:['스킨','外壳'],usageGuide:['사용법','使用指南'],designGuide:['디자인','播放器设计'],
+    title:['네모 플레이어 스킨','Nemo Player Skin'],
     skinPanel:['스킨','换肤'],skinTitle:['교체형 스킨','可换外壳'],
     moldTitle:['금형 세트','模具套组'],allMolds:['전체 세트','全部套组'],
     asm:['합쳐진 모양','组装状态'],sep:['분리된 모양','分解状态'],

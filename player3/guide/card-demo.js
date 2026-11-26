@@ -12,7 +12,7 @@
     variantLink.setAttribute('aria-current', 'page');
     if (retroDesign) {
       document.querySelector('#title').textContent = '네모 플레이어 디자인 · 레트로형';
-      document.querySelector('.design-note').textContent = 'UV 인쇄 시안 · 차콜 패널, 주황색 라인, NEMOZ / PLAYER 표기와 NFC 안테나';
+      document.querySelector('.design-note').textContent = 'UV 인쇄 시안 · 차콜 패널과 주황색 포인트 · 왼쪽 NEMOBI, 오른쪽 NFC PLAYER와 안테나';
     }
     if (variant === 'artist') {
       document.querySelector('#title').textContent = variantLink.textContent;
@@ -558,38 +558,21 @@
           context.fillRect(-25.35, -1.85, .55, 3.7);
 
           context.fillStyle = '#f2eee4';
-          context.font = 'bold 2.8px Arial, sans-serif';
-          context.fillText('NEMOZ', -23.3, -.15);
-
-          context.fillStyle = '#e88a43';
-          context.font = 'bold 1.6px monospace';
-          context.fillText('P L A Y E R', -10.3, -.15);
-          context.fillRect(2, -.22, 8.5, .4);
-
-          context.fillStyle = '#f2eee4';
-          context.font = 'bold 1.05px monospace';
-          context.fillText('DIGITAL AUDIO', -23.2, 1.95);
-          context.fillStyle = '#f2eee4';
+          context.font = '800 3.8px "Arial Black", Arial, sans-serif';
+          context.fillText('NEMOBI', -23.3, .12);
         } else {
-          context.fillStyle = '#277f7a';
-          context.beginPath();
-          context.moveTo(-26, -1.1);
-          context.lineTo(-26, 1.1);
-          context.lineTo(-24, 0);
-          context.closePath();
-          context.fill();
-
           context.fillStyle = '#27343c';
-          context.font = '600 2.9px Arial, sans-serif';
-          context.fillText('NEMO PLAYER', -22, .12);
-
+          context.font = '800 3.8px "Arial Black", Arial, sans-serif';
+          context.fillText('NEMOBI', -25.8, .12);
           context.fillStyle = '#536069';
         }
+
+        const descriptor = 'NFC PLAYER';
         context.font = '600 1.8px Arial, sans-serif';
         context.textAlign = 'right';
-        context.fillText('NFC', 25.8, .12);
+        context.fillText(descriptor, 25.8, .12);
 
-        const antennaX = 25.8 - context.measureText('NFC').width - 2.65;
+        const antennaX = 25.8 - context.measureText(descriptor).width - 2.65;
         context.strokeStyle = context.fillStyle;
         context.lineWidth = .21;
         context.beginPath();

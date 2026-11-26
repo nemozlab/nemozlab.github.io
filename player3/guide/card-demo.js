@@ -480,32 +480,36 @@
     const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
     const trackButtons = controlMesh('buttons', buttons);
     scene.add(trackButtons, controlMesh('power', buttons));
-    scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial), controlMesh('led', ledMaterial));
+    scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial));
+    if (designMode) {
+      // The original skin has a machined LED opening on the right. Cover it in
+      // the design preview and show the indicator on the side specified by the drawing.
+      const originalOpening = new THREE.Mesh(new THREE.CircleGeometry(.91, 48), skinMaterial);
+      originalOpening.position.set(21.7, 9.6, 25.904);
+      const drawingLedMaterial = ledMaterial.clone();
+      drawingLedMaterial.color.setHex(0xe4efed);
+      const drawingLed = new THREE.Mesh(new THREE.CircleGeometry(.8, 48), drawingLedMaterial);
+      drawingLed.position.set(-21.7, 9.6, 25.925);
+      skin.add(originalOpening, drawingLed);
+    } else {
+      scene.add(controlMesh('led', ledMaterial));
+    }
+
+    // Paths from the supplied top-view drawing, in model units about each button center.
+    const buttonPrint = {
+      previous: 'M -0.656 0.950 C -0.618 0.950 -0.587 0.920 -0.587 0.881 L -0.587 0.178 L 0.579 0.804 C 0.644 0.839 0.723 0.791 0.723 0.717 L 0.723 -0.544 C 0.723 -0.618 0.644 -0.666 0.579 -0.631 L -0.587 -0.005 L -0.587 -0.708 C -0.587 -0.746 -0.618 -0.777 -0.656 -0.777 C -0.694 -0.777 -0.725 -0.746 -0.725 -0.708 L -0.725 0.881 C -0.725 0.920 -0.694 0.950 -0.656 0.950 Z',
+      play: 'M 0.212 -0.004 L -0.940 -0.666 C -1.010 -0.705 -1.096 -0.655 -1.096 -0.575 L -1.096 0.748 C -1.096 0.829 -1.010 0.879 -0.940 0.839 L 0.212 0.177 C 0.282 0.137 0.282 0.036 0.212 -0.004 Z M 0.181 -0.577 L 0.181 0.751 C 0.181 0.785 0.208 0.812 0.242 0.812 L 0.593 0.812 C 0.626 0.812 0.654 0.785 0.654 0.751 L 0.654 -0.577 C 0.654 -0.611 0.626 -0.638 0.593 -0.638 L 0.242 -0.638 C 0.208 -0.638 0.181 -0.611 0.181 -0.577 Z M 0.864 -0.577 L 0.864 0.751 C 0.864 0.785 0.891 0.812 0.925 0.812 L 1.276 0.812 C 1.310 0.812 1.337 0.785 1.337 0.751 L 1.337 -0.577 C 1.337 -0.611 1.310 -0.638 1.276 -0.638 L 0.925 -0.638 C 0.891 -0.638 0.864 -0.611 0.864 -0.577 Z',
+      next: 'M 0.842 -0.777 C 0.804 -0.777 0.773 -0.746 0.773 -0.708 L 0.773 -0.005 L -0.393 -0.631 C -0.458 -0.666 -0.537 -0.618 -0.537 -0.544 L -0.537 0.718 C -0.537 0.792 -0.458 0.839 -0.393 0.804 L 0.773 0.179 L 0.773 0.881 C 0.773 0.919 0.804 0.950 0.842 0.950 C 0.880 0.950 0.911 0.919 0.911 0.881 L 0.911 -0.708 C 0.911 -0.746 0.880 -0.777 0.842 -0.777 Z',
+    };
 
     function buttonIcon(type) {
       const artwork = document.createElement('canvas');
       artwork.width = artwork.height = 128;
       const ink = artwork.getContext('2d');
-      ink.fillStyle = '#5d656b';
-      function triangle(x, direction) {
-        ink.beginPath();
-        ink.moveTo(x, 38);
-        ink.lineTo(x + direction * 37, 64);
-        ink.lineTo(x, 90);
-        ink.closePath();
-        ink.fill();
-      }
-      if (type === 'play') {
-        triangle(22, 1);
-        ink.fillRect(72, 38, 9, 52);
-        ink.fillRect(91, 38, 9, 52);
-      } else if (type === 'previous') {
-        triangle(92, -1);
-        ink.fillRect(34, 38, 10, 52);
-      } else {
-        triangle(36, 1);
-        ink.fillRect(84, 38, 10, 52);
-      }
+      ink.translate(64, 64);
+      ink.scale(128 / 4.8, 128 / 4.8);
+      ink.fillStyle = '#3d4042';
+      ink.fill(new Path2D(buttonPrint[type]));
       const texture = new THREE.CanvasTexture(artwork);
       texture.encoding = THREE.sRGBEncoding;
       return new THREE.Mesh(

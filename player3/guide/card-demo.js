@@ -56,7 +56,7 @@
   const skinToggle = document.querySelector('#demo-skin-toggle');
   const skinSwatches = [...skinPanel.querySelectorAll('[data-color]')];
   const photoViews = {
-    front: 'cad-face.webp', top: 'cad-top.webp?v=button-icons', left: 'cad-left.webp?v=contrast',
+    front: 'cad-face.webp', top: 'top-drawing.webp', left: 'cad-left.webp?v=contrast',
     right: 'cad-right.webp?v=contrast', back: 'cad-back.webp',
     'back-right': 'cad-back-right.webp', 'back-left': 'cad-back-left.webp', 'front-left': 'cad-front-left.webp',
   };
@@ -481,19 +481,13 @@
     const trackButtons = controlMesh('buttons', buttons);
     scene.add(trackButtons, controlMesh('power', buttons));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial));
-    if (designMode) {
-      // The original skin has a machined LED opening on the right. Cover it in
-      // the design preview and show the indicator on the side specified by the drawing.
-      const originalOpening = new THREE.Mesh(new THREE.CircleGeometry(.91, 48), skinMaterial);
-      originalOpening.position.set(21.7, 9.6, 25.904);
-      const drawingLedMaterial = ledMaterial.clone();
-      drawingLedMaterial.color.setHex(0xe4efed);
-      const drawingLed = new THREE.Mesh(new THREE.CircleGeometry(.8, 48), drawingLedMaterial);
-      drawingLed.position.set(-21.7, 9.6, 25.925);
-      skin.add(originalOpening, drawingLed);
-    } else {
-      scene.add(controlMesh('led', ledMaterial));
-    }
+    // Cover the original CAD opening and display the LED at the drawing location.
+    const originalOpening = new THREE.Mesh(new THREE.CircleGeometry(.91, 48), skinMaterial);
+    originalOpening.position.set(21.7, 9.6, 25.904);
+    skin.add(originalOpening);
+    const drawingLed = controlMesh('led', ledMaterial);
+    drawingLed.position.x = -43.4;
+    scene.add(drawingLed);
 
     // Paths from the supplied top-view drawing, in model units about each button center.
     const buttonPrint = {

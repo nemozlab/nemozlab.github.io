@@ -592,25 +592,27 @@
         }
       });
 
-      // The PDF places the volume marks next to the wheel and power on its button.
-      for (const [z, plus] of [[9, true], [2, false]]) {
-        printMark(scene, 2.7, 2.7, [-32.58, 9, z], [Math.PI / 2, 0, -Math.PI / 2], context => {
+      // Side-view artwork is aligned to the wheel and the power key in the drawing.
+      for (const [z, plus] of [[10.54, true], [.42, false]]) {
+        printMark(scene, 2.7, 2.7, [-32.58, 12.53, z], [Math.PI / 2, 0, -Math.PI / 2], context => {
+          context.lineWidth = .26;
           context.beginPath();
-          context.moveTo(-.72, 0);
-          context.lineTo(.72, 0);
+          context.moveTo(-.51, 0);
+          context.lineTo(.51, 0);
           if (plus) {
-            context.moveTo(0, -.72);
-            context.lineTo(0, .72);
+            context.moveTo(0, -.51);
+            context.lineTo(0, .51);
           }
           context.stroke();
         });
       }
-      printMark(scene, 3.4, 3.4, [32.7, 11.3, 1.76], [Math.PI / 2, 0, Math.PI / 2], context => {
-        context.beginPath();
-        context.arc(0, .1, .86, -Math.PI * .3, Math.PI * 1.3);
-        context.moveTo(0, -1.13);
-        context.lineTo(0, -.19);
-        context.stroke();
+      printMark(scene, 3.4, 3.4, [32.7, 11.31, 3.79], [Math.PI / 2, 0, Math.PI / 2], context => {
+        context.fillStyle = '#3d4042';
+        const powerPrint = [
+          'M 0.000 -0.058 C 0.083 -0.058 0.151 -0.126 0.151 -0.209 L 0.151 -1.055 C 0.151 -1.138 0.083 -1.205 0.000 -1.205 C -0.083 -1.205 -0.150 -1.138 -0.150 -1.055 L -0.150 -0.209 C -0.150 -0.126 -0.083 -0.058 0.000 -0.058 Z',
+          'M 0.712 -0.746 C 0.648 -0.800 0.553 -0.792 0.500 -0.728 C 0.447 -0.665 0.455 -0.570 0.518 -0.517 C 0.700 -0.363 0.804 -0.139 0.804 0.098 C 0.804 0.541 0.443 0.901 0.000 0.901 C -0.443 0.901 -0.803 0.541 -0.803 0.098 C -0.803 -0.139 -0.699 -0.363 -0.518 -0.517 C -0.454 -0.570 -0.446 -0.665 -0.500 -0.728 C -0.553 -0.792 -0.648 -0.800 -0.711 -0.746 C -0.961 -0.536 -1.104 -0.228 -1.104 0.098 C -1.104 0.706 -0.609 1.202 0.000 1.202 C 0.609 1.202 1.104 0.706 1.104 0.098 C 1.104 -0.228 0.961 -0.536 0.712 -0.746 Z',
+        ].join(' ');
+        context.fill(new Path2D(powerPrint));
       });
     }
 

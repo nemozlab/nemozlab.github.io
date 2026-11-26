@@ -556,7 +556,6 @@
           context.fillStyle = '#e88a43';
           context.fillRect(-26.4, -1.85, .55, 3.7);
           context.fillRect(-25.35, -1.85, .55, 3.7);
-
         }
 
         const wordmark = 'NEMOBI';
@@ -565,20 +564,15 @@
         context.font = '800 3.8px "Arial Black", Arial, sans-serif';
         context.fillText(wordmark, wordmarkX, .12);
 
-        const waveX = wordmarkX + context.measureText(wordmark).width + 1.35;
+        const barsX = wordmarkX + context.measureText(wordmark).width + 1.55;
         context.strokeStyle = retroDesign ? '#e88a43' : '#277f7a';
-        context.lineWidth = .34;
+        context.lineWidth = .55;
         context.beginPath();
-        context.moveTo(waveX, .12);
-        context.lineTo(waveX + 1.45, .12);
-        context.lineTo(waveX + 2.1, -.82);
-        context.lineTo(waveX + 2.85, .76);
-        context.lineTo(waveX + 3.5, .12);
-        context.lineTo(waveX + 4.35, .12);
-        context.moveTo(waveX + 5, .12);
-        context.lineTo(waveX + 5.95, .12);
-        context.moveTo(waveX + 6.6, .12);
-        context.lineTo(waveX + 7.15, .12);
+        for (const [index, height] of [0.45, 1.35, 2.65, 1.75].entries()) {
+          const x = barsX + index * 1.15;
+          context.moveTo(x, .12 - height / 2);
+          context.lineTo(x, .12 + height / 2);
+        }
         context.stroke();
 
         context.fillStyle = retroDesign ? '#f2eee4' : '#536069';

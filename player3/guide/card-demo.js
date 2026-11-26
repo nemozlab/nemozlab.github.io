@@ -557,16 +557,31 @@
           context.fillRect(-26.4, -1.85, .55, 3.7);
           context.fillRect(-25.35, -1.85, .55, 3.7);
 
-          context.fillStyle = '#f2eee4';
-          context.font = '800 3.8px "Arial Black", Arial, sans-serif';
-          context.fillText('NEMOBI', -23.3, .12);
-        } else {
-          context.fillStyle = '#27343c';
-          context.font = '800 3.8px "Arial Black", Arial, sans-serif';
-          context.fillText('NEMOBI', -25.8, .12);
-          context.fillStyle = '#536069';
         }
 
+        const wordmark = 'NEMOBI';
+        const wordmarkX = retroDesign ? -23.3 : -25.8;
+        context.fillStyle = retroDesign ? '#f2eee4' : '#27343c';
+        context.font = '800 3.8px "Arial Black", Arial, sans-serif';
+        context.fillText(wordmark, wordmarkX, .12);
+
+        const waveX = wordmarkX + context.measureText(wordmark).width + 1.35;
+        context.strokeStyle = retroDesign ? '#e88a43' : '#277f7a';
+        context.lineWidth = .34;
+        context.beginPath();
+        context.moveTo(waveX, .12);
+        context.lineTo(waveX + 1.45, .12);
+        context.lineTo(waveX + 2.1, -.82);
+        context.lineTo(waveX + 2.85, .76);
+        context.lineTo(waveX + 3.5, .12);
+        context.lineTo(waveX + 4.35, .12);
+        context.moveTo(waveX + 5, .12);
+        context.lineTo(waveX + 5.95, .12);
+        context.moveTo(waveX + 6.6, .12);
+        context.lineTo(waveX + 7.15, .12);
+        context.stroke();
+
+        context.fillStyle = retroDesign ? '#f2eee4' : '#536069';
         const descriptor = 'NFC PLAYER';
         context.font = '600 1.8px Arial, sans-serif';
         context.textAlign = 'right';

@@ -485,9 +485,9 @@
     const originalOpening = new THREE.Mesh(new THREE.CircleGeometry(.91, 48), skinMaterial);
     originalOpening.position.set(21.7, 9.6, 25.904);
     skin.add(originalOpening);
-    const drawingLed = controlMesh('led', ledMaterial);
-    drawingLed.position.x = -43.4;
-    scene.add(drawingLed);
+    const drawingLed = new THREE.Mesh(new THREE.CircleGeometry(.8, 48), ledMaterial);
+    drawingLed.position.set(-21.7, 9.6, 25.925);
+    skin.add(drawingLed);
 
     // Paths from the supplied top-view drawing, in model units about each button center.
     const buttonPrint = {

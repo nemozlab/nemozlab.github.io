@@ -874,6 +874,7 @@
         };
         const popArtPrint = canvasTexture(frontPrint.image.width, frontPrint.image.height, ink => {
           ink.drawImage(frontPrint.image, 0, 0);
+          const original = ink.getImageData(0, 0, 220, frontPrint.image.height);
           ink.globalCompositeOperation = 'source-atop';
           const logoBands = [
             [30, 96, '#234c86'],
@@ -884,6 +885,14 @@
             ink.fillStyle = color;
             ink.fillRect(left, 0, right - left, frontPrint.image.height);
           }
+          const logo = ink.getImageData(0, 0, original.width, original.height);
+          for (let pixel = 0; pixel < original.data.length; pixel += 4) {
+            const [red, green, blue] = original.data.subarray(pixel, pixel + 3);
+            if (green - red > 35 && blue - red > 35) {
+              logo.data.set([35, 76, 134], pixel);
+            }
+          }
+          ink.putImageData(logo, 0, 0);
         });
         function petal(ink, x, y, size, angle, color) {
           ink.save();

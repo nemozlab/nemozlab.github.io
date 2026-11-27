@@ -422,7 +422,7 @@
       if (!response.ok) throw new Error('Could not load the model');
       return response.json();
     }
-    const [parts, controls, artwork, frontPrint] = await Promise.all([
+    const [parts, controls, artwork, legacyFrontPrint] = await Promise.all([
       readParts('../parts.json'),
       readParts('control-parts.json'),
       new THREE.TextureLoader().loadAsync('images/card.webp?v=mymy'),
@@ -549,6 +549,15 @@
       parent.add(mark);
     }
 
+    const frontArtwork = document.createElement('canvas');
+    frontArtwork.width = legacyFrontPrint.image.width;
+    frontArtwork.height = legacyFrontPrint.image.height;
+    const frontInk = frontArtwork.getContext('2d');
+    frontInk.drawImage(legacyFrontPrint.image, 0, 0);
+    // The original 950 px print has a separate final i between columns 201 and 211.
+    frontInk.clearRect(200, 0, 13, frontArtwork.height);
+    const frontPrint = new THREE.CanvasTexture(frontArtwork);
+    legacyFrontPrint.dispose();
     frontPrint.encoding = THREE.sRGBEncoding;
     const frontMark = new THREE.Mesh(
       new THREE.PlaneGeometry(57, 6.12),

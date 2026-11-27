@@ -973,7 +973,7 @@
                   bool exterior = true;
                   bool upperFace = false;
                   bool frontFace = false;
-                  if (axis.x > max(axis.y, axis.z) && abs(printPosition.x) > 31.0) {
+                  if (axis.x > max(axis.y, axis.z) && abs(printPosition.x) > 31.0 && printPosition.y > 3.0) {
                     float side = sign(printPosition.x);
                     unfolded.x = -side * (34.0 - fromBack);
                   } else if (axis.z > axis.y && printNormal.z > 0.0 && printPosition.z > 24.0 && printPosition.y > 1.0) {

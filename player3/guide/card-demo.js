@@ -943,6 +943,53 @@
           ink.fillStyle = '#9ab1b6';
           ink.fillRect(5, 63, 630, 2);
         });
+        const stickerPrint = canvasTexture(1060, 800, ink => {
+          ink.fillStyle = '#18191b';
+          ink.fillRect(0, 0, 1060, 800);
+          ink.save();
+          ink.translate(88, 450);
+          ink.scale(1.25, 1.25);
+          const pearl = ink.createLinearGradient(5, 45, 146, 166);
+          pearl.addColorStop(0, '#ece0d6');
+          pearl.addColorStop(.35, '#dcebe4');
+          pearl.addColorStop(.68, '#abaac7');
+          pearl.addColorStop(1, '#81afaa');
+          ink.strokeStyle = '#b0a794';
+          ink.lineWidth = 2.6;
+          ink.lineCap = 'round';
+          ink.stroke(new Path2D('M65 117 L69 163 L60 204 L78 204 M81 117 L87 160 L83 202 L100 202'));
+          ink.fillStyle = pearl;
+          ink.fill(new Path2D('M17 88 C42 72 62 70 87 82 C104 86 111 73 113 58 C116 38 114 24 131 15 C143 9 160 18 155 27 C150 33 142 29 136 34 C127 42 134 61 125 83 C121 106 106 123 83 127 C59 131 38 118 17 88 Z'));
+          ink.fillStyle = '#3d4550';
+          ink.fill(new Path2D('M18 88 C42 83 63 88 77 105 C60 108 43 104 31 101 L18 88 Z M148 29 C141 29 139 31 136 34 L134 42 C140 36 148 35 153 31 Z'));
+          ink.fillStyle = '#c18b81';
+          ink.fill(new Path2D('M134 15 C141 11 149 14 153 18 L138 20 Z'));
+          ink.fillStyle = '#c7b3a0';
+          ink.fill(new Path2D('M154 21 L174 24 L153 27 Z'));
+          ink.fillStyle = '#252934';
+          ink.beginPath();
+          ink.arc(148, 21, 1.5, 0, Math.PI * 2);
+          ink.fill();
+          ink.restore();
+        });
+        const stickerOutline = new THREE.Shape();
+        stickerOutline.moveTo(-26.5, -20);
+        stickerOutline.lineTo(26.5, -20);
+        stickerOutline.lineTo(26.5, 20);
+        stickerOutline.lineTo(-26.5, 20);
+        stickerOutline.closePath();
+        const stickerGeometry = new THREE.ShapeGeometry(stickerOutline);
+        const stickerUvs = stickerGeometry.getAttribute('uv');
+        const stickerPositions = stickerGeometry.getAttribute('position');
+        for (let i = 0; i < stickerUvs.count; i++) {
+          stickerUvs.setXY(i, stickerPositions.getX(i) / 53 + .5, stickerPositions.getY(i) / 40 + .5);
+        }
+        const sticker = new THREE.Mesh(stickerGeometry,
+          new THREE.MeshBasicMaterial({map: stickerPrint}));
+        sticker.rotation.x = Math.PI / 2;
+        sticker.position.set(-1, 5.54, -1);
+        sticker.visible = false;
+        scene.add(sticker);
         const najeonInkActive = {value: 0};
         for (const material of [shell, skinMaterial]) {
           material.onBeforeCompile = shader => {
@@ -1050,6 +1097,7 @@
           const printedEdition = printedEditions[selected.dataset.windowArt];
           const najeon = selected.dataset.windowArt === 'najeon';
           najeonInkActive.value = Number(najeon);
+          sticker.visible = najeon;
           frontMark.material.map = (najeon ? najeonFront : printedEdition?.face) ||
             (selected.hasAttribute('data-pop-art') ? popArtPrint : frontPrint);
           const editionPrint = editionPrints[selected.dataset.windowArt];

@@ -980,9 +980,12 @@
         sticker.visible = false;
         scene.add(sticker);
         const najeonInkActive = {value: 0};
+        const exteriorPrint = {value: najeonArtwork};
+        const lacquerPrint = {value: true};
         for (const material of [shell, skinMaterial]) {
           material.onBeforeCompile = shader => {
-            shader.uniforms.najeonArtwork = {value: najeonArtwork};
+            shader.uniforms.najeonArtwork = exteriorPrint;
+            shader.uniforms.lacquerPrint = lacquerPrint;
             shader.uniforms.najeonInkActive = najeonInkActive;
             shader.uniforms.najeonPrintHeight = {value: najeonPrintHeight};
             shader.uniforms.najeonAspect = {value: najeonArtwork.image.width / najeonArtwork.image.height};
@@ -990,7 +993,7 @@
               .replace('#include <common>', '#include <common>\nvarying vec3 printPosition; varying vec3 printNormal;')
               .replace('#include <begin_vertex>', '#include <begin_vertex>\nprintPosition = position; printNormal = normal;');
             shader.fragmentShader = shader.fragmentShader
-              .replace('#include <common>', '#include <common>\nvarying vec3 printPosition; varying vec3 printNormal; uniform sampler2D najeonArtwork; uniform float najeonInkActive; uniform float najeonAspect; uniform float najeonPrintHeight;')
+              .replace('#include <common>', '#include <common>\nvarying vec3 printPosition; varying vec3 printNormal; uniform sampler2D najeonArtwork; uniform bool lacquerPrint; uniform float najeonInkActive; uniform float najeonAspect; uniform float najeonPrintHeight;')
               .replace('#include <color_fragment>', `#include <color_fragment>
                 if (najeonInkActive > 0.5) {
                   vec3 axis = abs(printNormal);
@@ -1006,7 +1009,7 @@
                     unfolded.y += fromBack;
                     upperFace = true;
                   } else if (axis.z >= axis.y && printNormal.z < 0.0 && printPosition.z < -24.8 && printPosition.y > 2.0) {
-                    unfolded.y = -24.0 + fromBack;
+                    unfolded.y = lacquerPrint ? -24.0 + fromBack : -printPosition.y;
                   } else {
                     frontFace = axis.y >= max(axis.x, axis.z) && printNormal.y < 0.0 &&
                       printPosition.y < 1.0 && printPosition.z > 17.0;
@@ -1015,7 +1018,7 @@
                   }
                   vec2 uv = vec2(0.5, 0.505) +
                     vec2(unfolded.x / najeonAspect, unfolded.y) / najeonPrintHeight;
-                  if (frontFace) {
+                  if (frontFace && lacquerPrint) {
                     uv = vec2(0.5, 0.11) +
                       vec2(-printPosition.x / najeonAspect, 24.27 + printPosition.z - 25.9) /
                       najeonPrintHeight;
@@ -1025,7 +1028,7 @@
                     float coverage = smoothstep(0.0, 0.045, min(border.x, border.y));
                     vec3 printColor = texture2D(najeonArtwork, clamp(uv, 0.0, 1.0)).rgb;
                     vec3 inlayColor = pow(printColor, vec3(2.2)) * coverage;
-                    if (upperFace) {
+                    if (upperFace && lacquerPrint) {
                       // Continue the rear artwork at the rear edge, then let the
                       // original cloud detail emerge toward the front band.
                       vec2 cloudUv = vec2(0.5, 0.11) +
@@ -1036,63 +1039,100 @@
                       vec3 cloud = texture2D(najeonArtwork, clamp(cloudUv, 0.0, 1.0)).rgb;
                       inlayColor = mix(inlayColor, pow(cloud, vec3(2.2)) * cloudCoverage, cloudBlend);
                     }
-                    diffuseColor.rgb = max(diffuseColor.rgb, inlayColor);
+                    diffuseColor.rgb = lacquerPrint ? max(diffuseColor.rgb, inlayColor) : mix(diffuseColor.rgb, inlayColor / max(coverage, 0.001), coverage);
                   }
                 }`);
           };
           material.needsUpdate = true;
         }
-        const editionPrints = {
-          murakami: canvasTexture(512, 352, ink => {
-            const blooms = [[465, 294, 16, '#f6759e'], [429, 321, 12, '#f5c943'],
-              [484, 251, 8, '#62c7ef'], [390, 330, 7, '#a890e4']];
-            for (const [x, y, radius, color] of blooms) {
+        const editionArtwork = {
+          pop: canvasTexture(720, 480, ink => {
+            ink.fillStyle = '#f3e7cf';
+            ink.fillRect(0, 0, 720, 480);
+            const shapes = [
+              ['#234c86', 'M0 0H360L205 480H0Z'],
+              ['#bd5468', 'M275 0H720V178L545 262 380 190Z'],
+              ['#d59a32', 'M720 132V480H260L402 322 542 256Z'],
+              ['#29405b', 'M372 166L506 129 530 326 385 397 303 288Z'],
+              ['#f3e7cf', 'M381 189L478 158 498 307 390 353 331 278Z'],
+            ];
+            for (const [color, path] of shapes) {
               ink.fillStyle = color;
-              for (let petalIndex = 0; petalIndex < 7; petalIndex++) {
-                const angle = petalIndex * Math.PI * 2 / 7;
+              ink.fill(new Path2D(path));
+            }
+            ink.fillStyle = '#234c86';
+            ink.fill(new Path2D('M362 235L404 224 400 243 366 248Z M435 215L472 211 470 230 437 232Z M418 228L437 275 406 286Z'));
+            ink.fillStyle = '#bd5468';
+            ink.fill(new Path2D('M390 305Q429 287 460 298L429 320Z'));
+          }),
+          murakami: canvasTexture(720, 480, ink => {
+            ink.fillStyle = '#fdf7e8';
+            ink.fillRect(0, 0, 720, 480);
+            const colors = ['#ed549a', '#efb344', '#63bfdd', '#9574c5', '#73bd8c'];
+            const blooms = [[90, 80, 45], [273, 105, 62], [459, 44, 48], [625, 135, 64],
+              [155, 259, 68], [385, 238, 43], [540, 330, 65], [68, 453, 61], [327, 427, 70]];
+            for (const [i, [x, y, radius]] of blooms.entries()) {
+              for (let petal = 0; petal < 8; petal++) {
+                const angle = petal * Math.PI / 4;
+                ink.fillStyle = colors[(i + petal) % colors.length];
                 ink.beginPath();
                 ink.arc(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius,
-                  radius * .54, 0, Math.PI * 2);
+                  radius * .47, 0, Math.PI * 2);
                 ink.fill();
               }
-              ink.fillStyle = '#fff2a6';
+              ink.fillStyle = '#fff0a5';
               ink.beginPath();
-              ink.arc(x, y, radius * .65, 0, Math.PI * 2);
+              ink.arc(x, y, radius * .63, 0, Math.PI * 2);
               ink.fill();
             }
           }),
-          art: canvasTexture(512, 352, ink => {
+          art: canvasTexture(720, 480, ink => {
+            ink.fillStyle = '#e9dfc8';
+            ink.fillRect(0, 0, 720, 480);
             const strokes = [
-              ['#264864', 'M0 352 V282 Q62 228 165 292 T310 321 Q366 322 401 352 Z'],
-              ['#ce9d50', 'M0 304 Q67 245 167 294 Q80 266 0 326 Z'],
-              ['#b45c4c', 'M0 352 V333 Q69 306 133 352 Z'],
+              ['#ce9d50', 'M0 325Q140 170 327 304T720 217V480H0Z'],
+              ['#264864', 'M0 357Q133 151 322 367T720 288V480H0Z'],
+              ['#b45c4c', 'M0 432Q120 330 274 420T720 369V480H0Z'],
+              ['#efe6d3', 'M0 402Q137 309 266 385T720 345V359Q410 490 262 401T0 421Z'],
             ];
-            for (const [color, outline] of strokes) {
+            for (const [color, path] of strokes) {
               ink.fillStyle = color;
-              ink.fill(new Path2D(outline));
+              ink.fill(new Path2D(path));
             }
           }),
+          kids: canvasTexture(720, 480, ink => {
+            ink.fillStyle = '#fff0c8';
+            ink.fillRect(0, 0, 720, 480);
+            const pattern = printedEditions.kids.piece.image;
+            const scale = Math.max(720 / pattern.width, 480 / pattern.height);
+            const width = pattern.width * scale;
+            const height = pattern.height * scale;
+            ink.drawImage(pattern, (720 - width) / 2, (480 - height) / 2, width, height);
+          }),
         };
-        const petalDecal = new THREE.Mesh(new THREE.PlaneGeometry(62, 42.6),
-          new THREE.MeshBasicMaterial({map: editionPrints.murakami, transparent: true, depthWrite: false}));
-        petalDecal.rotation.x = Math.PI / 2;
-        petalDecal.position.set(0, -2.2, 19.5);
-        petalDecal.renderOrder = 2;
-        hinge.add(petalDecal);
+        const stickerMaps = Object.fromEntries(Object.entries(editionArtwork).map(([key, art]) => [
+          key, canvasTexture(1060, 800, ink => {
+            ink.fillStyle = '#18191b';
+            ink.fillRect(0, 0, 1060, 800);
+            ink.drawImage(art.image, 40, 520, 220, 220 * art.image.height / art.image.width);
+          }),
+        ]));
         function applyPalette(selected) {
           selected.dataset.palette.split(',').forEach((hex, index) => {
             materials[index].color.setStyle(`#${hex}`).convertSRGBToLinear();
           });
           const printedEdition = printedEditions[selected.dataset.windowArt];
           const najeon = selected.dataset.windowArt === 'najeon';
-          najeonInkActive.value = Number(najeon);
-          sticker.visible = najeon;
+          const edition = selected.hasAttribute('data-pop-art') ? 'pop' : selected.dataset.windowArt;
+          const surface = najeon ? najeonArtwork : editionArtwork[edition];
+          exteriorPrint.value = surface;
+          lacquerPrint.value = najeon;
+          najeonInkActive.value = Number(Boolean(surface));
+          sticker.material.map = najeon ? stickerPrint : stickerMaps[edition];
+          sticker.visible = Boolean(sticker.material.map);
           frontMark.material.map = (najeon ? najeonFront : printedEdition?.face) ||
             (selected.hasAttribute('data-pop-art') ? popArtPrint : frontPrint);
-          const editionPrint = editionPrints[selected.dataset.windowArt];
-          glass.opacity = editionPrint || printedEdition ? .16 : .65;
-          petalDecal.material.map = editionPrint || editionPrints.murakami;
-          petalDecal.visible = Boolean(editionPrint);
+          glass.opacity = .16;
           for (const choice of choices) {
             choice.setAttribute('aria-pressed', String(choice === selected));
           }

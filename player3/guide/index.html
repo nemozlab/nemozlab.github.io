@@ -86,6 +86,9 @@
         <button type="button" data-view="top" aria-pressed="false">윗면</button>
       </div>
       <div class="demo-viewer">
+        <div class="design-options" style="padding: 0 12px 12px" role="group" aria-label="카드 조작">
+          <button type="button" id="design-card" aria-pressed="false">카드 장착</button>
+        </div>
         <button class="demo-stage" type="button" id="demo-stage" aria-label="플레이어에서 커버 열기" disabled>
           <span class="demo-preview" hidden>
             <img class="demo-product" src="images/cad-home-45.webp" alt="">
@@ -93,9 +96,6 @@
           </span>
           <canvas class="demo-canvas" aria-hidden="true" hidden></canvas>
         </button>
-        <div class="design-options" style="padding: 0 12px 12px" role="group" aria-label="카드 조작">
-          <button type="button" id="design-card" aria-pressed="false">카드 장착</button>
-        </div>
         <div class="demo-viewer-toolbar">
           <div class="demo-actions" role="group" aria-label="재생 조작">
             <button class="demo-reset" type="button" id="demo-reset" aria-label="홈, 처음부터" title="처음부터" hidden>
@@ -132,11 +132,6 @@
         <p id="demo-instruction" class="demo-instruction" aria-live="polite"></p>
         <p class="demo-track" aria-live="polite">용용 · 새벽 끝의 소나타 remix (feat. 빈첸 (VINXEN), Kimos) · 30초</p>
       </div>
-      <figure class="design-note" style="margin: 20px 0 0">
-        <figcaption>UV 인쇄 영역 참고 도면 · 색상은 영역 구분용입니다.</figcaption>
-        <img src="images/basic-design-reference.webp" style="display:block;width:100%;height:auto"
-          alt="전면 NEMOBi와 NFC PLAYER, 왼쪽 볼륨 +와 −, 오른쪽 전원, 윗면 이전·재생 및 일시정지·다음 버튼을 표시한 기본형 도면">
-      </figure>
       <p id="design-unavailable" role="status" hidden>이 환경에서는 3D 인쇄 시안을 표시할 수 없어요.</p>
       <audio id="demo-audio" src="audio/card-demo.mp3?v=sonata-remix" preload="none"></audio>
     </section>

@@ -968,10 +968,14 @@
                   vec2 unfolded = vec2(-printPosition.x, printPosition.z);
                   float fromBack = max(0.0, 24.27 - printPosition.y);
                   bool exterior = true;
+                  bool upperFace = false;
+                  bool sideFace = false;
                   if (axis.x > max(axis.y, axis.z) && abs(printPosition.x) > 31.0) {
                     unfolded.x -= sign(printPosition.x) * fromBack;
+                    sideFace = true;
                   } else if (axis.z > axis.y && printNormal.z > 0.0 && printPosition.z > 24.0 && printPosition.y > 1.0) {
                     unfolded.y += fromBack;
+                    upperFace = true;
                   } else if (axis.z >= axis.y && printNormal.z < 0.0 && printPosition.z < -24.0 && printPosition.y > 2.0) {
                     unfolded.y -= fromBack;
                   } else {
@@ -983,8 +987,29 @@
                     vec2 border = min(uv, 1.0 - uv);
                     float coverage = smoothstep(0.0, 0.045, min(border.x, border.y));
                     vec3 printColor = texture2D(najeonArtwork, clamp(uv, 0.0, 1.0)).rgb;
-                    diffuseColor.rgb = mix(diffuseColor.rgb,
-                      max(diffuseColor.rgb, pow(printColor, vec3(2.2))), coverage);
+                    vec3 inlayColor = pow(printColor, vec3(2.2)) * coverage;
+                    if (upperFace) {
+                      // Continue the rear artwork at the rear edge, then let the
+                      // original cloud detail emerge toward the front band.
+                      vec2 cloudUv = vec2(0.67, 0.82) +
+                        vec2(-printPosition.x / najeonAspect, fromBack - 15.0) / najeonPrintHeight;
+                      vec2 cloudBorder = min(cloudUv, 1.0 - cloudUv);
+                      float cloudCoverage = smoothstep(0.0, 0.045, min(cloudBorder.x, cloudBorder.y));
+                      float cloudBlend = smoothstep(5.0, 16.0, fromBack);
+                      vec3 cloud = texture2D(najeonArtwork, clamp(cloudUv, 0.0, 1.0)).rgb;
+                      inlayColor = mix(inlayColor, pow(cloud, vec3(2.2)) * cloudCoverage, cloudBlend);
+                    }
+                    if (sideFace) {
+                      float direction = sign(printPosition.x);
+                      vec2 stemUv = vec2(0.5 - direction * 0.38, 0.46) +
+                        vec2(direction * (fromBack - 19.0) / najeonAspect, printPosition.z) / najeonPrintHeight;
+                      vec2 stemBorder = min(stemUv, 1.0 - stemUv);
+                      float stemCoverage = smoothstep(0.0, 0.045, min(stemBorder.x, stemBorder.y));
+                      float stemBlend = smoothstep(6.0, 18.0, fromBack);
+                      vec3 stem = texture2D(najeonArtwork, clamp(stemUv, 0.0, 1.0)).rgb;
+                      inlayColor = mix(inlayColor, pow(stem, vec3(2.2)) * stemCoverage, stemBlend);
+                    }
+                    diffuseColor.rgb = max(diffuseColor.rgb, inlayColor);
                   }
                 }`);
           };

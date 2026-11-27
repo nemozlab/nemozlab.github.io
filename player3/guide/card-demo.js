@@ -872,6 +872,19 @@
           texture.encoding = THREE.sRGBEncoding;
           return texture;
         };
+        const popArtPrint = canvasTexture(frontPrint.image.width, frontPrint.image.height, ink => {
+          ink.drawImage(frontPrint.image, 0, 0);
+          ink.globalCompositeOperation = 'source-atop';
+          const logoBands = [
+            [30, 96, '#234c86'],
+            [96, 171, '#d59a32'],
+            [171, 213, '#bd5468'],
+          ];
+          for (const [left, right, color] of logoBands) {
+            ink.fillStyle = color;
+            ink.fillRect(left, 0, right - left, frontPrint.image.height);
+          }
+        });
         function petal(ink, x, y, size, angle, color) {
           ink.save();
           ink.translate(x, y);
@@ -881,17 +894,62 @@
           ink.fill(new Path2D('M0 1 C-.8 .4 -1 -1 -.25 -.9 L0 -.65 .25 -.9 C1 -1 .8 .4 0 1Z'));
           ink.restore();
         }
-        const windowPrint = canvasTexture(512, 352, ink => {
-          const colors = ['#efadbd', '#d98ba8', '#f7c6d4'];
-          const driftingPetals = [[459,53,8],[423,81,5],[389,66,7],
-            [352,104,6],[308,118,4],[273,96,5],[228,153,7],
-            [181,166,4],[129,205,6],[95,235,5],[62,257,4]];
-          driftingPetals.forEach(([x, y, size], i) => {
-            petal(ink, x, y, size, i * .89, colors[i % 3]);
-          });
-        });
+        const editionPrints = {
+          murakami: canvasTexture(512, 352, ink => {
+            const blooms = [[465, 294, 16, '#f6759e'], [429, 321, 12, '#f5c943'],
+              [484, 251, 8, '#62c7ef'], [390, 330, 7, '#a890e4']];
+            for (const [x, y, radius, color] of blooms) {
+              ink.fillStyle = color;
+              for (let petalIndex = 0; petalIndex < 7; petalIndex++) {
+                const angle = petalIndex * Math.PI * 2 / 7;
+                ink.beginPath();
+                ink.arc(x + Math.cos(angle) * radius, y + Math.sin(angle) * radius,
+                  radius * .54, 0, Math.PI * 2);
+                ink.fill();
+              }
+              ink.fillStyle = '#fff2a6';
+              ink.beginPath();
+              ink.arc(x, y, radius * .65, 0, Math.PI * 2);
+              ink.fill();
+            }
+          }),
+          art: canvasTexture(512, 352, ink => {
+            const strokes = [
+              ['#264864', 'M0 352 V282 Q62 228 165 292 T310 321 Q366 322 401 352 Z'],
+              ['#ce9d50', 'M0 304 Q67 245 167 294 Q80 266 0 326 Z'],
+              ['#b45c4c', 'M0 352 V333 Q69 306 133 352 Z'],
+            ];
+            for (const [color, outline] of strokes) {
+              ink.fillStyle = color;
+              ink.fill(new Path2D(outline));
+            }
+          }),
+          najeon: canvasTexture(512, 352, ink => {
+            for (const [x, y, size] of [[461, 284, 15], [429, 307, 11], [391, 321, 7]]) {
+              const sheen = ink.createLinearGradient(x - size, y, x + size, y);
+              sheen.addColorStop(0, '#83cfc1');
+              sheen.addColorStop(.5, '#e9dff3');
+              sheen.addColorStop(1, '#b68acf');
+              for (let i = 0; i < 5; i++) {
+                const angle = i * Math.PI * .4;
+                petal(ink, x + Math.sin(angle) * size, y - Math.cos(angle) * size,
+                  size * .65, angle, sheen);
+              }
+            }
+          }),
+          kids: canvasTexture(512, 352, ink => {
+            ink.fillStyle = '#ef544c';
+            ink.fill(new Path2D('M27 266 H52 A10 10 0 0 1 62 276 V301 A10 10 0 0 1 52 311 H27 A10 10 0 0 1 17 301 V276 A10 10 0 0 1 27 266Z'));
+            ink.fillStyle = '#ffbd32';
+            ink.fill(new Path2D('M75 309 L96 271 L118 309 Z'));
+            ink.fillStyle = '#429ee0';
+            ink.beginPath();
+            ink.arc(148, 291, 20, 0, Math.PI * 2);
+            ink.fill();
+          }),
+        };
         const petalDecal = new THREE.Mesh(new THREE.PlaneGeometry(62, 42.6),
-          new THREE.MeshBasicMaterial({map: windowPrint, transparent: true, depthWrite: false}));
+          new THREE.MeshBasicMaterial({map: editionPrints.murakami, transparent: true, depthWrite: false}));
         petalDecal.rotation.x = Math.PI / 2;
         petalDecal.position.set(0, -2.2, 19.5);
         petalDecal.renderOrder = 2;
@@ -900,9 +958,11 @@
           selected.dataset.palette.split(',').forEach((hex, index) => {
             materials[index].color.setStyle(`#${hex}`).convertSRGBToLinear();
           });
-          const sakura = selected.hasAttribute('data-sakura');
-          glass.opacity = sakura ? .16 : .65;
-          petalDecal.visible = sakura;
+          frontMark.material.map = selected.hasAttribute('data-pop-art') ? popArtPrint : frontPrint;
+          const editionPrint = editionPrints[selected.dataset.windowArt];
+          glass.opacity = editionPrint ? .16 : .65;
+          petalDecal.material.map = editionPrint || editionPrints.murakami;
+          petalDecal.visible = Boolean(editionPrint);
           for (const choice of choices) {
             choice.setAttribute('aria-pressed', String(choice === selected));
           }

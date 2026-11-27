@@ -433,10 +433,10 @@
     rearLight.position.set(65, 110, 100);
     scene.add(key, rearLight);
 
-    const shell = new THREE.MeshStandardMaterial({color: designMode ? 0x6d6870 : 0xc5cad0, roughness: .94, side: THREE.DoubleSide});
+    const shell = new THREE.MeshStandardMaterial({color: 0xc5cad0, roughness: .94, side: THREE.DoubleSide});
     const glass = new THREE.MeshPhysicalMaterial({
-      color: designMode ? 0x94dbe1 : 0x829ba8, roughness: .60, metalness: 0,
-      transparent: true, opacity: designMode ? .72 : .25, depthWrite: false,
+      color: 0x829ba8, roughness: .60, metalness: 0,
+      transparent: true, opacity: .25, depthWrite: false,
     });
     const rotation = new THREE.Matrix4().makeBasis(
       new THREE.Vector3(0, 0, 1),
@@ -468,16 +468,13 @@
     const portMaterial = new THREE.MeshStandardMaterial({color: 0x4b5058, roughness: .89, side: THREE.DoubleSide});
     const ledMaterial = new THREE.MeshStandardMaterial({color: 0x9cc6ca, roughness: .75, side: THREE.DoubleSide});
     const skinMaterial = shell.clone();
-    if (designMode) skinMaterial.color.setHex(0xba8791);
     const skin = mesh('16', skinMaterial);
     for (const id of ['0', '1']) scene.add(mesh(id, shell));
     scene.add(skin);
     scene.add(mesh('13', portMaterial));
-    const buttons = new THREE.MeshStandardMaterial({color: designMode ? 0xa8d5ae : 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
+    const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
     const trackButtons = controlMesh('buttons', buttons);
-    const powerMaterial = buttons.clone();
-    if (designMode) powerMaterial.color.setHex(0x52716d);
-    scene.add(trackButtons, controlMesh('power', powerMaterial));
+    scene.add(trackButtons, controlMesh('power', buttons));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial));
     // Cover the original CAD opening and display the LED at the drawing location.
     const originalOpening = new THREE.Mesh(new THREE.CircleGeometry(.91, 48), skinMaterial);

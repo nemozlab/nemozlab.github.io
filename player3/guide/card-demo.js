@@ -970,6 +970,7 @@
                   bool exterior = true;
                   bool upperFace = false;
                   bool sideFace = false;
+                  bool frontFace = false;
                   if (axis.x > max(axis.y, axis.z) && abs(printPosition.x) > 31.0) {
                     unfolded.x -= sign(printPosition.x) * fromBack;
                     sideFace = true;
@@ -979,7 +980,13 @@
                   } else if (axis.z >= axis.y && printNormal.z < 0.0 && printPosition.z < -24.0 && printPosition.y > 2.0) {
                     unfolded.y -= fromBack;
                   } else {
-                    exterior = axis.y >= axis.z && printNormal.y > 0.0 && printPosition.y > 12.0;
+                    frontFace = axis.y >= max(axis.x, axis.z) && printNormal.y < 0.0 &&
+                      printPosition.y < 12.0;
+                    exterior = frontFace ||
+                      (axis.y >= axis.z && printNormal.y > 0.0 && printPosition.y > 12.0);
+                  }
+                  if (frontFace) {
+                    unfolded = printPosition.xz;
                   }
                   vec2 uv = vec2(0.5, 0.505) +
                     vec2(unfolded.x / najeonAspect, unfolded.y) / najeonPrintHeight;
@@ -991,11 +998,11 @@
                     if (upperFace) {
                       // Continue the rear artwork at the rear edge, then let the
                       // original cloud detail emerge toward the front band.
-                      vec2 cloudUv = vec2(0.67, 0.82) +
-                        vec2(-printPosition.x / najeonAspect, fromBack - 15.0) / najeonPrintHeight;
+                      vec2 cloudUv = vec2(0.5, 0.625) +
+                        vec2(-printPosition.x / najeonAspect, fromBack) / najeonPrintHeight;
                       vec2 cloudBorder = min(cloudUv, 1.0 - cloudUv);
                       float cloudCoverage = smoothstep(0.0, 0.045, min(cloudBorder.x, cloudBorder.y));
-                      float cloudBlend = smoothstep(5.0, 16.0, fromBack);
+                      float cloudBlend = smoothstep(1.0, 6.0, fromBack);
                       vec3 cloud = texture2D(najeonArtwork, clamp(cloudUv, 0.0, 1.0)).rgb;
                       inlayColor = mix(inlayColor, pow(cloud, vec3(2.2)) * cloudCoverage, cloudBlend);
                     }

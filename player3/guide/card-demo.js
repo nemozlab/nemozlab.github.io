@@ -930,30 +930,23 @@
             wordmark.data.set(waveform ? [91, 155, 175] : [222, 220, 233], i);
           }
           ink.putImageData(wordmark, 0, 0);
-          const image = najeonArtwork.image;
-          // Lift the black ground from each inlay detail so the lacquer stays continuous.
+          const band = printedEditions.najeon.face.image;
           const inlay = document.createElement('canvas');
-          inlay.width = 352;
-          inlay.height = 60;
+          inlay.width = 276;
+          inlay.height = 58;
           const detail = inlay.getContext('2d');
-          const scale = (640 / 57) * najeonPrintHeight / image.height;
-          const crop = 152 / scale;
-          detail.drawImage(image, 0, image.height * .665, crop, 60 / scale, 12, 0, 152, 60);
-          detail.drawImage(image, image.width - crop, image.height * .685,
-            crop, 60 / scale, 184, 0, 152, 60);
-          const pixels = detail.getImageData(0, 0, 352, 60);
-          for (let y = 0; y < 60; y++) {
-            for (let x = 0; x < 352; x++) {
-              const i = (y * 352 + x) * 4;
+          detail.drawImage(band, 197, 15, 276, 58, 0, 0, 276, 58);
+          const pixels = detail.getImageData(0, 0, 276, 58);
+          for (let y = 0; y < 58; y++) {
+            for (let x = 0; x < 276; x++) {
+              const i = (y * 276 + x) * 4;
               const light = Math.max(pixels.data[i], pixels.data[i + 1], pixels.data[i + 2]);
-              const edge = Math.min(1, y / 9, (59 - y) / 9,
-                Math.max(0, Math.min(x - 12, 163 - x) / 14) +
-                Math.max(0, Math.min(x - 184, 335 - x) / 14));
-              pixels.data[i + 3] *= edge * Math.min(1, light / 72);
+              const edge = Math.min(1, x / 20, (275 - x) / 20, y / 10, (57 - y) / 10);
+              pixels.data[i + 3] *= edge * Math.max(0, Math.min(1, (light - 55) / 80));
             }
           }
           detail.putImageData(pixels, 0, 0);
-          ink.drawImage(inlay, 145, 1);
+          ink.drawImage(inlay, 169, 2);
           ink.fillStyle = '#9ab1b6';
           ink.fillRect(5, 63, 630, 2);
         });

@@ -341,7 +341,7 @@
   stage.addEventListener('wheel', event => {
     if (event.deltaY === 0 || !event.cancelable) return;
     const overPlayer = pickModelPart ? Boolean(pickModelPart(event)) : isOverPreview(event);
-    if (!overPlayer && !event.ctrlKey && !event.metaKey) return;
+    if (!designMode && !overPlayer && !event.ctrlKey && !event.metaKey) return;
     event.preventDefault();
     setZoom(scale * (event.deltaY < 0 ? zoomFactor : 1 / zoomFactor));
   }, {passive: false});

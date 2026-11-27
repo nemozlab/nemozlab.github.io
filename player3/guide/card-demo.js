@@ -932,21 +932,21 @@
           ink.putImageData(wordmark, 0, 0);
           const band = printedEditions.najeon.face.image;
           const inlay = document.createElement('canvas');
-          inlay.width = 276;
+          inlay.width = 314;
           inlay.height = 58;
           const detail = inlay.getContext('2d');
-          detail.drawImage(band, 197, 15, 276, 58, 0, 0, 276, 58);
-          const pixels = detail.getImageData(0, 0, 276, 58);
+          detail.drawImage(band, 178, 15, 314, 58, 0, 0, 314, 58);
+          const pixels = detail.getImageData(0, 0, 314, 58);
           for (let y = 0; y < 58; y++) {
-            for (let x = 0; x < 276; x++) {
-              const i = (y * 276 + x) * 4;
+            for (let x = 0; x < 314; x++) {
+              const i = (y * 314 + x) * 4;
               const light = Math.max(pixels.data[i], pixels.data[i + 1], pixels.data[i + 2]);
-              const edge = Math.min(1, x / 20, (275 - x) / 20, y / 10, (57 - y) / 10);
-              pixels.data[i + 3] *= edge * Math.max(0, Math.min(1, (light - 55) / 80));
+              const edge = Math.min(1, x / 20, (313 - x) / 20, y / 10, (57 - y) / 10);
+              pixels.data[i + 3] *= edge * Math.max(0, Math.min(1, (light - 42) / 75));
             }
           }
           detail.putImageData(pixels, 0, 0);
-          ink.drawImage(inlay, 169, 2);
+          ink.drawImage(inlay, 150, 2);
           ink.fillStyle = '#9ab1b6';
           ink.fillRect(5, 63, 630, 2);
         });
@@ -969,11 +969,10 @@
                   float fromBack = max(0.0, 24.27 - printPosition.y);
                   bool exterior = true;
                   bool upperFace = false;
-                  bool sideFace = false;
                   bool frontFace = false;
                   if (axis.x > max(axis.y, axis.z) && abs(printPosition.x) > 31.0) {
-                    unfolded.x -= sign(printPosition.x) * fromBack;
-                    sideFace = true;
+                    float side = sign(printPosition.x);
+                    unfolded.x = -side * (34.0 - fromBack);
                   } else if (axis.z > axis.y && printNormal.z > 0.0 && printPosition.z > 24.0 && printPosition.y > 1.0) {
                     unfolded.y += fromBack;
                     upperFace = true;
@@ -998,23 +997,13 @@
                     if (upperFace) {
                       // Continue the rear artwork at the rear edge, then let the
                       // original cloud detail emerge toward the front band.
-                      vec2 cloudUv = vec2(0.5, 0.625) +
+                      vec2 cloudUv = vec2(0.5, 0.11) +
                         vec2(-printPosition.x / najeonAspect, fromBack) / najeonPrintHeight;
                       vec2 cloudBorder = min(cloudUv, 1.0 - cloudUv);
                       float cloudCoverage = smoothstep(0.0, 0.045, min(cloudBorder.x, cloudBorder.y));
                       float cloudBlend = smoothstep(1.0, 6.0, fromBack);
                       vec3 cloud = texture2D(najeonArtwork, clamp(cloudUv, 0.0, 1.0)).rgb;
                       inlayColor = mix(inlayColor, pow(cloud, vec3(2.2)) * cloudCoverage, cloudBlend);
-                    }
-                    if (sideFace) {
-                      float direction = sign(printPosition.x);
-                      vec2 stemUv = vec2(0.5 - direction * 0.38, 0.46) +
-                        vec2(direction * (fromBack - 19.0) / najeonAspect, printPosition.z) / najeonPrintHeight;
-                      vec2 stemBorder = min(stemUv, 1.0 - stemUv);
-                      float stemCoverage = smoothstep(0.0, 0.045, min(stemBorder.x, stemBorder.y));
-                      float stemBlend = smoothstep(6.0, 18.0, fromBack);
-                      vec3 stem = texture2D(najeonArtwork, clamp(stemUv, 0.0, 1.0)).rgb;
-                      inlayColor = mix(inlayColor, pow(stem, vec3(2.2)) * stemCoverage, stemBlend);
                     }
                     diffuseColor.rgb = max(diffuseColor.rgb, inlayColor);
                   }

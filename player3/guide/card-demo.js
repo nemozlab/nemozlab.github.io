@@ -916,8 +916,11 @@
           ink.fillRect(0, 0, 640, 69);
           ink.globalCompositeOperation = 'source-over';
           const image = najeonArtwork.image;
-          ink.drawImage(image, image.width * .57, image.height * .03,
-            image.width * .42, image.height * .15, 230, 3, 202, 48);
+          // Uniformly scale the floral detail into the front band.
+          const flowerHeight = image.height * .29;
+          const flowerWidth = flowerHeight * 2;
+          ink.drawImage(image, 0, image.height * .61, flowerWidth, flowerHeight,
+            271, 4, 108, 54);
           ink.fillStyle = '#9ab1b6';
           ink.fillRect(5, 63, 630, 2);
         });
@@ -926,31 +929,34 @@
           material.onBeforeCompile = shader => {
             shader.uniforms.najeonArtwork = {value: najeonArtwork};
             shader.uniforms.najeonInkActive = najeonInkActive;
+            shader.uniforms.najeonAspect = {value: najeonArtwork.image.width / najeonArtwork.image.height};
             shader.vertexShader = shader.vertexShader
               .replace('#include <common>', '#include <common>\nvarying vec3 printPosition; varying vec3 printNormal;')
               .replace('#include <begin_vertex>', '#include <begin_vertex>\nprintPosition = position; printNormal = normal;');
             shader.fragmentShader = shader.fragmentShader
-              .replace('#include <common>', '#include <common>\nvarying vec3 printPosition; varying vec3 printNormal; uniform sampler2D najeonArtwork; uniform float najeonInkActive;')
+              .replace('#include <common>', '#include <common>\nvarying vec3 printPosition; varying vec3 printNormal; uniform sampler2D najeonArtwork; uniform float najeonInkActive; uniform float najeonAspect;')
               .replace('#include <color_fragment>', `#include <color_fragment>
                 if (najeonInkActive > 0.5) {
                   vec3 axis = abs(printNormal);
-                  float width = clamp(printPosition.x / 65.0 + 0.5, 0.0, 1.0);
-                  float height = clamp((printPosition.z + 26.0) / 52.0, 0.0, 1.0);
-                  float depth = clamp(printPosition.y / 24.3, 0.0, 1.0);
-                  vec2 uv = vec2(0.53, 0.91);
+                  vec2 uv = vec2(-1.0);
+                  vec2 front = vec2(printPosition.x, printPosition.z);
+                  vec2 side = vec2(printPosition.y - 12.15, printPosition.z);
+                  vec2 top = vec2(printPosition.x, printPosition.y - 12.15);
                   if (axis.x > max(axis.y, axis.z)) {
                     uv = printNormal.x > 0.0
-                      ? vec2(mix(1.0, 0.75, depth), mix(0.0, 0.8, height))
-                      : vec2(mix(0.0, 0.25, depth), mix(0.04, 0.84, height));
+                      ? vec2(0.875, 0.40) + vec2(-side.x / najeonAspect, side.y) / 65.0
+                      : vec2(0.125, 0.44) + vec2(side.x / najeonAspect, side.y) / 65.0;
                   } else if (axis.z > axis.y && printNormal.z > 0.0 && printPosition.z > 24.0) {
-                    uv = vec2(mix(0.53, 1.0, width), mix(0.735, 1.0, depth));
+                    uv = vec2(0.765, 0.865) + vec2(top.x / najeonAspect, top.y) / 92.0;
                   } else if (axis.y >= axis.z && printNormal.y > 0.0 && printPosition.y > 12.0) {
-                    uv = vec2(mix(0.87, 0.13, width), mix(0.06, 0.948, height));
+                    uv = vec2(0.5, 0.505) + vec2(-front.x / najeonAspect, front.y) / 58.5;
                   } else if (axis.z >= axis.y && printNormal.z < 0.0 && printPosition.z < -24.0) {
-                    uv = vec2(mix(0.10, 0.90, width), mix(0.0, 0.45, depth));
+                    uv = vec2(0.5, 0.19) + vec2(top.x / najeonAspect, -top.y) / 54.0;
                   }
-                  vec3 printColor = texture2D(najeonArtwork, clamp(uv, 0.002, 0.998)).rgb;
-                  diffuseColor.rgb = max(diffuseColor.rgb, pow(printColor, vec3(2.2)));
+                  if (all(greaterThanEqual(uv, vec2(0.0))) && all(lessThanEqual(uv, vec2(1.0)))) {
+                    vec3 printColor = texture2D(najeonArtwork, uv).rgb;
+                    diffuseColor.rgb = max(diffuseColor.rgb, pow(printColor, vec3(2.2)));
+                  }
                 }`);
           };
           material.needsUpdate = true;

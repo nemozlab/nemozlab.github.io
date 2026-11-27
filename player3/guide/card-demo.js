@@ -906,8 +906,43 @@
         };
         await Promise.all(Object.entries(mockupPrints).map(async ([name, sources]) => {
           const [face, piece] = await Promise.all(sources.map(loadPrint));
-          printedEditions[name] = {face, piece};
+          const width = face.image.width;
+          const height = face.image.height;
+          const surface = canvasTexture(320, 100, ink => {
+            ink.drawImage(face.image, width * .34, 0, width * .47, height, 0, 0, 320, 100);
+          });
+          printedEditions[name] = {face, piece, surface};
         }));
+        // Project the ink onto the existing CAD surfaces so it follows the
+        // molded edges and leaves the modeled openings and controls intact.
+        const printMap = {value: printedEditions.najeon.face};
+        const printEnabled = {value: 0};
+        for (const material of [shell, skinMaterial]) {
+          material.onBeforeCompile = shader => {
+            shader.uniforms.editionInk = printMap;
+            shader.uniforms.editionInkEnabled = printEnabled;
+            shader.vertexShader = shader.vertexShader
+              .replace('#include <common>', '#include <common>\nvarying vec3 inkPosition; varying vec3 inkNormal;')
+              .replace('#include <begin_vertex>', '#include <begin_vertex>\ninkPosition = position; inkNormal = normal;');
+            shader.fragmentShader = shader.fragmentShader
+              .replace('#include <common>', '#include <common>\nvarying vec3 inkPosition; varying vec3 inkNormal; uniform sampler2D editionInk; uniform float editionInkEnabled;')
+              .replace('#include <color_fragment>', `#include <color_fragment>
+                if (editionInkEnabled > 0.5) {
+                  vec3 axis = abs(inkNormal);
+                  vec2 coords;
+                  if (axis.x > max(axis.y, axis.z)) {
+                    coords = vec2(inkPosition.y / 24.0, inkPosition.z / 9.0);
+                  } else if (axis.z > axis.y) {
+                    coords = vec2(inkPosition.x / 65.0 + 0.5, inkPosition.y / 9.0);
+                  } else {
+                    coords = vec2(inkPosition.x / 65.0 + 0.5, inkPosition.z / 11.0);
+                  }
+                  vec3 ink = texture2D(editionInk, vec2(coords.x, 1.0 - abs(mod(coords.y, 2.0) - 1.0))).rgb;
+                  diffuseColor.rgb = pow(ink, vec3(2.2));
+                }`);
+          };
+          material.needsUpdate = true;
+        }
         const editionPrints = {
           murakami: canvasTexture(512, 352, ink => {
             const blooms = [[465, 294, 16, '#f6759e'], [429, 321, 12, '#f5c943'],
@@ -953,6 +988,8 @@
           frontMark.material.map = printedEdition?.face ||
             (selected.hasAttribute('data-pop-art') ? popArtPrint : frontPrint);
           card.material[0].map = printedEdition?.piece || artwork;
+          printEnabled.value = printedEdition ? 1 : 0;
+          if (printedEdition) printMap.value = printedEdition.surface;
           const editionPrint = editionPrints[selected.dataset.windowArt];
           glass.opacity = editionPrint || printedEdition ? .16 : .65;
           petalDecal.material.map = editionPrint || editionPrints.murakami;

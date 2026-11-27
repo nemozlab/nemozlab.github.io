@@ -416,7 +416,7 @@
       readParts('../parts.json'),
       readParts('control-parts.json'),
       new THREE.TextureLoader().loadAsync('images/card.webp?v=mymy'),
-      designMode ? new THREE.TextureLoader().loadAsync('images/basic-front-print.png?v=basic-design-markings') : null,
+      new THREE.TextureLoader().loadAsync('images/basic-front-print.png?v=basic-design-markings'),
     ]);
     const renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true});
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -516,63 +516,61 @@
     }
 
 
-    if (designMode) {
-      function printMark(parent, width, height, position, rotation, paint) {
-        const surface = document.createElement('canvas');
-        surface.width = 512;
-        surface.height = Math.round(512 * height / width);
-        const context = surface.getContext('2d');
-        context.scale(surface.width / width, surface.height / height);
-        context.translate(width / 2, height / 2);
-        context.fillStyle = context.strokeStyle = '#444b50';
-        context.lineWidth = .3;
-        context.lineCap = 'round';
-        paint(context);
-        const texture = new THREE.CanvasTexture(surface);
-        texture.encoding = THREE.sRGBEncoding;
-        const mark = new THREE.Mesh(
-          new THREE.PlaneGeometry(width, height),
-          new THREE.MeshBasicMaterial({map: texture, transparent: true, alphaTest: .25})
-        );
-        mark.position.set(...position);
-        mark.rotation.set(...rotation, 'ZXY');
-        mark.userData.printMark = true;
-        parent.add(mark);
-      }
-
-      frontPrint.encoding = THREE.sRGBEncoding;
-      const frontMark = new THREE.Mesh(
-        new THREE.PlaneGeometry(57, 6.12),
-        new THREE.MeshBasicMaterial({map: frontPrint, transparent: true, alphaTest: .25}),
+    function printMark(parent, width, height, position, rotation, paint) {
+      const surface = document.createElement('canvas');
+      surface.width = 512;
+      surface.height = Math.round(512 * height / width);
+      const context = surface.getContext('2d');
+      context.scale(surface.width / width, surface.height / height);
+      context.translate(width / 2, height / 2);
+      context.fillStyle = context.strokeStyle = '#444b50';
+      context.lineWidth = .3;
+      context.lineCap = 'round';
+      paint(context);
+      const texture = new THREE.CanvasTexture(surface);
+      texture.encoding = THREE.sRGBEncoding;
+      const mark = new THREE.Mesh(
+        new THREE.PlaneGeometry(width, height),
+        new THREE.MeshBasicMaterial({map: texture, transparent: true, alphaTest: .25})
       );
-      frontMark.position.set(0, .25, 21.2);
-      frontMark.rotation.x = Math.PI / 2;
-      frontMark.userData.printMark = true;
-      skin.add(frontMark);
+      mark.position.set(...position);
+      mark.rotation.set(...rotation, 'ZXY');
+      mark.userData.printMark = true;
+      parent.add(mark);
+    }
 
-      // Side-view artwork is aligned to the wheel and the power key in the drawing.
-      for (const [z, plus] of [[10.54, true], [.42, false]]) {
-        printMark(scene, 2.7, 2.7, [-32.57, 10.2, z], [Math.PI / 2, 0, -Math.PI / 2], context => {
-          context.lineWidth = .26;
-          context.beginPath();
-          context.moveTo(-.51, 0);
-          context.lineTo(.51, 0);
-          if (plus) {
-            context.moveTo(0, -.51);
-            context.lineTo(0, .51);
-          }
-          context.stroke();
-        });
-      }
-      printMark(scene, 3.4, 3.4, [32.72, 11.31, 1.76], [Math.PI / 2, 0, Math.PI / 2], context => {
-        context.fillStyle = '#3d4042';
-        const powerPrint = [
-          'M 0.000 -0.058 C 0.083 -0.058 0.151 -0.126 0.151 -0.209 L 0.151 -1.055 C 0.151 -1.138 0.083 -1.205 0.000 -1.205 C -0.083 -1.205 -0.150 -1.138 -0.150 -1.055 L -0.150 -0.209 C -0.150 -0.126 -0.083 -0.058 0.000 -0.058 Z',
-          'M 0.712 -0.746 C 0.648 -0.800 0.553 -0.792 0.500 -0.728 C 0.447 -0.665 0.455 -0.570 0.518 -0.517 C 0.700 -0.363 0.804 -0.139 0.804 0.098 C 0.804 0.541 0.443 0.901 0.000 0.901 C -0.443 0.901 -0.803 0.541 -0.803 0.098 C -0.803 -0.139 -0.699 -0.363 -0.518 -0.517 C -0.454 -0.570 -0.446 -0.665 -0.500 -0.728 C -0.553 -0.792 -0.648 -0.800 -0.711 -0.746 C -0.961 -0.536 -1.104 -0.228 -1.104 0.098 C -1.104 0.706 -0.609 1.202 0.000 1.202 C 0.609 1.202 1.104 0.706 1.104 0.098 C 1.104 -0.228 0.961 -0.536 0.712 -0.746 Z',
-        ].join(' ');
-        context.fill(new Path2D(powerPrint));
+    frontPrint.encoding = THREE.sRGBEncoding;
+    const frontMark = new THREE.Mesh(
+      new THREE.PlaneGeometry(57, 6.12),
+      new THREE.MeshBasicMaterial({map: frontPrint, transparent: true, alphaTest: .25}),
+    );
+    frontMark.position.set(0, .25, 21.2);
+    frontMark.rotation.x = Math.PI / 2;
+    frontMark.userData.printMark = true;
+    skin.add(frontMark);
+
+    // Side-view artwork is aligned to the wheel and the power key in the drawing.
+    for (const [z, plus] of [[10.54, true], [.42, false]]) {
+      printMark(scene, 2.7, 2.7, [-32.57, 10.2, z], [Math.PI / 2, 0, -Math.PI / 2], context => {
+        context.lineWidth = .26;
+        context.beginPath();
+        context.moveTo(-.51, 0);
+        context.lineTo(.51, 0);
+        if (plus) {
+          context.moveTo(0, -.51);
+          context.lineTo(0, .51);
+        }
+        context.stroke();
       });
     }
+    printMark(scene, 3.4, 3.4, [32.72, 11.31, 1.76], [Math.PI / 2, 0, Math.PI / 2], context => {
+      context.fillStyle = '#3d4042';
+      const powerPrint = [
+        'M 0.000 -0.058 C 0.083 -0.058 0.151 -0.126 0.151 -0.209 L 0.151 -1.055 C 0.151 -1.138 0.083 -1.205 0.000 -1.205 C -0.083 -1.205 -0.150 -1.138 -0.150 -1.055 L -0.150 -0.209 C -0.150 -0.126 -0.083 -0.058 0.000 -0.058 Z',
+        'M 0.712 -0.746 C 0.648 -0.800 0.553 -0.792 0.500 -0.728 C 0.447 -0.665 0.455 -0.570 0.518 -0.517 C 0.700 -0.363 0.804 -0.139 0.804 0.098 C 0.804 0.541 0.443 0.901 0.000 0.901 C -0.443 0.901 -0.803 0.541 -0.803 0.098 C -0.803 -0.139 -0.699 -0.363 -0.518 -0.517 C -0.454 -0.570 -0.446 -0.665 -0.500 -0.728 C -0.553 -0.792 -0.648 -0.800 -0.711 -0.746 C -0.961 -0.536 -1.104 -0.228 -1.104 0.098 C -1.104 0.706 -0.609 1.202 0.000 1.202 C 0.609 1.202 1.104 0.706 1.104 0.098 C 1.104 -0.228 0.961 -0.536 0.712 -0.746 Z',
+      ].join(' ');
+      context.fill(new Path2D(powerPrint));
+    });
 
     // The front door swings around the lower horizontal edge of the CAD mesh.
     const hinge = new THREE.Group();

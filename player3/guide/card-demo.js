@@ -2,7 +2,9 @@
   const designMode = document.documentElement.classList.contains('player-design');
   const variant = document.documentElement.dataset.design;
   const designCard = document.querySelector('#design-card');
+  const designCover = document.querySelector("#design-cover");
   let showDesignCard;
+  let showDesignCover;
   if (designMode) {
     document.querySelector('#title').textContent = '네모 플레이어 디자인';
     document.querySelector('.player-nav .guide-link').removeAttribute('aria-current');
@@ -14,11 +16,18 @@
       return;
     }
     designCard.disabled = true;
+    designCover.disabled = true;
     designCard.addEventListener('click', () => {
       const attached = designCard.getAttribute('aria-pressed') !== 'true';
       designCard.setAttribute('aria-pressed', String(attached));
       designCard.textContent = attached ? '카드 빼기' : '카드 장착';
       showDesignCard(attached);
+    });
+    designCover.addEventListener('click', () => {
+      const open = designCover.getAttribute('aria-pressed') !== 'true';
+      designCover.setAttribute('aria-pressed', String(open));
+      designCover.textContent = open ? '커버 닫기' : '커버 열기';
+      showDesignCover(open);
     });
   }
 
@@ -1060,7 +1069,9 @@
         card.visible = attached;
         render();
       };
+      showDesignCover = open => update(open ? 1 : 0);
       designCard.disabled = false;
+      designCover.disabled = false;
       render();
     }
   }
@@ -1068,6 +1079,7 @@
   function showPhotoPreview() {
     if (designMode) {
       designCard.disabled = true;
+    designCover.disabled = true;
       document.querySelector('#design-unavailable').hidden = false;
       return;
     }

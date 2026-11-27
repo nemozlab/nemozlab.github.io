@@ -1043,7 +1043,6 @@
           najeonInkActive.value = Number(najeon);
           frontMark.material.map = (najeon ? najeonFront : printedEdition?.face) ||
             (selected.hasAttribute('data-pop-art') ? popArtPrint : frontPrint);
-          card.material[0].map = printedEdition?.piece || artwork;
           const editionPrint = editionPrints[selected.dataset.windowArt];
           glass.opacity = editionPrint || printedEdition ? .16 : .65;
           petalDecal.material.map = editionPrint || editionPrints.murakami;

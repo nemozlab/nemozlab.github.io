@@ -946,47 +946,14 @@
         const stickerPrint = canvasTexture(1060, 800, ink => {
           ink.fillStyle = '#18191b';
           ink.fillRect(0, 0, 1060, 800);
-          ink.save();
-          ink.translate(88, 450);
-          ink.scale(1.25, 1.25);
-          const pearl = ink.createLinearGradient(5, 45, 146, 166);
-          pearl.addColorStop(0, '#ece0d6');
-          pearl.addColorStop(.35, '#dcebe4');
-          pearl.addColorStop(.68, '#abaac7');
-          pearl.addColorStop(1, '#81afaa');
-          ink.strokeStyle = '#b0a794';
-          ink.lineWidth = 2.6;
-          ink.lineCap = 'round';
-          ink.stroke(new Path2D('M65 117 L69 163 L60 204 L78 204 M81 117 L87 160 L83 202 L100 202'));
-          const body = new Path2D('M17 88 C42 72 62 70 87 82 C104 86 111 73 113 58 C116 38 114 24 131 15 C143 9 160 18 155 27 C150 33 142 29 136 34 C127 42 134 61 125 83 C121 106 106 123 83 127 C59 131 38 118 17 88 Z');
-          ink.fillStyle = pearl;
-          ink.fill(body);
-          const nacre = najeonArtwork.image;
-          const motifScale = 156 / (nacre.width * .23);
-          ink.save();
-          ink.clip(body);
+          const image = najeonArtwork.image;
+          const width = 250;
+          const height = width * 178 / 274;
           ink.globalCompositeOperation = 'screen';
-          ink.globalAlpha = .65;
-          ink.drawImage(nacre, nacre.width * .53, nacre.height * .28,
-            156 / motifScale, 119 / motifScale, 10, 12, 156, 119);
-          ink.restore();
-          const wing = new Path2D('M21 88 C41 81 69 79 94 88 C104 92 108 99 97 107 C76 122 42 114 21 88 Z');
-          ink.save();
-          ink.clip(wing);
-          ink.fillStyle = '#333745';
-          ink.fillRect(18, 78, 90, 45);
-          ink.drawImage(nacre, nacre.width * .44, nacre.height * .42,
-            90 / motifScale, 45 / motifScale, 18, 78, 90, 45);
-          ink.restore();
-          ink.fillStyle = '#c18b81';
-          ink.fill(new Path2D('M134 15 C141 11 149 14 153 18 L138 20 Z'));
-          ink.fillStyle = '#c7b3a0';
-          ink.fill(new Path2D('M154 21 L174 24 L153 27 Z'));
-          ink.fillStyle = '#252934';
-          ink.beginPath();
-          ink.arc(148, 21, 1.5, 0, Math.PI * 2);
-          ink.fill();
-          ink.restore();
+          ink.drawImage(image,
+            image.width * 277 / 1536, image.height * 178 / 1024,
+            image.width * 274 / 1536, image.height * 178 / 1024,
+            75, 490, width, height);
         });
         const stickerOutline = new THREE.Shape();
         stickerOutline.moveTo(-26.5, -20);

@@ -1138,9 +1138,11 @@
         };
         const stickerMaps = Object.fromEntries(Object.entries(editionArtwork).map(([key, art]) => [
           key, canvasTexture(1060, 800, ink => {
-            ink.fillStyle = '#18191b';
+            ink.fillStyle = key === 'kids' ? '#429ee0' : '#18191b';
             ink.fillRect(0, 0, 1060, 800);
-            ink.drawImage(art.image, 40, 520, 220, 220 * art.image.height / art.image.width);
+            if (key !== 'kids') {
+              ink.drawImage(art.image, 40, 520, 220, 220 * art.image.height / art.image.width);
+            }
           }),
         ]));
         function applyPalette(selected) {

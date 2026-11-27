@@ -917,7 +917,7 @@
           ink.globalCompositeOperation = 'source-over';
           const image = najeonArtwork.image;
           ink.drawImage(image, image.width * .57, image.height * .03,
-            image.width * .42, image.height * .15, 238, 7, 182, 44);
+            image.width * .42, image.height * .15, 230, 3, 202, 48);
           ink.fillStyle = '#9ab1b6';
           ink.fillRect(5, 63, 630, 2);
         });
@@ -940,14 +940,14 @@
                   vec2 uv = vec2(0.53, 0.91);
                   if (axis.x > max(axis.y, axis.z)) {
                     uv = printNormal.x > 0.0
-                      ? vec2(mix(1.0, 0.82, depth), mix(0.0, 0.53, height))
-                      : vec2(mix(0.0, 0.18, depth), mix(0.04, 0.68, height));
+                      ? vec2(mix(1.0, 0.75, depth), mix(0.0, 0.8, height))
+                      : vec2(mix(0.0, 0.25, depth), mix(0.04, 0.84, height));
                   } else if (axis.z > axis.y && printNormal.z > 0.0 && printPosition.z > 24.0) {
-                    uv = vec2(mix(0.55, 1.0, width), mix(0.82, 1.0, depth));
+                    uv = vec2(mix(0.53, 1.0, width), mix(0.735, 1.0, depth));
                   } else if (axis.y >= axis.z && printNormal.y > 0.0 && printPosition.y > 12.0) {
-                    uv = vec2(1.0 - width, height);
+                    uv = vec2(mix(0.87, 0.13, width), mix(0.06, 0.948, height));
                   } else if (axis.z >= axis.y && printNormal.z < 0.0 && printPosition.z < -24.0) {
-                    uv = vec2(width, mix(0.04, 0.18, depth));
+                    uv = vec2(mix(0.10, 0.90, width), mix(0.0, 0.45, depth));
                   }
                   vec3 printColor = texture2D(najeonArtwork, clamp(uv, 0.002, 0.998)).rgb;
                   diffuseColor.rgb = max(diffuseColor.rgb, pow(printColor, vec3(2.2)));

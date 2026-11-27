@@ -1,7 +1,6 @@
 (() => {
   const designMode = document.documentElement.classList.contains('player-design');
   const variant = document.documentElement.dataset.design;
-  const retroDesign = designMode && variant === 'retro';
   const designCard = document.querySelector('#design-card');
   let showDesignCard;
   if (designMode) {
@@ -10,12 +9,7 @@
     document.querySelector('.player-nav .design-link').setAttribute('aria-current', 'page');
     const variantLink = document.querySelector(`[data-design-link="${variant}"]`);
     variantLink.setAttribute('aria-current', 'page');
-    if (retroDesign) {
-      document.querySelector('#title').textContent = '네모 플레이어 디자인 · 레트로형';
-      document.querySelector('.design-note').textContent = 'UV 인쇄 시안 · 차콜 패널과 주황색 포인트 · 왼쪽 NEMOBI, 오른쪽 NFC PLAYER와 안테나';
-    }
-    if (variant === 'artist') {
-      document.querySelector('#title').textContent = variantLink.textContent;
+    if (variant !== 'basic') {
       document.querySelector('#design-pending').hidden = false;
       return;
     }
@@ -418,10 +412,11 @@
       if (!response.ok) throw new Error('Could not load the model');
       return response.json();
     }
-    const [parts, controls, artwork] = await Promise.all([
+    const [parts, controls, artwork, frontPrint] = await Promise.all([
       readParts('../parts.json'),
       readParts('control-parts.json'),
       new THREE.TextureLoader().loadAsync('images/card.webp?v=mymy'),
+      designMode ? new THREE.TextureLoader().loadAsync('images/basic-front-print.png') : null,
     ]);
     const renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true});
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -438,10 +433,10 @@
     rearLight.position.set(65, 110, 100);
     scene.add(key, rearLight);
 
-    const shell = new THREE.MeshStandardMaterial({color: retroDesign ? 0xaeb2b7 : 0xc5cad0, roughness: .94, side: THREE.DoubleSide});
+    const shell = new THREE.MeshStandardMaterial({color: designMode ? 0x6d6870 : 0xc5cad0, roughness: .94, side: THREE.DoubleSide});
     const glass = new THREE.MeshPhysicalMaterial({
-      color: 0x829ba8, roughness: .60, metalness: 0,
-      transparent: true, opacity: .25, depthWrite: false,
+      color: designMode ? 0x94dbe1 : 0x829ba8, roughness: .60, metalness: 0,
+      transparent: true, opacity: designMode ? .72 : .25, depthWrite: false,
     });
     const rotation = new THREE.Matrix4().makeBasis(
       new THREE.Vector3(0, 0, 1),
@@ -473,13 +468,16 @@
     const portMaterial = new THREE.MeshStandardMaterial({color: 0x4b5058, roughness: .89, side: THREE.DoubleSide});
     const ledMaterial = new THREE.MeshStandardMaterial({color: 0x9cc6ca, roughness: .75, side: THREE.DoubleSide});
     const skinMaterial = shell.clone();
+    if (designMode) skinMaterial.color.setHex(0xba8791);
     const skin = mesh('16', skinMaterial);
     for (const id of ['0', '1']) scene.add(mesh(id, shell));
     scene.add(skin);
     scene.add(mesh('13', portMaterial));
-    const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
+    const buttons = new THREE.MeshStandardMaterial({color: designMode ? 0xa8d5ae : 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
     const trackButtons = controlMesh('buttons', buttons);
-    scene.add(trackButtons, controlMesh('power', buttons));
+    const powerMaterial = buttons.clone();
+    if (designMode) powerMaterial.color.setHex(0x52716d);
+    scene.add(trackButtons, controlMesh('power', powerMaterial));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial));
     // Cover the original CAD opening and display the LED at the drawing location.
     const originalOpening = new THREE.Mesh(new THREE.CircleGeometry(.91, 48), skinMaterial);
@@ -544,53 +542,15 @@
         parent.add(mark);
       }
 
-      printMark(skin, 57, 6.5, [0, .34, 21.2], [Math.PI / 2, 0, 0], context => {
-        context.textBaseline = 'middle';
-
-        if (retroDesign) {
-          context.fillStyle = '#282b2d';
-          context.fillRect(-28.5, -3.25, 57, 6.5);
-
-          context.fillStyle = '#e88a43';
-          context.fillRect(-26.4, -1.85, .55, 3.7);
-          context.fillRect(-25.35, -1.85, .55, 3.7);
-        }
-
-        const wordmark = 'NEMOBI';
-        const wordmarkX = retroDesign ? -23.3 : -25.8;
-        context.fillStyle = retroDesign ? '#f2eee4' : '#27343c';
-        context.font = '800 3.8px "Arial Black", Arial, sans-serif';
-        context.fillText(wordmark, wordmarkX, .12);
-
-        const barsX = wordmarkX + context.measureText(wordmark).width + 1.55;
-        context.strokeStyle = retroDesign ? '#e88a43' : '#277f7a';
-        context.lineWidth = .55;
-        context.beginPath();
-        for (const [index, height] of [0.45, 1.35, 2.65, 1.75].entries()) {
-          const x = barsX + index * 1.15;
-          context.moveTo(x, .12 - height / 2);
-          context.lineTo(x, .12 + height / 2);
-        }
-        context.stroke();
-
-        context.fillStyle = retroDesign ? '#f2eee4' : '#536069';
-        const descriptor = 'NFC PLAYER';
-        context.font = '600 1.8px Arial, sans-serif';
-        context.textAlign = 'right';
-        context.fillText(descriptor, 25.8, .12);
-
-        const antennaX = 25.8 - context.measureText(descriptor).width - 2.65;
-        context.strokeStyle = context.fillStyle;
-        context.lineWidth = .21;
-        context.beginPath();
-        context.arc(antennaX, 0, .19, 0, 2 * Math.PI);
-        context.fill();
-        for (const radius of [.68, 1.19, 1.7]) {
-          context.beginPath();
-          context.arc(antennaX, 0, radius, -Math.PI / 4.5, Math.PI / 4.5);
-          context.stroke();
-        }
-      });
+      frontPrint.encoding = THREE.sRGBEncoding;
+      const frontMark = new THREE.Mesh(
+        new THREE.PlaneGeometry(57, 6.12),
+        new THREE.MeshBasicMaterial({map: frontPrint, transparent: true, alphaTest: .25}),
+      );
+      frontMark.position.set(0, .34, 21.2);
+      frontMark.rotation.x = Math.PI / 2;
+      frontMark.userData.printMark = true;
+      skin.add(frontMark);
 
       // Side-view artwork is aligned to the wheel and the power key in the drawing.
       for (const [z, plus] of [[10.54, true], [.42, false]]) {

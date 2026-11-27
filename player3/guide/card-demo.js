@@ -912,10 +912,15 @@
         const najeonPrintHeight = 58.5;
         const najeonFront = canvasTexture(640, 69, ink => {
           ink.drawImage(frontPrint.image, 0, 0, 640, 69);
-          ink.globalCompositeOperation = 'source-in';
-          ink.fillStyle = '#dedce9';
-          ink.fillRect(0, 0, 640, 69);
-          ink.globalCompositeOperation = 'source-over';
+          const wordmark = ink.getImageData(0, 0, 640, 69);
+          for (let i = 0; i < wordmark.data.length; i += 4) {
+            const red = wordmark.data[i];
+            const green = wordmark.data[i + 1];
+            const blue = wordmark.data[i + 2];
+            const waveform = green - red > 35 && blue - red > 35;
+            wordmark.data.set(waveform ? [91, 155, 175] : [222, 220, 233], i);
+          }
+          ink.putImageData(wordmark, 0, 0);
           const image = najeonArtwork.image;
           // Lift the black ground from each inlay detail so the lacquer stays continuous.
           const inlay = document.createElement('canvas');
@@ -958,24 +963,26 @@
               .replace('#include <color_fragment>', `#include <color_fragment>
                 if (najeonInkActive > 0.5) {
                   vec3 axis = abs(printNormal);
-                  vec2 uv = vec2(-1.0);
-                  vec2 front = vec2(printPosition.x, printPosition.z);
-                  vec2 side = vec2(printPosition.y - 12.15, printPosition.z);
-                  vec2 top = vec2(printPosition.x, printPosition.y - 12.15);
+                  vec2 unfolded = vec2(-printPosition.x, printPosition.z);
+                  float fromBack = max(0.0, 24.27 - printPosition.y);
+                  bool exterior = true;
                   if (axis.x > max(axis.y, axis.z) && abs(printPosition.x) > 31.0) {
-                    uv = printNormal.x > 0.0
-                      ? vec2(0.875, 0.40) + vec2(-side.x / najeonAspect, side.y) / najeonPrintHeight
-                      : vec2(0.125, 0.44) + vec2(side.x / najeonAspect, side.y) / najeonPrintHeight;
+                    unfolded.x -= sign(printPosition.x) * fromBack;
                   } else if (axis.z > axis.y && printNormal.z > 0.0 && printPosition.z > 24.0 && printPosition.y > 1.0) {
-                    uv = vec2(0.765, 0.865) + vec2(top.x / najeonAspect, top.y) / najeonPrintHeight;
-                  } else if (axis.y >= axis.z && printNormal.y > 0.0 && printPosition.y > 12.0) {
-                    uv = vec2(0.5, 0.505) + vec2(-front.x / najeonAspect, front.y) / najeonPrintHeight;
+                    unfolded.y += fromBack;
                   } else if (axis.z >= axis.y && printNormal.z < 0.0 && printPosition.z < -24.0 && printPosition.y > 2.0) {
-                    uv = vec2(0.5, 0.19) + vec2(top.x / najeonAspect, -top.y) / najeonPrintHeight;
+                    unfolded.y -= fromBack;
+                  } else {
+                    exterior = axis.y >= axis.z && printNormal.y > 0.0 && printPosition.y > 12.0;
                   }
-                  if (all(greaterThanEqual(uv, vec2(0.0))) && all(lessThanEqual(uv, vec2(1.0)))) {
-                    vec3 printColor = texture2D(najeonArtwork, uv).rgb;
-                    diffuseColor.rgb = max(diffuseColor.rgb, pow(printColor, vec3(2.2)));
+                  vec2 uv = vec2(0.5, 0.505) +
+                    vec2(unfolded.x / najeonAspect, unfolded.y) / najeonPrintHeight;
+                  if (exterior) {
+                    vec2 border = min(uv, 1.0 - uv);
+                    float coverage = smoothstep(0.0, 0.045, min(border.x, border.y));
+                    vec3 printColor = texture2D(najeonArtwork, clamp(uv, 0.0, 1.0)).rgb;
+                    diffuseColor.rgb = mix(diffuseColor.rgb,
+                      max(diffuseColor.rgb, pow(printColor, vec3(2.2))), coverage);
                   }
                 }`);
           };

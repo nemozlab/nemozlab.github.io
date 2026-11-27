@@ -977,11 +977,11 @@
                   } else if (axis.z > axis.y && printNormal.z > 0.0 && printPosition.z > 24.0 && printPosition.y > 1.0) {
                     unfolded.y += fromBack;
                     upperFace = true;
-                  } else if (axis.z >= axis.y && printNormal.z < 0.0 && printPosition.z < -24.0 && printPosition.y > 2.0) {
+                  } else if (axis.z >= axis.y && printNormal.z < 0.0 && printPosition.z < -25.5 && printPosition.y > 2.0) {
                     unfolded.y -= fromBack;
                   } else {
                     frontFace = axis.y >= max(axis.x, axis.z) && printNormal.y < 0.0 &&
-                      printPosition.y < 12.0;
+                      printPosition.y < 1.0 && printPosition.z > 17.0;
                     exterior = frontFace ||
                       (axis.y >= axis.z && printNormal.y > 0.0 && printPosition.y > 12.0);
                   }

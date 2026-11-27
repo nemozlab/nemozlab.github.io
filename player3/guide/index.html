@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
   <link rel="stylesheet" href="../player-header.css?v=stable-layout">
-  <link rel="stylesheet" href="guide.css?v=basic-design-header">
+  <link rel="stylesheet" href="guide.css?v=part-colors">
   <script>
     try {
       const preferredLanguage = localStorage.getItem('nemo-lang');
@@ -22,7 +22,7 @@
     if (params.get('view') === 'design') {
       const variant = params.get('type');
       document.documentElement.classList.add('player-design');
-      document.documentElement.dataset.design = ['retro', 'artist'].includes(variant) ? variant : 'basic';
+      document.documentElement.dataset.design = variant === 'artist' ? 'artist' : ['color', 'retro'].includes(variant) ? 'color' : 'basic';
       document.title = '네모 플레이어 디자인';
     }
   </script>
@@ -62,13 +62,20 @@
         <a href="#sounds">안내음</a>
       </nav>
       <nav class="design-menu section-tabs view-menu" aria-label="디자인 유형">
-        <a href="./?view=design" data-design-link="basic">기본형</a>
-        <a href="./?view=design&amp;type=retro" data-design-link="retro">레트로형</a>
-        <a href="./?view=design&amp;type=artist" data-design-link="artist">아티형</a>
+        <a href="./?view=design" data-design-link="basic">기본</a>
+        <a href="./?view=design&amp;type=color" data-design-link="color">컬러</a>
+        <a href="./?view=design&amp;type=artist" data-design-link="artist">아티스트</a>
       </nav>
       <p id="design-pending" hidden>준비중</p>
       <div class="design-options" role="group" aria-label="카드 장착 상태">
         <button type="button" id="design-card" aria-pressed="false">카드 장착</button>
+      </div>
+      <div class="design-options color-options" role="group" aria-label="컬러 선택">
+        <button type="button" data-palette="777276,ba8791,94dbe1,a8d5ae,52716d" aria-pressed="true">로즈 민트</button>
+        <button type="button" data-palette="3f454e,8b9cab,849cb5,e2e8ee,738397" aria-pressed="false">슬레이트 블루</button>
+        <button type="button" data-palette="4b5147,9aab86,c5d9ad,e7e2c7,68785e" aria-pressed="false">세이지 크림</button>
+        <button type="button" data-palette="655d74,b3a3cd,d8c9ea,e3d8ef,867597" aria-pressed="false">라벤더</button>
+        <button type="button" data-palette="524641,c69682,e5b59d,f0d6b7,a67561" aria-pressed="false">테라코타</button>
       </div>
       <div class="demo-views" role="group" aria-label="플레이어 보는 방향" hidden>
         <button type="button" data-view="home" data-yaw="45" aria-label="기본 각도, 오른쪽 앞 45도" aria-pressed="true">기본</button>
@@ -377,6 +384,6 @@
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="../language-picker.js?v=1"></script>
   <script defer src="guide.js?v=language-picker"></script>
-  <script defer src="card-demo.js?v=original-materials"></script>
+  <script defer src="card-demo.js?v=part-colors"></script>
 </body>
 </html>

@@ -9,7 +9,7 @@
     document.querySelector('.player-nav .design-link').setAttribute('aria-current', 'page');
     const variantLink = document.querySelector(`[data-design-link="${variant}"]`);
     variantLink.setAttribute('aria-current', 'page');
-    if (variant !== 'basic') {
+    if (variant === 'artist') {
       document.querySelector('#design-pending').hidden = false;
       return;
     }
@@ -474,7 +474,8 @@
     scene.add(mesh('13', portMaterial));
     const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
     const trackButtons = controlMesh('buttons', buttons);
-    scene.add(trackButtons, controlMesh('power', buttons));
+    const powerMaterial = variant === 'color' ? buttons.clone() : buttons;
+    scene.add(trackButtons, controlMesh('power', powerMaterial));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial));
     // Cover the original CAD opening and display the LED at the drawing location.
     const originalOpening = new THREE.Mesh(new THREE.CircleGeometry(.91, 48), skinMaterial);
@@ -840,6 +841,22 @@
     resize();
     update(step);
     if (designMode) {
+      if (variant === 'color') {
+        const choices = [...document.querySelectorAll('[data-palette]')];
+        const materials = [shell, skinMaterial, glass, buttons, powerMaterial];
+        function applyPalette(selected) {
+          selected.dataset.palette.split(',').forEach((hex, index) => {
+            materials[index].color.setStyle(`#${hex}`).convertSRGBToLinear();
+          });
+          glass.opacity = .65;
+          for (const choice of choices) {
+            choice.setAttribute('aria-pressed', String(choice === selected));
+          }
+          render();
+        }
+        for (const choice of choices) choice.addEventListener('click', () => applyPalette(choice));
+        applyPalette(choices[0]);
+      }
       card.visible = false;
       showDesignCard = attached => {
         card.visible = attached;

@@ -64,11 +64,12 @@
   let pickModelPart;
   let cardNeedsStowing;
   const minZoom = .55;
-  const maxZoom = 1.75;
+  const maxZoom = 3;
   const zoomFactor = 1.12;
   let scale = 1;
   let pointer;
   let zoomModel;
+  let panModel;
   const touches = new Map();
   let pinchDistance;
   let dragged = false;
@@ -273,8 +274,12 @@
   }
 
 
+  stage.addEventListener('contextmenu', event => {
+    if (panModel) event.preventDefault();
+  });
+
   stage.addEventListener('pointerdown', event => {
-    if (event.button !== 0) return;
+    if (event.button !== 0 && !(event.button === 2 && panModel)) return;
     stage.setPointerCapture(event.pointerId);
     if (event.pointerType === 'touch') {
       touches.set(event.pointerId, {x: event.clientX, y: event.clientY});
@@ -287,13 +292,15 @@
     }
     if (!event.isPrimary) return;
     dragged = false;
-    pointer = {id: event.pointerId, x: event.clientX, y: event.clientY, lastX: event.clientX, lastY: event.clientY};
+    pointer = {id: event.pointerId, pan: event.button === 2 || event.shiftKey, x: event.clientX, y: event.clientY, lastX: event.clientX, lastY: event.clientY};
   });
 
   stage.addEventListener('pointermove', event => {
     if (touches.has(event.pointerId)) {
+      const prior = touches.get(event.pointerId);
       touches.set(event.pointerId, {x: event.clientX, y: event.clientY});
       if (touches.size >= 2) {
+        panModel?.((event.clientX - prior.x) / 2, (event.clientY - prior.y) / 2);
         const distance = distanceBetweenTouches();
         if (pinchDistance > 0) setZoom(scale * distance / pinchDistance);
         pinchDistance = distance;
@@ -306,7 +313,10 @@
     if (!dragged && Math.hypot(dx, dy) < 5) return;
     dragged = true;
     if (!rotateModel) return;
-    rotateModel((event.clientX - pointer.lastX) / 18, (event.clientY - pointer.lastY) / 18);
+    const moveX = event.clientX - pointer.lastX;
+    const moveY = event.clientY - pointer.lastY;
+    if (pointer.pan) panModel?.(moveX, moveY);
+    else rotateModel(moveX / 18, moveY / 18);
     pointer.lastX = event.clientX;
     pointer.lastY = event.clientY;
     stage.classList.add('is-dragging');
@@ -625,6 +635,7 @@
       view, [THREE.MathUtils.degToRad(Number(yaw)), Number(yaw) % 90 === 0 ? 0 : .35],
     ]));
     views.top = [0, Math.PI / 2];
+    const panOffset = new THREE.Vector2();
     const viewTarget = new THREE.Vector3(0, -2, 0);
     const viewAngles = new THREE.Euler();
     const modelMeshes = [];
@@ -661,7 +672,9 @@
       const height = mobileViewer.matches ? fitHeight / .68 : fitHeight * desktopHeightRatio;
 
       findFrameBounds(camera.matrixWorldInverse);
-      const {x: centerX, y: centerY} = frameBounds.getCenter(frameCenter);
+      frameBounds.getCenter(frameCenter);
+      const centerX = frameCenter.x + panOffset.x;
+      const centerY = frameCenter.y + panOffset.y;
       const halfWidth = height * aspect / 2;
       camera.left = centerX - halfWidth;
       camera.right = centerX + halfWidth;
@@ -681,6 +694,7 @@
     }
 
     function setCameraView(name, resetZoom = false) {
+      panOffset.set(0, 0);
       cancelAnimationFrame(cameraFrame);
       const orientation = viewOrientation(name);
       if (reducedMotion.matches || !stage.classList.contains('has-model')) {
@@ -811,7 +825,7 @@
       observer.disconnect();
       cancelAnimationFrame(frame);
       cancelAnimationFrame(cameraFrame);
-      zoomModel = null;
+      zoomModel = panModel = null;
       transitioning = false;
       stopAutomatic();
       selectModelView = toggleModelSkin = resetSkin = rotateModel = pickModelPart = cardNeedsStowing = null;
@@ -825,6 +839,13 @@
     drawModel = update;
     canvas.hidden = false;
     preview.hidden = true;
+    panModel = (dx, dy) => {
+      cancelAnimationFrame(cameraFrame);
+      const unitsPerPixel = (camera.top - camera.bottom) / (camera.zoom * stage.clientHeight);
+      panOffset.x -= dx * unitsPerPixel;
+      panOffset.y += dy * unitsPerPixel;
+      render();
+    };
     zoomModel = zoom => {
       cancelAnimationFrame(cameraFrame);
       camera.zoom = zoom;

@@ -881,24 +881,43 @@
           ink.fill(new Path2D('M0 1 C-.8 .4 -1 -1 -.25 -.9 L0 -.65 .25 -.9 C1 -1 .8 .4 0 1Z'));
           ink.restore();
         }
-        const petals = [[55,45,14,-.6],[95,52,10,.4],[135,69,9,1.1],
-          [45,84,10,-.1],[75,110,8,.7],[172,89,6,-.4],[62,157,6,.8],
-          [446,284,8,-.5],[466,310,12,.8],[421,326,7,-.6]];
         const windowPrint = canvasTexture(512, 352, ink => {
-          petals.forEach(([x,y,size,angle], i) => {
-            petal(ink, x, y, size * 1.15, angle, i % 3 ? '#ee91b3' : '#fbd0df');
-          });
-          for (const [x, y, size] of [[56, 54, 15], [108, 96, 12], [42, 135, 9], [469, 318, 11]]) {
-            for (let i = 0; i < 5; i++) {
-              const angle = i * Math.PI * .4;
-              petal(ink, x + Math.sin(angle) * size, y - Math.cos(angle) * size,
-                size, angle, i % 2 ? '#ed8eaf' : '#ffc0d4');
-            }
-            ink.fillStyle = '#fff1d8';
-            ink.beginPath();
-            ink.arc(x, y, size * .3, 0, Math.PI * 2);
-            ink.fill();
+          ink.lineCap = 'round';
+          ink.strokeStyle = '#735066';
+          const branches = [
+            [15, 'M504 350 Q469 249 462 157 Q449 99 474 22'],
+            [8, 'M468 210 Q427 166 361 133 Q335 118 321 87'],
+            [7, 'M465 162 Q492 117 507 85'],
+            [6, 'M457 126 Q413 97 385 46'],
+            [4, 'M398 154 Q371 157 341 144'],
+            [4, 'M440 109 Q430 63 437 34'],
+          ];
+          for (const [width, path] of branches) {
+            ink.lineWidth = width;
+            ink.stroke(new Path2D(path));
           }
+
+          const clusters = [[321,86,23],[351,115,27],[360,143,20],
+            [391,58,30],[417,89,25],[437,33,31],[465,43,30],
+            [483,73,29],[501,107,28],[477,133,24],[435,132,19]];
+          const colors = ['#fff3f8','#ffd0e4','#f4a3c7','#d884b3'];
+          for (const [x, y, radius] of clusters) {
+            for (let i = 0; i < 28; i++) {
+              const angle = i * 2.39996;
+              const distance = radius * Math.sqrt(i / 28);
+              petal(ink, x + Math.cos(angle) * distance,
+                y + Math.sin(angle) * distance, 3 + i % 5,
+                angle, colors[i % colors.length]);
+            }
+          }
+
+          const driftingPetals = [[301,124,7],[273,96,5],[249,153,8],
+            [209,126,6],[170,153,5],[129,126,7],[98,178,5],[57,159,6],
+            [281,209,7],[231,225,5],[171,258,7],[104,228,4],[50,273,5],
+            [355,228,6],[318,267,4],[251,298,7],[197,320,4],[72,317,6]];
+          driftingPetals.forEach(([x, y, size], i) => {
+            petal(ink, x, y, size, i * .89, colors[i % 3]);
+          });
         });
         const petalDecal = new THREE.Mesh(new THREE.PlaneGeometry(62, 42.6),
           new THREE.MeshBasicMaterial({map: windowPrint, transparent: true, depthWrite: false}));

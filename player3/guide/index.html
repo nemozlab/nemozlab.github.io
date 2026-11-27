@@ -85,8 +85,9 @@
         <button type="button" data-view="top" aria-pressed="false">윗면</button>
       </div>
       <div class="demo-viewer">
-        <div class="design-options" style="padding: 0 12px 12px" role="group" aria-label="카드 조작">
+        <div class="design-options" style="padding: 0 12px 12px" role="group" aria-label="카드 및 커버 조작">
           <button type="button" id="design-card" aria-pressed="false">카드 장착</button>
+          <button type="button" id="design-cover" aria-pressed="false" disabled>커버 열기</button>
         </div>
         <button class="demo-stage" type="button" id="demo-stage" aria-label="플레이어에서 커버 열기" disabled>
           <span class="demo-preview" hidden>
@@ -378,6 +379,6 @@
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script defer src="../language-picker.js?v=1"></script>
   <script defer src="guide.js?v=language-picker"></script>
-  <script defer src="card-demo.js?v=yongyong-default"></script>
+  <script defer src="card-demo.js?v=design-cover-toggle"></script>
 </body>
 </html>

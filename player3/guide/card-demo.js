@@ -958,10 +958,26 @@
           ink.lineWidth = 2.6;
           ink.lineCap = 'round';
           ink.stroke(new Path2D('M65 117 L69 163 L60 204 L78 204 M81 117 L87 160 L83 202 L100 202'));
+          const body = new Path2D('M17 88 C42 72 62 70 87 82 C104 86 111 73 113 58 C116 38 114 24 131 15 C143 9 160 18 155 27 C150 33 142 29 136 34 C127 42 134 61 125 83 C121 106 106 123 83 127 C59 131 38 118 17 88 Z');
           ink.fillStyle = pearl;
-          ink.fill(new Path2D('M17 88 C42 72 62 70 87 82 C104 86 111 73 113 58 C116 38 114 24 131 15 C143 9 160 18 155 27 C150 33 142 29 136 34 C127 42 134 61 125 83 C121 106 106 123 83 127 C59 131 38 118 17 88 Z'));
-          ink.fillStyle = '#3d4550';
-          ink.fill(new Path2D('M18 88 C42 83 63 88 77 105 C60 108 43 104 31 101 L18 88 Z M148 29 C141 29 139 31 136 34 L134 42 C140 36 148 35 153 31 Z'));
+          ink.fill(body);
+          const nacre = najeonArtwork.image;
+          const motifScale = 156 / (nacre.width * .23);
+          ink.save();
+          ink.clip(body);
+          ink.globalCompositeOperation = 'screen';
+          ink.globalAlpha = .65;
+          ink.drawImage(nacre, nacre.width * .53, nacre.height * .28,
+            156 / motifScale, 119 / motifScale, 10, 12, 156, 119);
+          ink.restore();
+          const wing = new Path2D('M21 88 C41 81 69 79 94 88 C104 92 108 99 97 107 C76 122 42 114 21 88 Z');
+          ink.save();
+          ink.clip(wing);
+          ink.fillStyle = '#333745';
+          ink.fillRect(18, 78, 90, 45);
+          ink.drawImage(nacre, nacre.width * .44, nacre.height * .42,
+            90 / motifScale, 45 / motifScale, 18, 78, 90, 45);
+          ink.restore();
           ink.fillStyle = '#c18b81';
           ink.fill(new Path2D('M134 15 C141 11 149 14 153 18 L138 20 Z'));
           ink.fillStyle = '#c7b3a0';

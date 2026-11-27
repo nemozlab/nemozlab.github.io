@@ -416,7 +416,7 @@
       readParts('../parts.json'),
       readParts('control-parts.json'),
       new THREE.TextureLoader().loadAsync('images/card.webp?v=mymy'),
-      designMode ? new THREE.TextureLoader().loadAsync('images/basic-front-print.png') : null,
+      designMode ? new THREE.TextureLoader().loadAsync('images/basic-front-print.png?v=basic-design-markings') : null,
     ]);
     const renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true});
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -547,14 +547,14 @@
         new THREE.PlaneGeometry(57, 6.12),
         new THREE.MeshBasicMaterial({map: frontPrint, transparent: true, alphaTest: .25}),
       );
-      frontMark.position.set(0, .34, 21.2);
+      frontMark.position.set(0, .25, 21.2);
       frontMark.rotation.x = Math.PI / 2;
       frontMark.userData.printMark = true;
       skin.add(frontMark);
 
       // Side-view artwork is aligned to the wheel and the power key in the drawing.
       for (const [z, plus] of [[10.54, true], [.42, false]]) {
-        printMark(scene, 2.7, 2.7, [-32.58, 12.53, z], [Math.PI / 2, 0, -Math.PI / 2], context => {
+        printMark(scene, 2.7, 2.7, [-32.57, 10.2, z], [Math.PI / 2, 0, -Math.PI / 2], context => {
           context.lineWidth = .26;
           context.beginPath();
           context.moveTo(-.51, 0);
@@ -566,7 +566,7 @@
           context.stroke();
         });
       }
-      printMark(scene, 3.4, 3.4, [32.7, 11.31, 3.79], [Math.PI / 2, 0, Math.PI / 2], context => {
+      printMark(scene, 3.4, 3.4, [32.72, 11.31, 1.76], [Math.PI / 2, 0, Math.PI / 2], context => {
         context.fillStyle = '#3d4042';
         const powerPrint = [
           'M 0.000 -0.058 C 0.083 -0.058 0.151 -0.126 0.151 -0.209 L 0.151 -1.055 C 0.151 -1.138 0.083 -1.205 0.000 -1.205 C -0.083 -1.205 -0.150 -1.138 -0.150 -1.055 L -0.150 -0.209 C -0.150 -0.126 -0.083 -0.058 0.000 -0.058 Z',

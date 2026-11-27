@@ -67,9 +67,6 @@
         <a href="./?view=design&amp;type=artist" data-design-link="artist">아티스트</a>
       </nav>
       <p id="design-pending" hidden>준비중</p>
-      <div class="design-options" role="group" aria-label="카드 장착 상태">
-        <button type="button" id="design-card" aria-pressed="false">카드 장착</button>
-      </div>
       <div class="design-options color-options" role="group" aria-label="에디션 선택">
         <button type="button" data-palette="244bdb,ffd630,ff438a,54ebbd,ff782f" aria-pressed="true">팝아트</button>
         <button type="button" data-palette="f0e8da,f6ece4,e4e4e4,e9b6c0,e9b6c0" data-sakura aria-pressed="false">SAKURA</button>
@@ -96,6 +93,9 @@
           </span>
           <canvas class="demo-canvas" aria-hidden="true" hidden></canvas>
         </button>
+        <div class="design-options" style="padding: 0 12px 12px" role="group" aria-label="카드 조작">
+          <button type="button" id="design-card" aria-pressed="false">카드 장착</button>
+        </div>
         <div class="demo-viewer-toolbar">
           <div class="demo-actions" role="group" aria-label="재생 조작">
             <button class="demo-reset" type="button" id="demo-reset" aria-label="홈, 처음부터" title="처음부터" hidden>

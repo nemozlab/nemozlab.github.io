@@ -949,11 +949,17 @@
           const image = najeonArtwork.image;
           const width = 250;
           const height = width * 178 / 274;
+          ink.save();
+          ink.translate(28, 775);
+          ink.rotate(-Math.PI / 14);
+          ink.translate(0, -height);
+          ink.clip(new Path2D('M 58 0 H 250 V 164 H 0 V 136 L 52 87 Z'));
           ink.globalCompositeOperation = 'screen';
           ink.drawImage(image,
             image.width * 277 / 1536, image.height * 178 / 1024,
             image.width * 274 / 1536, image.height * 178 / 1024,
-            75, 490, width, height);
+            0, 0, width, height);
+          ink.restore();
         });
         const stickerOutline = new THREE.Shape();
         stickerOutline.moveTo(-26.5, -20);

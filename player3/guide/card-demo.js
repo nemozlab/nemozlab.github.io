@@ -844,11 +844,73 @@
       if (variant === 'color') {
         const choices = [...document.querySelectorAll('[data-palette]')];
         const materials = [shell, skinMaterial, glass, buttons, powerMaterial];
+        const canvasTexture = (width, height, paint) => {
+          const surface = document.createElement('canvas');
+          surface.width = width;
+          surface.height = height;
+          paint(surface.getContext('2d'));
+          const texture = new THREE.CanvasTexture(surface);
+          texture.encoding = THREE.sRGBEncoding;
+          return texture;
+        };
+        function petal(ink, x, y, size, angle, color) {
+          ink.save();
+          ink.translate(x, y);
+          ink.rotate(angle);
+          ink.scale(size, size);
+          ink.fillStyle = color;
+          ink.fill(new Path2D('M0 1 C-.8 .4 -1 -1 -.25 -.9 L0 -.65 .25 -.9 C1 -1 .8 .4 0 1Z'));
+          ink.restore();
+        }
+        const petals = [[55,45,14,-.6],[95,52,10,.4],[135,69,9,1.1],
+          [45,84,10,-.1],[75,110,8,.7],[172,89,6,-.4],[62,157,6,.8],
+          [446,284,8,-.5],[466,310,12,.8],[421,326,7,-.6]];
+        const windowPrint = canvasTexture(512, 352, ink => {
+          petals.forEach(([x,y,size,angle], i) => {
+            petal(ink, x, y, size, angle, i % 3 ? '#efadbd' : '#fff6f3');
+          });
+        });
+        const petalDecal = new THREE.Mesh(new THREE.PlaneGeometry(62, 42.6),
+          new THREE.MeshBasicMaterial({map: windowPrint, transparent: true, depthWrite: false}));
+        petalDecal.rotation.x = Math.PI / 2;
+        petalDecal.position.set(0, -2.05, 19.5);
+        petalDecal.renderOrder = 2;
+        hinge.add(petalDecal);
+        const sakuraArtwork = canvasTexture(600, 400, ink => {
+          const sky = ink.createLinearGradient(0, 0, 0, 400);
+          sky.addColorStop(0, '#f8e4ea');
+          sky.addColorStop(.56, '#fff2e5');
+          sky.addColorStop(1, '#8fa9ba');
+          ink.fillStyle = sky;
+          ink.fillRect(0, 0, 600, 400);
+          ink.fillStyle = '#9ba9bf';
+          ink.fill(new Path2D('M0 244 Q80 200 152 222 T331 212 Q434 150 600 211 L600 255 L0 255Z'));
+          ink.strokeStyle = '#fff3ec';
+          ink.lineWidth = 2;
+          for (let y = 266; y < 390; y += 17) {
+            ink.beginPath();
+            ink.moveTo(180 + y % 60, y);
+            ink.lineTo(430 - y % 80, y);
+            ink.stroke();
+          }
+          ink.strokeStyle = '#88636a';
+          ink.lineWidth = 5;
+          ink.stroke(new Path2D('M0 58 Q91 96 230 40 M78 77 Q131 107 183 120 M118 75 Q142 45 165 30'));
+          for (const [x,y] of [[28,68],[67,79],[105,73],[149,57],[167,37],[197,53],[219,42],[135,107],[175,119]]) {
+            for (let i = 0; i < 5; i++) {
+              const angle = i * Math.PI * .4;
+              petal(ink, x + Math.sin(angle) * 7, y - Math.cos(angle) * 7, 6, angle, '#e9a4b8');
+            }
+          }
+        });
         function applyPalette(selected) {
           selected.dataset.palette.split(',').forEach((hex, index) => {
             materials[index].color.setStyle(`#${hex}`).convertSRGBToLinear();
           });
-          glass.opacity = .65;
+          const sakura = selected.hasAttribute('data-sakura');
+          glass.opacity = sakura ? .16 : .65;
+          petalDecal.visible = sakura;
+          card.material[0].map = sakura ? sakuraArtwork : artwork;
           for (const choice of choices) {
             choice.setAttribute('aria-pressed', String(choice === selected));
           }

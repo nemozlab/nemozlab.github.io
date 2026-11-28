@@ -50,7 +50,15 @@
   ];
   let trackIndex = 0;
   const viewMenu = document.querySelector('.demo-views');
-  const viewButtons = [...viewMenu.querySelectorAll('button')];
+  const viewButtons = [...viewMenu.querySelectorAll('[data-view]')];
+  const viewer = stage.closest('.demo-viewer');
+  const fullscreen = document.querySelector('#demo-fullscreen');
+  const expand = document.querySelector('#demo-expand');
+  const closeFullscreen = document.querySelector('#demo-fullscreen-close');
+  const mobileFullscreen = matchMedia('(max-width: 730px), (max-height: 560px) and (pointer: coarse)');
+  const supportsFullscreen = !designMode && typeof fullscreen.showModal === 'function';
+  let fullscreenTrigger;
+  let fullscreenScrollTop;
   const skinPanel = document.querySelector('.demo-skin');
   const skinToggle = document.querySelector('#demo-skin-toggle');
   const skinSwatches = [...skinPanel.querySelectorAll('[data-color]')];
@@ -91,6 +99,33 @@
   let transitioning = false;
   let automatic = false;
   let autoTimer;
+
+  function openFullscreen() {
+    if (!supportsFullscreen || !mobileFullscreen.matches || fullscreen.open) return;
+    const trigger = document.activeElement;
+    fullscreenTrigger = viewMenu.contains(trigger) || viewer.contains(trigger) ? trigger : expand;
+    fullscreenScrollTop = window.scrollY;
+    fullscreen.append(viewMenu, viewer);
+    fullscreen.showModal();
+  }
+
+  function syncFullscreen() {
+    expand.hidden = !mobileFullscreen.matches;
+    if (expand.hidden && fullscreen.open) fullscreen.close();
+  }
+
+  if (supportsFullscreen) {
+    expand.addEventListener('click', openFullscreen);
+    closeFullscreen.addEventListener('click', () => fullscreen.close());
+    fullscreen.addEventListener('close', () => {
+      fullscreen.before(viewMenu, viewer);
+      window.scrollTo(window.scrollX, fullscreenScrollTop);
+      const trigger = fullscreenTrigger?.getClientRects().length ? fullscreenTrigger : stage;
+      trigger.focus({preventScroll: true});
+    });
+    mobileFullscreen.addEventListener('change', syncFullscreen);
+    syncFullscreen();
+  }
 
   function canPlay() {
     return !transitioning && (step === 0 || step === steps.length);
@@ -192,8 +227,16 @@
     show();
   }
 
+  function advanceFromInteraction() {
+    if (transitioning) return;
+    openFullscreen();
+    advance();
+  }
+
   function togglePlayback() {
     if (audio.paused || audio.ended) {
+      if (!canPlay()) return;
+      openFullscreen();
       play();
     } else {
       pausePlayback();
@@ -203,6 +246,7 @@
 
   function changeTrack(direction) {
     if (!canPlay()) return;
+    openFullscreen();
     pausePlayback();
     trackIndex = (trackIndex + direction + tracks.length) % tracks.length;
     const track = tracks[trackIndex];
@@ -244,17 +288,17 @@
     dragged = false;
     if (automatic || transitioning || (wasDragged && !keyboard)) return;
     if (keyboard) {
-      advance();
+      advanceFromInteraction();
       return;
     }
     if (pickModelPart) {
       const part = pickModelPart(event);
       if (part === 'play') togglePlayback();
       else if (part === 'previous' || part === 'next') changeTrack(part === 'previous' ? -1 : 1);
-      else if (part === 'model') advance();
+      else if (part === 'model') advanceFromInteraction();
       return;
     }
-    if (isOverPreview(event)) advance();
+    if (isOverPreview(event)) advanceFromInteraction();
   });
 
   function isOverPreview(event) {
@@ -375,7 +419,7 @@
     rotateModel(...movement[event.key]);
   });
   next.addEventListener('click', () => {
-    if (!automatic) advance();
+    if (!automatic) advanceFromInteraction();
   });
 
   function restart(onComplete) {
@@ -406,6 +450,7 @@
       stopAutomatic();
       return;
     }
+    openFullscreen();
     automatic = true;
     syncControls();
     restart(() => queueStep(250));
@@ -683,7 +728,7 @@
       findFrameBounds(homeViewMatrix);
       frameBounds.getSize(frameSize);
       const fitHeight = Math.max(62, frameSize.y / .88, frameSize.x / (.9 * aspect * desktopHeightRatio));
-      const height = mobileViewer.matches ? fitHeight / .68 : fitHeight * desktopHeightRatio;
+      const height = mobileViewer.matches && !fullscreen.open ? fitHeight / .68 : fitHeight * desktopHeightRatio;
 
       findFrameBounds(camera.matrixWorldInverse);
       frameBounds.getCenter(frameCenter);

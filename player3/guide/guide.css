@@ -249,7 +249,6 @@ details p { color: var(--muted); padding-bottom: 14px; }
 
 .design-menu, .design-options, .design-note { display: none; }
 .player-design .design-menu { display: flex; }
-.player-design[data-design="artist"] :is(.design-options, .demo-viewer, .design-note) { display: none; }
 .player-design :is(.contents, .guide-section, .footer, .demo-viewer-toolbar, .demo-controls, .demo-track) { display: none; }
 .player-design .design-options { display: flex; margin-top: 12px; }
 .player-design .design-options button { border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); padding: 8px 14px; font: inherit; cursor: pointer; }
@@ -284,6 +283,7 @@ details p { color: var(--muted); padding-bottom: 14px; }
 .led-sounds span { display: block; font-size: 0.85em; }
 .led-sounds audio { display: block; width: 220px; max-width: 100%; height: 40px; }
 
-.player-design .color-options { display: none; }
-.player-design[data-design="color"] .color-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.player-design :is(.color-options, .artist-options) { display: none; }
+.player-design[data-design="color"] .color-options,
+.player-design[data-design="artist"] .artist-options { display: flex; flex-wrap: wrap; gap: 8px; }
 .player-design[data-design="color"] .design-note { display: none; }

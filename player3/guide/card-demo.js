@@ -11,10 +11,6 @@
     document.querySelector('.player-nav .design-link').setAttribute('aria-current', 'page');
     const variantLink = document.querySelector(`[data-design-link="${variant}"]`);
     variantLink.setAttribute('aria-current', 'page');
-    if (variant === 'artist') {
-      document.querySelector('#design-pending').hidden = false;
-      return;
-    }
     designCard.disabled = true;
     designCover.disabled = true;
     designCard.addEventListener('click', () => {
@@ -493,7 +489,7 @@
     scene.add(mesh('13', portMaterial));
     const buttons = new THREE.MeshStandardMaterial({color: 0xaab2ba, roughness: .94, side: THREE.DoubleSide});
     const trackButtons = controlMesh('buttons', buttons);
-    const powerMaterial = variant === 'color' ? buttons.clone() : buttons;
+    const powerMaterial = variant === 'color' || variant === 'artist' ? buttons.clone() : buttons;
     scene.add(trackButtons, controlMesh('power', powerMaterial));
     scene.add(controlMesh('wheel', wheelMaterial), controlMesh('usb', portMaterial));
     // Cover the original CAD opening and display the LED at the drawing location.
@@ -878,8 +874,8 @@
     resize();
     update(step);
     if (designMode) {
-      if (variant === 'color') {
-        const choices = [...document.querySelectorAll('[data-palette]')];
+      if (variant === 'color' || variant === 'artist') {
+        const choices = [...document.querySelectorAll(`.${variant}-options [data-palette]`)];
         const materials = [shell, skinMaterial, glass, buttons, powerMaterial];
         const canvasTexture = (width, height, paint) => {
           const surface = document.createElement('canvas');
@@ -934,24 +930,6 @@
           ink.fillStyle = '#9ab1b6';
           ink.fillRect(5, 63, 630, 2);
         });
-        const stickerPrint = canvasTexture(1060, 800, ink => {
-          ink.fillStyle = '#18191b';
-          ink.fillRect(0, 0, 1060, 800);
-          const image = najeonArtwork.image;
-          const width = 250;
-          const height = width * 178 / 274;
-          ink.save();
-          ink.translate(28, 775);
-          ink.rotate(-Math.PI / 14);
-          ink.translate(0, -height);
-          ink.clip(new Path2D('M 58 0 H 250 V 164 H 0 V 136 L 52 87 Z'));
-          ink.globalCompositeOperation = 'screen';
-          ink.drawImage(image,
-            image.width * 277 / 1536, image.height * 178 / 1024,
-            image.width * 274 / 1536, image.height * 178 / 1024,
-            0, 0, width, height);
-          ink.restore();
-        });
         const stickerOutline = new THREE.Shape();
         stickerOutline.moveTo(-26.5, -20);
         stickerOutline.lineTo(26.5, -20);
@@ -959,13 +937,7 @@
         stickerOutline.lineTo(-26.5, 20);
         stickerOutline.closePath();
         const stickerGeometry = new THREE.ShapeGeometry(stickerOutline);
-        const stickerUvs = stickerGeometry.getAttribute('uv');
-        const stickerPositions = stickerGeometry.getAttribute('position');
-        for (let i = 0; i < stickerUvs.count; i++) {
-          stickerUvs.setXY(i, stickerPositions.getX(i) / 53 + .5, stickerPositions.getY(i) / 40 + .5);
-        }
-        const sticker = new THREE.Mesh(stickerGeometry,
-          new THREE.MeshBasicMaterial({map: stickerPrint}));
+        const sticker = new THREE.Mesh(stickerGeometry, new THREE.MeshBasicMaterial());
         sticker.rotation.x = Math.PI / 2;
         sticker.position.set(-1, 5.54, -1);
         sticker.visible = false;
@@ -974,28 +946,79 @@
         const exteriorPrint = {value: najeonArtwork};
         const lacquerPrint = {value: true};
         const kidsPrintActive = {value: false};
-        const kidsHorns = new THREE.Group();
+        const wrapPrintActive = {value: false};
+        const wrapFromPaintedEdge = {value: false};
+        const coverPrint = {value: false};
+        const coverPrintButton = document.querySelector('#edition-cover-print');
+        coverPrintButton.addEventListener('click', () => {
+          coverPrint.value = !coverPrint.value;
+          coverPrintButton.setAttribute('aria-pressed', String(coverPrint.value));
+          render();
+        });
+        const kidsOrnaments = new THREE.Group();
         const hornShape = new THREE.SphereGeometry(1, 32, 20);
         const hornMaterial = new THREE.MeshStandardMaterial({color: 0xff6617, roughness: .78});
-        for (const side of [-1, 1]) {
-          const horn = new THREE.Mesh(hornShape, hornMaterial);
-          horn.scale.set(3.35, 3.05, 4.45);
-          horn.position.set(side * 25.5, 15.2, 25.55);
-          horn.rotation.y = side * .12;
-          kidsHorns.add(horn);
-        }
-        skin.add(kidsHorns);
-        const [kidsPattern, kidsRearArt] = await Promise.all([
-          loadPrint('images/kids-edition-pattern.webp'),
-          loadPrint('images/kids-rear-characters.webp'),
-        ]);
-        const kidsBackground = '#fef6df';
-        const kidsFrontMark = canvasTexture(frontPrint.image.width, frontPrint.image.height, ink => {
-          ink.shadowColor = kidsBackground;
-          ink.shadowBlur = 7;
-          ink.drawImage(frontPrint.image, 0, 0);
-          ink.drawImage(frontPrint.image, 0, 0);
+        const horn = new THREE.Mesh(hornShape, hornMaterial);
+        horn.scale.set(3.35, 3.05, 4.45);
+        horn.position.set(25.5, 15.2, 25.55);
+        horn.rotation.y = .12;
+        kidsOrnaments.add(horn);
+
+        const cloudOutline = new THREE.Shape();
+        cloudOutline.moveTo(-5.6, .45);
+        cloudOutline.bezierCurveTo(-7.8, .6, -8.4, 4.4, -5.9, 5.8);
+        cloudOutline.bezierCurveTo(-4.3, 8.4, -1.5, 9.5, 1.1, 8.8);
+        cloudOutline.bezierCurveTo(3.3, 8.4, 3.55, 6.2, 5.05, 5.6);
+        cloudOutline.bezierCurveTo(8.9, 4.2, 7.5, .15, 5.3, .42);
+        cloudOutline.bezierCurveTo(1.3, .72, -1.4, .15, -5.6, .45);
+        cloudOutline.closePath();
+        const cloudGeometry = new THREE.ExtrudeGeometry(cloudOutline, {
+          depth: 1.45, bevelEnabled: true, bevelThickness: 1.65, bevelSize: 1.1,
+          bevelSegments: 12, curveSegments: 20,
         });
+        cloudGeometry.rotateX(Math.PI / 2);
+        const cloud = new THREE.Mesh(cloudGeometry,
+          new THREE.MeshStandardMaterial({color: new THREE.Color('#dd8159').convertSRGBToLinear(), roughness: .71}));
+        cloud.position.set(-23.7, 10.7, 25.88);
+        printMark(cloud, 14, 8, [0, -3.13, 4.0], [Math.PI / 2, 0, 0], ink => {
+          ink.fillStyle = '#b993cb';
+          for (const x of [-3.8, 3.8]) {
+            ink.beginPath();
+            ink.ellipse(x, .8, 1.28, 1.01, 0, 0, Math.PI * 2);
+            ink.fill();
+          }
+          ink.fillStyle = '#542b25';
+          for (const x of [-1.95, 1.95]) {
+            ink.beginPath();
+            ink.arc(x, -.45, .39, 0, Math.PI * 2);
+            ink.fill();
+          }
+          ink.fill(new Path2D('M -1.55 1.15 Q 0 1.75 1.55 1.1 Q .82 2.45 0 2.48 Q -.87 2.45 -1.55 1.15 Z'));
+          ink.fillStyle = '#ee9b92';
+          ink.fill(new Path2D('M -.55 2.23 Q 0 1.76 .56 2.22 Q 0 2.58 -.55 2.23 Z'));
+        });
+        kidsOrnaments.add(cloud);
+        skin.add(kidsOrnaments);
+        const [kidsPattern, kidsRearArt] = variant === 'color'
+          ? await Promise.all([
+            loadPrint('images/kids-edition-pattern.webp?v=clean-character-wrap'),
+            loadPrint('images/kids-rear-characters.webp'),
+          ])
+          : [null, najeonArtwork];
+        const artistArtwork = variant === 'artist' ? Object.fromEntries(await Promise.all(
+          choices.map(async ({dataset: {windowArt}}) => [
+            windowArt, await loadPrint(`images/artist-${windowArt}.webp`),
+          ])
+        )) : {};
+        const kidsBackground = '#fef6df';
+        const outlineFrontMark = (mark, outline) => canvasTexture(mark.image.width, mark.image.height, ink => {
+          ink.shadowColor = outline;
+          ink.shadowBlur = 7;
+          ink.drawImage(mark.image, 0, 0);
+          ink.drawImage(mark.image, 0, 0);
+        });
+        const kidsFrontMark = outlineFrontMark(frontPrint, kidsBackground);
+        const popFrontMark = outlineFrontMark(popArtPrint, '#f3e7cf');
         for (const material of [shell, skinMaterial, glass]) {
           const isCover = {value: material === glass};
           material.onBeforeCompile = shader => {
@@ -1003,6 +1026,9 @@
             shader.uniforms.lacquerPrint = lacquerPrint;
             shader.uniforms.kidsPrintActive = kidsPrintActive;
             shader.uniforms.isCover = isCover;
+            shader.uniforms.coverPrint = coverPrint;
+            shader.uniforms.wrapPrintActive = wrapPrintActive;
+            shader.uniforms.wrapFromPaintedEdge = wrapFromPaintedEdge;
             shader.uniforms.kidsRearArt = {value: kidsRearArt};
             shader.uniforms.najeonInkActive = najeonInkActive;
             shader.uniforms.najeonPrintHeight = {value: najeonPrintHeight};
@@ -1011,30 +1037,73 @@
               .replace('#include <common>', '#include <common>\nvarying vec3 printPosition; varying vec3 printNormal;')
               .replace('#include <begin_vertex>', '#include <begin_vertex>\nprintPosition = position; printNormal = normal;');
             shader.fragmentShader = shader.fragmentShader
-              .replace('#include <common>', '#include <common>\nvarying vec3 printPosition; varying vec3 printNormal; uniform sampler2D najeonArtwork; uniform bool lacquerPrint; uniform bool kidsPrintActive; uniform bool isCover; uniform sampler2D kidsRearArt; uniform float najeonInkActive; uniform float najeonAspect; uniform float najeonPrintHeight;')
+              .replace('#include <common>', `#include <common>
+                varying vec3 printPosition;
+                varying vec3 printNormal;
+                uniform sampler2D najeonArtwork;
+                uniform bool lacquerPrint;
+                uniform bool kidsPrintActive;
+                uniform bool isCover;
+                uniform bool coverPrint;
+                uniform bool wrapPrintActive;
+                uniform bool wrapFromPaintedEdge;
+                uniform sampler2D kidsRearArt;
+                uniform float najeonInkActive;
+                uniform float najeonAspect;
+                uniform float najeonPrintHeight;
+
+                vec2 wrapUv(vec2 unfolded) {
+                  vec2 uv = vec2(0.49, 0.52) + unfolded / vec2(116.0, 104.0);
+                  if (wrapFromPaintedEdge) uv.y = 0.47 - abs(unfolded.y) / 142.0;
+                  return uv;
+                }`)
               .replace('#include <color_fragment>', `#include <color_fragment>
                 vec3 axis = abs(printNormal);
-                if (kidsPrintActive) {
+                if (isCover) {
+                  if (najeonInkActive > 0.5 && coverPrint) {
+                    bool leftOrRight = abs(printPosition.x) > 28.2;
+                    bool lowerLip = printPosition.z < -21.9;
+                    bool coverFront = printNormal.y < -0.12 && printPosition.y < 3.0;
+                    bool sideReturn = leftOrRight && printPosition.x * printNormal.x > 3.5;
+                    bool bottomReturn = lowerLip && printNormal.z < -0.12;
+                    if ((leftOrRight || lowerLip) && (coverFront || sideReturn || bottomReturn)) {
+                      vec2 unfolded = printPosition.xz;
+                      float fromFront = max(0.0, printPosition.y - 0.4);
+                      if (sideReturn) unfolded.x += sign(printPosition.x) * fromFront;
+                      if (bottomReturn) unfolded.y -= fromFront;
+                      diffuseColor = sRGBToLinear(texture2D(najeonArtwork, wrapUv(unfolded)));
+                    }
+                  }
+                } else if (wrapPrintActive) {
                   bool face = axis.y > max(axis.x, axis.z);
-                  bool rear = !isCover && face && printNormal.y > 0.0 && printPosition.y > 12.0;
-                  bool front = face && printNormal.y < 0.0 && printPosition.y < 1.1;
-                  bool frontFrame = isCover
-                    ? (abs(printPosition.x) > 28.0 || printPosition.z < -22.0)
-                    : printPosition.z > 17.0;
+                  bool rear = face && printNormal.y > 0.0 && printPosition.y > 12.0;
+                  bool front = printNormal.y < -0.12 && printPosition.y < 3.0;
+                  bool side = abs(printPosition.x) > 31.1 && printPosition.x * printNormal.x > 3.5;
+                  bool top = printPosition.z > 24.1 && printNormal.z > 0.12;
+                  bool bottom = printPosition.z < -24.6 && printNormal.z < -0.12;
                   float radius = length(printPosition.xz);
-                  bool raisedGrille = !isCover && printPosition.y > 21.5 && radius <= 22.35;
+                  bool raisedGrille = printPosition.y > 21.5 && radius <= 22.35;
                   if (rear || raisedGrille) {
                     // Expand the artwork's opening to clear the CAD speaker holes.
                     // Restore the original spacing at the outer edge of the raised grille.
-                    float artSpread = mix(0.72, 1.0, smoothstep(11.75, 22.35, radius));
-                    vec2 uv = vec2(0.5) + vec2(-printPosition.x / 64.95, printPosition.z / 51.5) * artSpread;
-                    diffuseColor.rgb = sRGBToLinear(texture2D(kidsRearArt, uv)).rgb;
-                  } else if (front && frontFrame) {
-                    vec2 uv = vec2(0.5, 0.5) + printPosition.xz / 68.0;
+                    vec2 rearUv = vec2(-printPosition.x / 64.95, printPosition.z / 51.5);
+                    if (kidsPrintActive) {
+                      float artSpread = mix(0.72, 1.0, smoothstep(11.75, 22.35, radius));
+                      diffuseColor.rgb = sRGBToLinear(texture2D(kidsRearArt, vec2(0.5) + rearUv * artSpread)).rgb;
+                    } else {
+                      float artSpread = smoothstep(10.9, 15.8, radius);
+                      diffuseColor.rgb = sRGBToLinear(texture2D(najeonArtwork, vec2(0.5) + rearUv * artSpread)).rgb;
+                    }
+                  } else if (front || side || top || bottom) {
+                    // Unfold the opaque rim from the front onto the four edges.
+                    vec2 unfolded = printPosition.xz;
+                    float depthFromFront = max(0.0, printPosition.y - 0.4);
+                    if (side) unfolded.x += sign(printPosition.x) * depthFromFront;
+                    if (top || bottom) unfolded.y += sign(printPosition.z) * depthFromFront;
+                    vec2 uv = wrapUv(unfolded);
                     diffuseColor.rgb = sRGBToLinear(texture2D(najeonArtwork, uv)).rgb;
-                    if (isCover) diffuseColor.a = 1.0;
                   }
-                } else if (!isCover && najeonInkActive > 0.5) {
+                } else if (najeonInkActive > 0.5) {
                   vec2 unfolded = vec2(-printPosition.x, printPosition.z);
                   float fromBack = max(0.0, 24.27 - printPosition.y);
                   bool exterior = true;
@@ -1066,6 +1135,9 @@
                     float coverage = smoothstep(0.0, 0.045, min(border.x, border.y));
                     vec3 printColor = texture2D(najeonArtwork, clamp(uv, 0.0, 1.0)).rgb;
                     vec3 inlayColor = pow(printColor, vec3(2.2)) * coverage;
+                    if (lacquerPrint && axis.y > max(axis.x, axis.z) && printNormal.y > 0.0) {
+                      inlayColor *= mix(0.28, 1.0, smoothstep(10.4, 14.5, length(printPosition.xz)));
+                    }
                     if (upperFace && lacquerPrint) {
                       // Continue the rear artwork at the rear edge, then let the
                       // original cloud detail emerge toward the front band.
@@ -1143,31 +1215,41 @@
           }),
           kids: kidsPattern,
         };
-        const stickerMaps = Object.fromEntries(Object.entries(editionArtwork).map(([key, art]) => [
-          key, canvasTexture(1060, 800, ink => {
-            ink.fillStyle = key === 'kids' ? kidsBackground : '#18191b';
-            ink.fillRect(0, 0, 1060, 800);
-            if (key !== 'kids') {
-              ink.drawImage(art.image, 40, 520, 220, 220 * art.image.height / art.image.width);
-            }
-          }),
-        ]));
+        const artistMarks = Object.fromEntries(choices
+          .filter(choice => artistArtwork[choice.dataset.windowArt])
+          .map(choice => [choice.dataset.windowArt, canvasTexture(1280, 138, ink => {
+            ink.drawImage(frontPrint.image, 0, 0, 1280, 138);
+            ink.globalCompositeOperation = 'source-in';
+            ink.fillStyle = '#f9f1dc';
+            ink.fillRect(0, 0, 1280, 138);
+            ink.globalCompositeOperation = 'source-over';
+            ink.clearRect(875, 0, 405, 138);
+            ink.textAlign = 'right';
+            ink.textBaseline = 'middle';
+            ink.font = '600 42px Pretendard, sans-serif';
+            ink.fillText(choice.textContent.trim(), 1208, 66);
+          })]));
         function applyPalette(selected) {
           selected.dataset.palette.split(',').forEach((hex, index) => {
             materials[index].color.setStyle(`#${hex}`).convertSRGBToLinear();
           });
-          const najeon = selected.dataset.windowArt === 'najeon';
-          const edition = selected.hasAttribute('data-pop-art') ? 'pop' : selected.dataset.windowArt;
-          const surface = najeon ? najeonArtwork : editionArtwork[edition];
+          const edition = selected.dataset.windowArt;
+          const najeon = edition === 'najeon';
+          const artistSurface = artistArtwork[edition];
+          const surface = najeon ? najeonArtwork : artistSurface || editionArtwork[edition];
           exteriorPrint.value = surface;
           lacquerPrint.value = najeon;
           kidsPrintActive.value = edition === 'kids';
-          kidsHorns.visible = kidsPrintActive.value;
+          kidsOrnaments.visible = kidsPrintActive.value;
+          wrapPrintActive.value = Boolean(surface) && !najeon;
+          wrapFromPaintedEdge.value = edition === 'art';
+          coverPrintButton.hidden = !surface;
           najeonInkActive.value = Number(Boolean(surface));
-          sticker.material.map = najeon ? stickerPrint : stickerMaps[edition];
-          sticker.visible = Boolean(sticker.material.map);
+          sticker.material.color.setStyle(`#${selected.dataset.stickerColor}`).convertSRGBToLinear();
+          sticker.visible = true;
+          card.material[0].map = artistSurface || artwork;
           frontMark.material.map = najeon ? najeonFront :
-            ({kids: kidsFrontMark, pop: popArtPrint}[edition] || frontPrint);
+            (artistMarks[edition] || {kids: kidsFrontMark, pop: popFrontMark}[edition] || frontPrint);
           glass.opacity = .16;
           for (const choice of choices) {
             choice.setAttribute('aria-pressed', String(choice === selected));
